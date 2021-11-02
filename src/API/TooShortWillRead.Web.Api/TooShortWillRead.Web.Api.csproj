@@ -16,4 +16,8 @@
     <ProjectReference Include="..\TooShortWillRead.DAL\TooShortWillRead.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Request\" />
+  </ItemGroup>
+
 </Project>
