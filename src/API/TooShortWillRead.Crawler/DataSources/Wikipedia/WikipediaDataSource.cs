@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using TooShortWillRead.DAL.Models;
 
 namespace TooShortWillRead.Crawler.DataSources.Wikipedia
 {
@@ -19,7 +17,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
             _httpClient.BaseAddress = new Uri("https://en.wikipedia.org");
         }
 
-        public string DataSourceName => "Wikipedia";
+        public DataSourceEnum DataSource => DataSourceEnum.Wikipedia;
 
         public async Task<List<DataSourceArticle>> GenerateRandomArticles()
         {
@@ -49,8 +47,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
                 var title = article.GetProperty("title").GetString();
                 return new DataSourceArticle()
                 {
-                    DataSourceName = this.DataSourceName,
-                    InternalDataSourceId = pageId.ToString(),
+                    InternalId = pageId.ToString(),
                     Header = title
                 };
             });
@@ -61,7 +58,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
         private async Task FillImageUrls(List<DataSourceArticle> articles)
         {
             string pageIdsUrlFormat = articles
-                 .Select(article => article.InternalDataSourceId)
+                 .Select(article => article.InternalId)
                  .Aggregate((current, next) => string.Concat(current, '|', next));
 
             var response = await _httpClient.GetAsync($"/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pageids={pageIdsUrlFormat}");
@@ -72,7 +69,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
 
             foreach (var article in articles)
             {
-                var pageJson = pages.GetProperty(article.InternalDataSourceId.ToString());
+                var pageJson = pages.GetProperty(article.InternalId.ToString());
                 if (pageJson.TryGetProperty("original", out JsonElement original)) 
                 {
                     var imageUrl = original.GetProperty("source").GetString();
@@ -84,7 +81,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
         private async Task FillSummaries(List<DataSourceArticle> articles)
         {
             string pageIdsUrlFormat = articles
-                 .Select(article => article.InternalDataSourceId)
+                 .Select(article => article.InternalId)
                  .Aggregate((current, next) => string.Concat(current, '|', next));
 
             var response = await _httpClient.GetAsync($"/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&exintro&pageids={pageIdsUrlFormat}&redirects=");
@@ -94,7 +91,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
             var pages = json.GetProperty("query").GetProperty("pages");
             foreach (var article in articles)
             {
-                var pageJson = pages.GetProperty(article.InternalDataSourceId.ToString());
+                var pageJson = pages.GetProperty(article.InternalId.ToString());
                 var summary = pageJson.GetProperty("extract").GetString();
                 article.Text = summary;
             }

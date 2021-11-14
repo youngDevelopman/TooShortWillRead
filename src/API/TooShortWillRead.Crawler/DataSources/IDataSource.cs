@@ -9,7 +9,7 @@ namespace TooShortWillRead.Crawler.DataSources
 {
     public interface IDataSource
     {
-        public string DataSourceName { get; }
+        public DataSourceEnum DataSource { get; }
 
         Task<List<DataSourceArticle>> GenerateRandomArticles();
     }
