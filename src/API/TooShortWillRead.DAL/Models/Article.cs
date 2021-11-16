@@ -15,5 +15,11 @@ namespace TooShortWillRead.DAL.Models
         public string Text { get; set; }
 
         public string ImageName { get; set; }
+
+        public int DataSourceId { get; set; }
+
+        public DataSource DataSource { get; set; }
+
+        public string InternalId { get; set; }
     }
 }

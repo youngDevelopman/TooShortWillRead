@@ -28,6 +28,15 @@ namespace TooShortWillRead.DAL.EntityConfiguration
             builder
                 .Property(entity => entity.ImageName)
                 .IsRequired();
+
+            builder
+                .HasOne(entity => entity.DataSource)
+                .WithMany()
+                .HasForeignKey(entity => entity.DataSourceId);
+
+            builder
+                .HasIndex(entity => new { entity.DataSourceId, entity.InternalId })
+                .IsUnique();
         }
     }
 }

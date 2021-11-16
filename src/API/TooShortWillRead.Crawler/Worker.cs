@@ -30,7 +30,9 @@ namespace TooShortWillRead.Crawler
                 var randomArticles = await _dataSource.GenerateRandomArticles();
                 var articles = randomArticles.Select(article => 
                     new Article() 
-                    { 
+                    {
+                        DataSourceId = ((int)_dataSource.DataSource),
+                        InternalId = article.InternalId,
                         Header = article.Header, 
                         Text = article.Text, 
                         ImageName = article.ImageUrl 

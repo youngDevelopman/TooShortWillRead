@@ -15,6 +15,7 @@ namespace TooShortWillRead.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ArticleEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new DataSourceEntityConfiguration());
         }
     }
 }
