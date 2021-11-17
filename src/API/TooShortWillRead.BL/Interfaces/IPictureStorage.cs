@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TooShortWillRead.Crawler.Services
+namespace TooShortWillRead.BL.Interfaces
 {
-    public interface IPicturesStorage
+    public interface IPictureStorage
     {
         Task UploadImage(Uri uri);
 

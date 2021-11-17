@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.Crawler.DataSources;
-using TooShortWillRead.Crawler.Services;
 using TooShortWillRead.DAL;
 using TooShortWillRead.DAL.Models;
 
@@ -17,9 +17,9 @@ namespace TooShortWillRead.Crawler
     {
         private readonly ILogger<Worker> _logger;
         private readonly IDataSource _dataSource;
-        private readonly IPicturesStorage _picturesStorage;
+        private readonly IPictureStorage _picturesStorage;
         private readonly IServiceProvider _serviceProvider;
-        public Worker(ILogger<Worker> logger, IDataSource dataSource, IPicturesStorage picturesStorage, IServiceProvider serviceProvider)
+        public Worker(ILogger<Worker> logger, IDataSource dataSource, IPictureStorage picturesStorage, IServiceProvider serviceProvider)
         {
             _logger = logger;
             _dataSource = dataSource;
