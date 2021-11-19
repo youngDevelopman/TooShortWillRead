@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TooShortWillRead.Web.Api.Models.Response;
-using TooShortWillRead.Web.Api.Services;
+using System.Threading.Tasks;
+using TooShortWillRead.BL.Interfaces;
+using TooShortWillRead.BL.Models.Request;
+using TooShortWillRead.BL.Models.Response;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +17,13 @@ namespace TooShortWillRead.Web.Api.Controllers
         public ArticleController(IArticleService articleService)
         {
             _articleService = articleService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Upload([FromForm]UploadArticleRequest request)
+        {
+            await _articleService.UploadArticleAsync(request);
+            return Ok();
         }
 
         [HttpGet("random")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace TooShortWillRead.BL.Interfaces
@@ -9,5 +10,7 @@ namespace TooShortWillRead.BL.Interfaces
         Task UploadImage(Uri uri);
 
         Task UploadImages(List<Uri> uris);
+
+        Task UploadAsync(string fileName, Stream stream);
     }
 }

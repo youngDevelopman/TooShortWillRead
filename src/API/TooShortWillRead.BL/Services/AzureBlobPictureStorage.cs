@@ -19,6 +19,11 @@ namespace TooShortWillRead.BL.Services
             _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
         }
 
+        public async Task UploadAsync(string fileName, Stream stream)
+        {
+            await _blobContainerClient.UploadBlobAsync(fileName, stream);
+        }
+
         public async Task UploadImage(Uri uri)
         {
             var filename = Path.GetFileName(uri.LocalPath);
