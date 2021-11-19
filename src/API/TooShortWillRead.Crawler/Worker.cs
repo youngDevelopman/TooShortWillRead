@@ -54,7 +54,7 @@ namespace TooShortWillRead.Crawler
 
                 _logger.LogInformation($"Add images");
                 var imageUrls = randomArticles.Select(article => new Uri(article.ImageUrl));
-                await _picturesStorage.UploadImages(imageUrls.ToList());
+                await _picturesStorage.UploadAsync(imageUrls.ToList());
 
                 _logger.LogInformation($"Articles have been added.");
 

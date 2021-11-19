@@ -24,18 +24,18 @@ namespace TooShortWillRead.BL.Services
             await _blobContainerClient.UploadBlobAsync(fileName, stream);
         }
 
-        public async Task UploadImage(Uri uri)
+        public async Task UploadAsync(Uri uri)
         {
             var filename = Path.GetFileName(uri.LocalPath);
             var blobClient = _blobContainerClient.GetBlobClient(filename);
             await blobClient.StartCopyFromUriAsync(uri);
         }
 
-        public async Task UploadImages(List<Uri> uris)
+        public async Task UploadAsync(List<Uri> uris)
         {
             foreach (var uri in uris)
             {
-                await this.UploadImage(uri);
+                await this.UploadAsync(uri);
             }
         }
     }
