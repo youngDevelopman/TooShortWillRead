@@ -1,13 +1,14 @@
 ﻿using Azure.Storage.Blobs;
-using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using System.IO;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using TooShortWillRead.BL.Interfaces;
 
-namespace TooShortWillRead.Crawler.Services
+namespace TooShortWillRead.BL.Services
 {
-    public class AzureBlobPictureStorage : IPicturesStorage
+    public class AzureBlobPictureStorage : IPictureStorage
     {
         private readonly BlobContainerClient _blobContainerClient;
         public AzureBlobPictureStorage(IConfiguration configuration)
@@ -18,18 +19,23 @@ namespace TooShortWillRead.Crawler.Services
             _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
         }
 
-        public async Task UploadImage(Uri uri)
+        public async Task UploadAsync(string fileName, Stream stream)
+        {
+            await _blobContainerClient.UploadBlobAsync(fileName, stream);
+        }
+
+        public async Task UploadAsync(Uri uri)
         {
             var filename = Path.GetFileName(uri.LocalPath);
             var blobClient = _blobContainerClient.GetBlobClient(filename);
             await blobClient.StartCopyFromUriAsync(uri);
         }
 
-        public async Task UploadImages(List<Uri> uris)
+        public async Task UploadAsync(List<Uri> uris)
         {
-            foreach (var uri in uris) 
+            foreach (var uri in uris)
             {
-                await this.UploadImage(uri);
+                await this.UploadAsync(uri);
             }
         }
     }

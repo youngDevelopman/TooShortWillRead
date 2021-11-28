@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TooShortWillRead.Web.Api.Models.Response
+namespace TooShortWillRead.BL.Models.Response
 {
     public class GetRandomArticleResponse
     {

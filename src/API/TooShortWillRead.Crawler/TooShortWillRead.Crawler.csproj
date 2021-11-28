@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TooShortWillRead.BL\TooShortWillRead.BL.csproj" />
     <ProjectReference Include="..\TooShortWillRead.DAL\TooShortWillRead.DAL.csproj" />
   </ItemGroup>
 </Project>
