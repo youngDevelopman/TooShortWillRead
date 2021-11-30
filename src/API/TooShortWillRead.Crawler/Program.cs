@@ -27,7 +27,7 @@ namespace TooShortWillRead.Crawler
                 {
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
-                    services.AddTransient<IDataSource, WikipediaDataSource>();
+                    services.AddTransient<IDataSource, BritannicaDataSource>();
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
                     services.AddHttpClient();
 
