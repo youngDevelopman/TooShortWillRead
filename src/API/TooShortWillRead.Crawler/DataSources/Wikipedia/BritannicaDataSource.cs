@@ -12,11 +12,14 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
     public class BritannicaDataSource : IDataSource
     {
         private readonly HttpClient _httpClient;
-        public BritannicaDataSource(HttpClient httpClient)
+        private readonly IBrowsingContext _browsingContext;
+        public BritannicaDataSource(HttpClient httpClient, IBrowsingContext browsingContext)
         {
             _httpClient = httpClient;
 
             _httpClient.BaseAddress = new Uri("https://www.britannica.com");
+
+            _browsingContext = browsingContext;
         }
 
         public DataSourceEnum DataSource => DataSourceEnum.Wikipedia;
@@ -26,8 +29,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
             var randomArticlesResponse = await _httpClient.GetAsync($"ajax/summary/browse?p=0&n=10");
             var content = await randomArticlesResponse.Content.ReadAsStringAsync();
 
-            var context = BrowsingContext.New(Configuration.Default);
-            var document = await context.OpenAsync(req => req.Content(content));
+            var document = await _browsingContext.OpenAsync(req => req.Content(content));
             var anchors = document.All
                 .Where(m => m.LocalName == "a" && m.ClassList.Contains("card-media"))
                 .Select(a => a as IHtmlAnchorElement);
@@ -38,7 +40,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
                 string href = anchor.PathName;
                 var articleResponse = await _httpClient.GetAsync(href);
                 var articleContent = await articleResponse.Content.ReadAsStringAsync();
-                var articleDocument = await context.OpenAsync(req => req.Content(articleContent));
+                var articleDocument = await _browsingContext.OpenAsync(req => req.Content(articleContent));
                 var topicParagraph = articleDocument.All
                     .Where(m => m.LocalName == "p" && m.ClassList.Contains("topic-paragraph"))
                     .FirstOrDefault();

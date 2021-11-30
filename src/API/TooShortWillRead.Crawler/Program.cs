@@ -1,3 +1,4 @@
+using AngleSharp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,8 @@ namespace TooShortWillRead.Crawler
                 {
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
+
+                    services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(Configuration.Default));
                     services.AddTransient<IDataSource, BritannicaDataSource>();
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
                     services.AddHttpClient();
