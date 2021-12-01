@@ -20,7 +20,8 @@ namespace TooShortWillRead.DAL.EntityConfiguration
 
             builder.HasData(
                 new DataSource() { Id = 1, Name = "ManuallyCreated" },
-                new DataSource() { Id = 2, Name = "Wikipedia" }
+                new DataSource() { Id = 2, Name = "Wikipedia" },
+                new DataSource() { Id = 3, Name = "Britannica" }
             );
         }
     }
