@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ namespace TooShortWillRead.Web.Api.Services
         private readonly ApplicationDbContext _context;
         private readonly IPictureStorage _pictureStorage;
         private readonly Uri _blobStorageBaseUrl = new Uri("https://tswr.blob.core.windows.net/articles-images/");
-        public ArticleService(ApplicationDbContext context, IPictureStorage pictureStorage)
+        public ArticleService(ApplicationDbContext context, IPictureStorage pictureStorage, IConfiguration configuration)
         {
             _context = context;
             _pictureStorage = pictureStorage;
+            string containerName = configuration.GetSection("ArticlePicturesContainerName").Value;
+            _blobStorageBaseUrl = new Uri($"https://tswr.blob.core.windows.net/{containerName}/");
         }
 
         public GetRandomArticleResponse GetRandomArticle()
