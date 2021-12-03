@@ -55,6 +55,7 @@ namespace TooShortWillRead.Crawler
 
                 await Task.Delay(1000, stoppingToken);
             }
+            _logger.LogInformation($"=====END SOURCING FOR {dataSource.DataSource}=====");
         }
 
         private async Task AddOrUpdateArticles(List<DataSourceArticle> articles, DataSourceEnum dataSource)
@@ -115,7 +116,7 @@ namespace TooShortWillRead.Crawler
                 return a;
             });
 
-            _logger.LogInformation($"Update {articles.Count()} articles to the database...");
+            _logger.LogInformation($"Update {articles.Count()} articles in the database...");
             context.Articles.UpdateRange(updatedArticles);
             await context.SaveChangesAsync();
 

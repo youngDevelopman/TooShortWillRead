@@ -29,7 +29,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
             _browsingContext = browsingContext;
             _logger = logger;
 
-            _currentPage = 27;
+            _currentPage = 0;
             _pageSize = 10;
         }
 
