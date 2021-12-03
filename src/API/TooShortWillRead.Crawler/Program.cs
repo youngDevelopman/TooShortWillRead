@@ -30,7 +30,10 @@ namespace TooShortWillRead.Crawler
                         options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
 
                     services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(Configuration.Default));
+
                     services.AddTransient<IDataSource, BritannicaDataSource>();
+                    //services.AddTransient<IDataSource, WikipediaDataSource>();
+
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
                     services.AddHttpClient();
 
