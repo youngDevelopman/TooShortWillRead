@@ -16,8 +16,18 @@ import {
   Text,
   useColorScheme,
   View,
-  Image
+  Image,
+  Button,
+  TouchableOpacity
 } from 'react-native';
+
+
+const AppButton = ({ onPress, title }) => (
+  <TouchableOpacity activeOpacity={0.5}
+  onPress={onPress} style={styles.appButtonContainer}>
+    <Text style={styles.appButtonText}>{title}</Text>
+  </TouchableOpacity>
+);
 
 const App: () => Node = () => {
   const [article, setArticle] = useState({
@@ -49,10 +59,12 @@ const App: () => Node = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          stickyHeaderIndices={[0]}
         >
+          <View style={{alignItems: 'flex-end'}}><AppButton onPress={loadNextArticle} title='Next article'/></View>
           <Image
             style={[styles.headerImageStyle]}
-            source={{ uri: article.imageUrl }} />
+            source={{ uri: article.imageUrl, }}/>
           <Text style={styles.headerText}
           >
             {article.header}
@@ -108,6 +120,27 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18
   },
+  nextArticleButton: {
+    alignSelf: 'flex-end',
+    fontWeight: "bold",
+  },
+  // app button
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#383837",
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 10, 
+    marginTop: 10,
+    marginBottom: 10
+  },
+  appButtonText: {
+    fontSize: 16,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  }
 });
 
 export default App;
