@@ -14,11 +14,11 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
   Image,
-  Button,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
+  Modal
 } from 'react-native';
 
 
@@ -30,6 +30,8 @@ const AppButton = ({ onPress, title }) => (
 );
 
 const App: () => Node = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
   const [article, setArticle] = useState({
     header: '',
     text: '',
@@ -37,6 +39,7 @@ const App: () => Node = () => {
   });
 
   const loadNextArticle = async () => {
+    setIsLoading(true);
     const response = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random');
     const responseJson = await response.json();
     console.log(responseJson);
@@ -46,6 +49,7 @@ const App: () => Node = () => {
       text: responseJson.text,
       imageUrl: responseJson.imageLink,
     });
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -62,14 +66,17 @@ const App: () => Node = () => {
           stickyHeaderIndices={[0]}
         >
           <View style={{alignItems: 'flex-end'}}><AppButton onPress={loadNextArticle} title='Next article'/></View>
-          <Image
-            style={[styles.headerImageStyle]}
-            source={{ uri: article.imageUrl, }}/>
+          <View style={styles.imageContainerStyle}>
+            <Image
+                style={[styles.headerImageStyle]}
+                source={{ uri: article.imageUrl, }}
+                onLoad={() => { console.log('on load'); setIsImageLoading(false);}}
+            />        
+          </View>
           <Text style={styles.headerText}
           >
             {article.header}
           </Text>
-
           <View >
           <View
             style={{
@@ -84,6 +91,12 @@ const App: () => Node = () => {
             </Text>
           </View>
         </ScrollView>
+        <Modal visible={isLoading} style={{ backgroundColor: "black", }} animationType='fade'>
+          <View style={styles.modalBackground}>
+            <ActivityIndicator animating={isLoading} color="white" size="large"/>
+            <Text style={styles.text}> Loading the next article...</Text>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -95,9 +108,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerImageStyle: {
+    height: '100%',
+    width: '100%',
+  },
+  imageContainerStyle :{
     height: 300,
     width: '100%',
-    borderRadius: 10,
     alignSelf: 'center',
   },
   headerText: {
@@ -140,6 +156,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     textTransform: "uppercase"
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'black',
+    zIndex: 1000
   }
 });
 
