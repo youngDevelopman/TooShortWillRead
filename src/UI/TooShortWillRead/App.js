@@ -15,11 +15,11 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   TouchableOpacity,
   ActivityIndicator,
   Modal
 } from 'react-native';
+import Image from 'react-native-image-progress';
 
 
 const AppButton = ({ onPress, title }) => (
@@ -115,6 +115,8 @@ const styles = StyleSheet.create({
     height: 300,
     width: '100%',
     alignSelf: 'center',
+    overflow: "hidden",
+    borderRadius: 10
   },
   headerText: {
     textAlign: 'left',
