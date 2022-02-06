@@ -31,6 +31,7 @@ const AppButton = ({ onPress, title }) => (
 );
 
 const App: () => Node = () => {
+  const scrollRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [article, setArticle] = useState({
     header: '',
@@ -38,17 +39,24 @@ const App: () => Node = () => {
     imageUrl: ''
   });
 
+  const scrollToTheTop = () => {
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: false,
+    });
+  }
+
   const loadNextArticle = async () => {
     setIsLoading(true);
     const response = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random');
     const responseJson = await response.json();
-    console.log(responseJson);
     setArticle({
       ...article,
       header: responseJson.header,
       text: responseJson.text,
       imageUrl: responseJson.imageLink,
     });
+    scrollToTheTop();
     setIsLoading(false);
   }
 
@@ -65,6 +73,7 @@ const App: () => Node = () => {
       <View style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }}>
         <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
         <ScrollView
+          ref={scrollRef}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           stickyHeaderIndices={[0]}
