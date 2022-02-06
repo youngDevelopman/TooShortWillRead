@@ -57,7 +57,6 @@ const App: () => Node = () => {
   }, []);
 
   const openLink = () => {
-    console.log('hello');
     Linking.openURL(`https://www.google.com/search?q=${article.header}`)
   }
 
