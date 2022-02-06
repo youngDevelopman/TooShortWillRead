@@ -7,6 +7,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import WebView from 'react-native-webview';
 import type { Node } from 'react';
 import {
   SafeAreaView,
@@ -17,10 +18,29 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Modal
+  Modal,
+  Linking
 } from 'react-native';
 import Image from 'react-native-image-progress';
 
+
+const WebviewScreen = () => {
+  const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
+
+  return (
+    <WebView
+    source={{ uri }}
+    onShouldStartLoadWithRequest={(request) => {
+      if (request.url !== uri) {
+        Linking.openURL(request.url);
+        return false;
+      }
+
+      return true;
+    }}
+  />    
+  )
+}
 
 const AppButton = ({ onPress, title }) => (
   <TouchableOpacity activeOpacity={0.5}
@@ -56,6 +76,11 @@ const App: () => Node = () => {
       loadNextArticle();
   }, []);
 
+  const openLink = () => {
+    console.log('hello');
+    Linking.openURL(`https://www.google.com/search?q=${article.header}`)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }}>
@@ -77,13 +102,17 @@ const App: () => Node = () => {
           >
             {article.header}
           </Text>
+          <TouchableOpacity onPress={openLink}>
+              <Text style={{color: '#d0b7f7', fontSize: 18, fontWeight:'800'}}>Open this article in a browser</Text>
+          </TouchableOpacity>
           <View >
           <View
             style={{
               borderBottomColor: 'white',
               borderBottomWidth: 0.5,
               width: '40%',
-              marginBottom: 10
+              marginTop: 10,
+              marginBottom: 10,
             }}
           />
             <Text style={styles.text}>
