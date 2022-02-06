@@ -23,25 +23,6 @@ import {
 } from 'react-native';
 import Image from 'react-native-image-progress';
 
-
-const WebviewScreen = () => {
-  const uri = 'http://stackoverflow.com/questions/35531679/react-native-open-links-in-browser';
-
-  return (
-    <WebView
-    source={{ uri }}
-    onShouldStartLoadWithRequest={(request) => {
-      if (request.url !== uri) {
-        Linking.openURL(request.url);
-        return false;
-      }
-
-      return true;
-    }}
-  />    
-  )
-}
-
 const AppButton = ({ onPress, title }) => (
   <TouchableOpacity activeOpacity={0.5}
   onPress={onPress} style={styles.appButtonContainer}>
@@ -51,7 +32,6 @@ const AppButton = ({ onPress, title }) => (
 
 const App: () => Node = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(false);
   const [article, setArticle] = useState({
     header: '',
     text: '',
@@ -95,7 +75,6 @@ const App: () => Node = () => {
             <Image
                 style={[styles.headerImageStyle]}
                 source={{ uri: article.imageUrl, }}
-                onLoad={() => { console.log('on load'); setIsImageLoading(false);}}
             />        
           </View>
           <Text style={styles.headerText}
