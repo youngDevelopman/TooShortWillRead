@@ -7,6 +7,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import WebView from 'react-native-webview';
 import type { Node } from 'react';
 import {
   SafeAreaView,
@@ -17,10 +18,10 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Modal
+  Modal,
+  Linking
 } from 'react-native';
 import Image from 'react-native-image-progress';
-
 
 const AppButton = ({ onPress, title }) => (
   <TouchableOpacity activeOpacity={0.5}
@@ -30,25 +31,32 @@ const AppButton = ({ onPress, title }) => (
 );
 
 const App: () => Node = () => {
+  const scrollRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(false);
   const [article, setArticle] = useState({
     header: '',
     text: '',
     imageUrl: ''
   });
 
+  const scrollToTheTop = () => {
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: false,
+    });
+  }
+
   const loadNextArticle = async () => {
     setIsLoading(true);
     const response = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random');
     const responseJson = await response.json();
-    console.log(responseJson);
     setArticle({
       ...article,
       header: responseJson.header,
       text: responseJson.text,
       imageUrl: responseJson.imageLink,
     });
+    scrollToTheTop();
     setIsLoading(false);
   }
 
@@ -56,11 +64,16 @@ const App: () => Node = () => {
       loadNextArticle();
   }, []);
 
+  const openLink = () => {
+    Linking.openURL(`https://www.google.com/search?q=${article.header}`)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }}>
         <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
         <ScrollView
+          ref={scrollRef}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           stickyHeaderIndices={[0]}
@@ -70,20 +83,23 @@ const App: () => Node = () => {
             <Image
                 style={[styles.headerImageStyle]}
                 source={{ uri: article.imageUrl, }}
-                onLoad={() => { console.log('on load'); setIsImageLoading(false);}}
             />        
           </View>
           <Text style={styles.headerText}
           >
             {article.header}
           </Text>
+          <TouchableOpacity onPress={openLink}>
+              <Text style={{color: '#d0b7f7', fontSize: 18, fontWeight:'800'}}>Open this article in a browser</Text>
+          </TouchableOpacity>
           <View >
           <View
             style={{
               borderBottomColor: 'white',
               borderBottomWidth: 0.5,
               width: '40%',
-              marginBottom: 10
+              marginTop: 10,
+              marginBottom: 10,
             }}
           />
             <Text style={styles.text}>
