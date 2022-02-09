@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Models.Request;
@@ -20,17 +21,39 @@ namespace TooShortWillRead.Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload([FromForm]UploadArticleRequest request)
+        public async Task<IActionResult> Upload([FromForm] UploadArticleRequest request)
         {
             await _articleService.UploadArticleAsync(request);
             return Ok();
         }
 
+
+        [HttpGet("{id}")]
+        public ActionResult<GetArticleResponse> Get(Guid id)
+        {
+            var article = _articleService.GetArticle(id);
+            return Ok(article);
+        }
+
+        [HttpGet("count")]
+        public ActionResult<GetArticleCountResponse> GetArticleCount()
+        {
+            var article = _articleService.GetArticleCount();
+            return Ok(article);
+        }
+
         [HttpGet("random")]
-        public ActionResult<GetRandomArticleResponse> Get()
+        public ActionResult<GetRandomArticleResponse> GetRandomArticle()
         {
             var article = _articleService.GetRandomArticle();
             return Ok(article);
+        }
+
+        [HttpGet("random/id")]
+        public ActionResult<GetRandomArticleResponse> GetRandomArticleId()
+        {
+            var articleId = _articleService.GetRandomArticleId();
+            return Ok(articleId);
         }
     }
 }
