@@ -24,13 +24,13 @@ namespace TooShortWillRead.Web.Api.Services
             _blobStorageBaseUrl = new Uri($"https://tswr.blob.core.windows.net/{containerName}/");
         }
 
-        public Guid GetRandomArticleId()
+        public GetRandomArticleIdResponse GetRandomArticleId()
         {
             var randomArticleId = _context.Articles
                 .OrderBy(r => Guid.NewGuid())
                 .Select(r => r.Id)
                 .First();
-            return randomArticleId;
+            return new GetRandomArticleIdResponse() { Id = randomArticleId };
         }
 
         public GetRandomArticleResponse GetRandomArticle()
@@ -41,6 +41,18 @@ namespace TooShortWillRead.Web.Api.Services
                 Header = randomArticle.Header,
                 Text = randomArticle.Text,
                 ImageLink = new Uri(_blobStorageBaseUrl, randomArticle.ImageName),
+            };
+        }
+
+        public GetArticleResponse GetArticle(Guid id)
+        {
+            var article = _context.Articles.FirstOrDefault(a => a.Id == id);
+            return new GetArticleResponse()
+            {
+                Id = id,
+                Header = article.Header,
+                ImageLink = new Uri(_blobStorageBaseUrl, article.ImageName),
+                Text = article.Text,
             };
         }
 

@@ -11,6 +11,8 @@ namespace TooShortWillRead.BL.Interfaces
 
         GetRandomArticleResponse GetRandomArticle();
 
-        Guid GetRandomArticleId();
+        GetRandomArticleIdResponse GetRandomArticleId();
+
+        GetArticleResponse GetArticle(Guid id);
     }
 }
