@@ -36,6 +36,7 @@ const App: () => Node = () => {
   const scrollRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [article, setArticle] = useState({
+    articleId: '',
     header: '',
     text: '',
     imageUrl: ''
@@ -63,43 +64,51 @@ const App: () => Node = () => {
     }
   }
 
+  const clearAppData = async function() {
+    try {
+        const keys = await AsyncStorage.getAllKeys();
+        await AsyncStorage.multiRemove(keys);
+    } catch (error) {
+        console.error('Error clearing app data.');
+    }
+}
+
   const loadNextArticle = async () => {
     console.log(await AsyncStorage.getAllKeys());
     setIsLoading(true);
     let isUnique = false;
     let attempts = 0;
-    let articleData = {};
+    let articleId;
     do
     {
-      const response = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random');
-      articleData = await response.json();
-      const articleId = `@ReadArticles:${articleData.header}`;
-      console.log(articleId)
-      isUnique = await AsyncStorage.getItem(articleId) == null;
-      AsyncStorage.getItem(articleId, (error, result) => {
-        if(error) console.error('Something went wrong!');
-        else if(result) console.log('Getting key was successfull', result);
-        else if(result === null) console.log('Key does not exists!');
-      });
-      console.log('get article result', isUnique)
-      if(await AsyncStorage.getItem(articleId) == null){
+      const randomArticleIdResponse = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random/id');
+      const articleIdJson = await randomArticleIdResponse.json();
+      const articleIdCacheKey = `@ReadArticles:${articleIdJson.id}`;
+      if(await AsyncStorage.getItem(articleIdCacheKey) === null){
         isUnique = true;
       }
+      articleId = articleIdJson.id;
       console.log('attemp number', attempts)
       attempts++;
     } while(!isUnique && attempts <= LOAD_ARTICLES_ATTEMPS_TRESHOLD)
+
+    const randomArticleResponse = await fetch(`https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/${articleId}`);
+    const articleData = await randomArticleResponse.json();
+
     setArticle({
       ...article,
+      articleId: articleData.id,
       header: articleData.header,
       text: articleData.text,
       imageUrl: articleData.imageLink,
     });
     scrollToTheTop();
-    await addReadArticle(articleData.header);
+    await addReadArticle(articleData.id);
     setIsLoading(false);
   }
 
   useEffect(() => {
+      //clearAppData();
       loadNextArticle();
   }, []);
 
