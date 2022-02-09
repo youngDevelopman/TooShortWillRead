@@ -32,7 +32,7 @@ namespace TooShortWillRead.Crawler
                     services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(Configuration.Default));
 
                     services.AddTransient<IDataSource, BritannicaDataSource>();
-                    services.AddTransient<IDataSource, WikipediaDataSource>();
+                    //services.AddTransient<IDataSource, WikipediaDataSource>();
 
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
                     services.AddHttpClient();
