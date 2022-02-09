@@ -7,7 +7,6 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import WebView from 'react-native-webview';
 import type { Node } from 'react';
 import {
   SafeAreaView,
@@ -33,6 +32,10 @@ const AppButton = ({ onPress, title }) => (
 
 const App: () => Node = () => {
   const LOAD_ARTICLES_ATTEMPS_TRESHOLD = 10;
+  const RUN_READ_ARTICLES_CLEANUP_TRESHOLD = 6;
+  const CLENUP_ARTICLES_PERCENTAGE_TRESHOLD = 60;
+  const ARTICLES_PERCENTAGE_TO_CLEAN = 20;
+
   const scrollRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [article, setArticle] = useState({
@@ -71,10 +74,34 @@ const App: () => Node = () => {
     } catch (error) {
         console.error('Error clearing app data.');
     }
-}
+  }
+
+  const clearArticles = async () => {
+    const keys = await AsyncStorage.getAllKeys();
+    const totalArticles = keys.length;
+    const articlesCountResponse = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/count');
+    const articlesCountJson = await articlesCountResponse.json();
+    const articlesCount = articlesCountJson.count;
+    console.log('articles count', articlesCount)
+    console.log('total articles', totalArticles)
+    const loadedArticlesPercentage = (100 * totalArticles) / articlesCount;
+    console.log('loadedArticlesPercentage', loadedArticlesPercentage);
+
+    if(loadedArticlesPercentage >= CLENUP_ARTICLES_PERCENTAGE_TRESHOLD)
+    {
+      const result = await AsyncStorage.multiGet(keys);
+      result.sort((first, second) => {
+        return new Date(first[1]) - new Date(second[1]);
+      })
+      const numberOfArticlesToClean = Math.round((ARTICLES_PERCENTAGE_TO_CLEAN * totalArticles) / 100);
+      console.log(numberOfArticlesToClean);
+      const articlesToClean = result.slice(0, numberOfArticlesToClean).map(a => a[0]);
+      await AsyncStorage.multiRemove(articlesToClean);
+    }
+  }
 
   const loadNextArticle = async () => {
-    console.log(await AsyncStorage.getAllKeys());
+    //console.log(await AsyncStorage.getAllKeys());
     setIsLoading(true);
     let isUnique = false;
     let attempts = 0;
@@ -92,6 +119,10 @@ const App: () => Node = () => {
       attempts++;
     } while(!isUnique && attempts <= LOAD_ARTICLES_ATTEMPS_TRESHOLD)
 
+    if(attempts >= RUN_READ_ARTICLES_CLEANUP_TRESHOLD)
+    {
+      await clearArticles();
+    }
     const randomArticleResponse = await fetch(`https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/${articleId}`);
     const articleData = await randomArticleResponse.json();
 
