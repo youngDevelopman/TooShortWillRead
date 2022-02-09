@@ -22,6 +22,7 @@ import {
   Linking
 } from 'react-native';
 import Image from 'react-native-image-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AppButton = ({ onPress, title }) => (
   <TouchableOpacity activeOpacity={0.5}
@@ -31,6 +32,7 @@ const AppButton = ({ onPress, title }) => (
 );
 
 const App: () => Node = () => {
+  const LOAD_ARTICLES_ATTEMPS_TRESHOLD = 10;
   const scrollRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [article, setArticle] = useState({
@@ -46,17 +48,52 @@ const App: () => Node = () => {
     });
   }
 
+  const addReadArticle = async (articleId) => {
+    try {
+      await AsyncStorage.setItem(
+        `@ReadArticles:${articleId}`,
+        'article'
+      );
+      console.log('saved');
+    } catch (error) {
+      // Error saving data
+      console.log('error', error)
+    }
+  }
+
   const loadNextArticle = async () => {
+    console.log(await AsyncStorage.getAllKeys());
     setIsLoading(true);
-    const response = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random');
-    const responseJson = await response.json();
+    let isUnique = false;
+    let attempts = 0;
+    let articleData = {};
+    do
+    {
+      const response = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random');
+      articleData = await response.json();
+      const articleId = `@ReadArticles:${articleData.header}`;
+      console.log(articleId)
+      isUnique = await AsyncStorage.getItem(articleId) == null;
+      AsyncStorage.getItem(articleId, (error, result) => {
+        if(error) console.error('Something went wrong!');
+        else if(result) console.log('Getting key was successfull', result);
+        else if(result === null) console.log('Key does not exists!');
+      });
+      console.log('get article result', isUnique)
+      if(await AsyncStorage.getItem(articleId) == null){
+        isUnique = true;
+      }
+      console.log('attemp number', attempts)
+      attempts++;
+    } while(!isUnique && attempts <= LOAD_ARTICLES_ATTEMPS_TRESHOLD)
     setArticle({
       ...article,
-      header: responseJson.header,
-      text: responseJson.text,
-      imageUrl: responseJson.imageLink,
+      header: articleData.header,
+      text: articleData.text,
+      imageUrl: articleData.imageLink,
     });
     scrollToTheTop();
+    await addReadArticle(articleData.header);
     setIsLoading(false);
   }
 
