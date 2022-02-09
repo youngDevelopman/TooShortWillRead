@@ -24,6 +24,12 @@ namespace TooShortWillRead.Web.Api.Services
             _blobStorageBaseUrl = new Uri($"https://tswr.blob.core.windows.net/{containerName}/");
         }
 
+        public GetArticleCountResponse GetArticleCount()
+        {
+            var count = _context.Articles.Count();
+            return new GetArticleCountResponse() { Count = count };
+        }
+
         public GetRandomArticleIdResponse GetRandomArticleId()
         {
             var randomArticleId = _context.Articles

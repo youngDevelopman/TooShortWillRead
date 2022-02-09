@@ -35,8 +35,15 @@ namespace TooShortWillRead.Web.Api.Controllers
             return Ok(article);
         }
 
+        [HttpGet("count")]
+        public ActionResult<GetArticleCountResponse> GetArticleCount()
+        {
+            var article = _articleService.GetArticleCount();
+            return Ok(article);
+        }
+
         [HttpGet("random")]
-        public ActionResult<GetRandomArticleResponse> Get()
+        public ActionResult<GetRandomArticleResponse> GetRandomArticle()
         {
             var article = _articleService.GetRandomArticle();
             return Ok(article);
