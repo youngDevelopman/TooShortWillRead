@@ -50,9 +50,11 @@ const App: () => Node = () => {
 
   const addReadArticle = async (articleId) => {
     try {
+      const time = new Date().toLocaleString();
+      console.log(time)
       await AsyncStorage.setItem(
         `@ReadArticles:${articleId}`,
-        'article'
+        time
       );
       console.log('saved');
     } catch (error) {
