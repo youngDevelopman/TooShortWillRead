@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import Image from 'react-native-image-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ArticleService from './services/ArticleService';
 
 const AppButton = ({ onPress, title }) => (
   <TouchableOpacity activeOpacity={0.5}
@@ -31,11 +32,6 @@ const AppButton = ({ onPress, title }) => (
 );
 
 const App: () => Node = () => {
-  const LOAD_ARTICLES_ATTEMPS_TRESHOLD = 10;
-  const RUN_READ_ARTICLES_CLEANUP_TRESHOLD = 6;
-  const CLENUP_ARTICLES_PERCENTAGE_TRESHOLD = 60;
-  const ARTICLES_PERCENTAGE_TO_CLEAN = 20;
-
   const scrollRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
   const [article, setArticle] = useState({
@@ -52,80 +48,10 @@ const App: () => Node = () => {
     });
   }
 
-  const addReadArticle = async (articleId) => {
-    try {
-      const time = new Date().toLocaleString();
-      console.log(time)
-      await AsyncStorage.setItem(
-        `@ReadArticles:${articleId}`,
-        time
-      );
-      console.log('saved');
-    } catch (error) {
-      // Error saving data
-      console.log('error', error)
-    }
-  }
-
-  const clearAppData = async function() {
-    try {
-        const keys = await AsyncStorage.getAllKeys();
-        await AsyncStorage.multiRemove(keys);
-    } catch (error) {
-        console.error('Error clearing app data.');
-    }
-  }
-
-  const clearArticles = async () => {
-    const keys = await AsyncStorage.getAllKeys();
-    const totalArticles = keys.length;
-    const articlesCountResponse = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/count');
-    const articlesCountJson = await articlesCountResponse.json();
-    const articlesCount = articlesCountJson.count;
-    console.log('articles count', articlesCount)
-    console.log('total articles', totalArticles)
-    const loadedArticlesPercentage = (100 * totalArticles) / articlesCount;
-    console.log('loadedArticlesPercentage', loadedArticlesPercentage);
-
-    if(loadedArticlesPercentage >= CLENUP_ARTICLES_PERCENTAGE_TRESHOLD)
-    {
-      const result = await AsyncStorage.multiGet(keys);
-      result.sort((first, second) => {
-        return new Date(first[1]) - new Date(second[1]);
-      })
-      const numberOfArticlesToClean = Math.round((ARTICLES_PERCENTAGE_TO_CLEAN * totalArticles) / 100);
-      console.log(numberOfArticlesToClean);
-      const articlesToClean = result.slice(0, numberOfArticlesToClean).map(a => a[0]);
-      await AsyncStorage.multiRemove(articlesToClean);
-    }
-  }
-
   const loadNextArticle = async () => {
     //console.log(await AsyncStorage.getAllKeys());
     setIsLoading(true);
-    let isUnique = false;
-    let attempts = 0;
-    let articleId;
-    do
-    {
-      const randomArticleIdResponse = await fetch('https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/random/id');
-      const articleIdJson = await randomArticleIdResponse.json();
-      const articleIdCacheKey = `@ReadArticles:${articleIdJson.id}`;
-      if(await AsyncStorage.getItem(articleIdCacheKey) === null){
-        isUnique = true;
-      }
-      articleId = articleIdJson.id;
-      console.log('attemp number', attempts)
-      attempts++;
-    } while(!isUnique && attempts <= LOAD_ARTICLES_ATTEMPS_TRESHOLD)
-
-    if(attempts >= RUN_READ_ARTICLES_CLEANUP_TRESHOLD)
-    {
-      await clearArticles();
-    }
-    const randomArticleResponse = await fetch(`https://tooshortwillreadwebapi20220129184421.azurewebsites.net/api/article/${articleId}`);
-    const articleData = await randomArticleResponse.json();
-
+    const articleData = await ArticleService.loadNewArticleAsync();
     setArticle({
       ...article,
       articleId: articleData.id,
@@ -134,7 +60,7 @@ const App: () => Node = () => {
       imageUrl: articleData.imageLink,
     });
     scrollToTheTop();
-    await addReadArticle(articleData.id);
+    
     setIsLoading(false);
   }
 
