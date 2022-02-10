@@ -23,6 +23,7 @@ import {
 import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
 import ArticleService from './services/ArticleService';
+import LoadingArticleModal from './components/LoadingArticleModal';
 
 
 
@@ -109,12 +110,7 @@ const App: () => Node = () => {
             </Text>
           </View>
         </ScrollView>
-        <Modal visible={isLoading} style={{ backgroundColor: "black", }} animationType='fade'>
-          <View style={styles.modalBackground}>
-            <ActivityIndicator animating={isLoading} color="white" size="large"/>
-            <Text style={styles.text}> Loading the next article...</Text>
-          </View>
-        </Modal>
+        <LoadingArticleModal isLoading={isLoading}/>
       </View>
     </SafeAreaView>
   );
@@ -155,14 +151,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     color: '#FFFFFF',
     fontSize: 18
-  },
-  modalBackground: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    zIndex: 1000
   }
 });
 
