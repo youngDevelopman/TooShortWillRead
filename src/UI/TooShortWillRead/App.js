@@ -20,16 +20,11 @@ import {
   Modal,
   Linking
 } from 'react-native';
+import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ArticleService from './services/ArticleService';
 
-const AppButton = ({ onPress, title }) => (
-  <TouchableOpacity activeOpacity={0.5}
-  onPress={onPress} style={styles.appButtonContainer}>
-    <Text style={styles.appButtonText}>{title}</Text>
-  </TouchableOpacity>
-);
+
 
 const App: () => Node = () => {
   const scrollRef = useRef();
@@ -83,7 +78,9 @@ const App: () => Node = () => {
           scrollEventThrottle={16}
           stickyHeaderIndices={[0]}
         >
-          <View style={{alignItems: 'flex-end'}}><AppButton onPress={loadNextArticle} title='Next article'/></View>
+          <View style={{alignItems: 'flex-end'}}>
+            <AppButton onPress={loadNextArticle} title='Next article'/>
+          </View>
           <View style={styles.imageContainerStyle}>
             <Image
                 style={[styles.headerImageStyle]}
@@ -158,27 +155,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     color: '#FFFFFF',
     fontSize: 18
-  },
-  nextArticleButton: {
-    alignSelf: 'flex-end',
-    fontWeight: "bold",
-  },
-  // app button
-  appButtonContainer: {
-    elevation: 8,
-    backgroundColor: "#383837",
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 10, 
-    marginTop: 10,
-    marginBottom: 10
-  },
-  appButtonText: {
-    fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
   },
   modalBackground: {
     flex: 1,
