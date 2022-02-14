@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TooShortWillRead.BL.Configuration;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Models.Request;
 using TooShortWillRead.BL.Models.Response;
@@ -15,13 +17,15 @@ namespace TooShortWillRead.Web.Api.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IPictureStorage _pictureStorage;
-        private readonly Uri _blobStorageBaseUrl = new Uri("https://tswr.blob.core.windows.net/articles-images/");
-        public ArticleService(ApplicationDbContext context, IPictureStorage pictureStorage, IConfiguration configuration)
+        private readonly Uri _blobStorageBaseUrl;
+        public ArticleService(
+            ApplicationDbContext context, 
+            IPictureStorage pictureStorage, 
+            IOptions<ArticlePictures> configuration)
         {
             _context = context;
             _pictureStorage = pictureStorage;
-            string containerName = configuration.GetSection("ArticlePicturesContainerName").Value;
-            _blobStorageBaseUrl = new Uri($"https://tswr.blob.core.windows.net/{containerName}/");
+            _blobStorageBaseUrl = new Uri($"{configuration.Value.BaseUrl}/{configuration.Value.ContainerName}/");
         }
 
         public GetArticleCountResponse GetArticleCount()

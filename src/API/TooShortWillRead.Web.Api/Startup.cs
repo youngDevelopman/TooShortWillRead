@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TooShortWillRead.BL.Configuration;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Services;
 using TooShortWillRead.DAL;
@@ -24,6 +25,7 @@ namespace TooShortWillRead.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ArticlePictures>(Configuration.GetSection("ArticlePictures"));
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
