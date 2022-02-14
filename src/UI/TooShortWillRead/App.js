@@ -16,8 +16,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ActivityIndicator,
-  Modal,
   Linking
 } from 'react-native';
 import AppButton from './components/AppButton';

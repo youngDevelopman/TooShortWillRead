@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TSWR_BASE_URL = 'https://tooshortwillreadwebapi20220129184421.azurewebsites.net';
 const READ_ARTICLES_CACHE_PREFIX = '@ReadArticles:';
 const CLENUP_ARTICLES_PERCENTAGE_TRESHOLD = 60;
 const ARTICLES_PERCENTAGE_TO_CLEAN = 20;
