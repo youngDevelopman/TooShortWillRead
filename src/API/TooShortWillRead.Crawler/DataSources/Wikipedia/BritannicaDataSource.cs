@@ -29,7 +29,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
             _browsingContext = browsingContext;
             _logger = logger;
 
-            _currentPage = 31;
+            _currentPage = 32;
             _pageSize = 10;
         }
 
@@ -145,7 +145,7 @@ namespace TooShortWillRead.Crawler.DataSources.Wikipedia
                 .FirstOrDefault() as IHtmlImageElement;
             var imageOriginalUri = new Uri(imageElement.Source);
 
-            var imagePath = imageOriginalUri.Segments.Skip(2).Aggregate((current, next) => string.Concat(current, next));
+            var imagePath = imageOriginalUri.AbsolutePath;
             var imageUri = new Uri(new Uri(imageOriginalUri.GetLeftPart(System.UriPartial.Authority)), imagePath);
 
             return imageUri.ToString();

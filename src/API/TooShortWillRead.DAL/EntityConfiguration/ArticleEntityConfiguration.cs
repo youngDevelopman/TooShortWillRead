@@ -17,7 +17,7 @@ namespace TooShortWillRead.DAL.EntityConfiguration
 
             builder
                 .Property(entity => entity.Header)
-                .HasMaxLength(50)
+                .HasMaxLength(60)
                 .IsRequired();
 
             builder
