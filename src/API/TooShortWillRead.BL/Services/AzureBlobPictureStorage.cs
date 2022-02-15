@@ -14,7 +14,7 @@ namespace TooShortWillRead.BL.Services
         public AzureBlobPictureStorage(IConfiguration configuration)
         {
             string connectionString = configuration.GetConnectionString("PictureStorage");
-            string containerName = configuration.GetSection("ArticlePicturesContainerName").Value;
+            string containerName = configuration.GetSection("ArticlePictures:ContainerName").Value;
             var blobServiceClient = new BlobServiceClient(connectionString);
             _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
         }
