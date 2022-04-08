@@ -23,6 +23,7 @@ import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
 import ArticleService from './services/ArticleService';
 import LoadingArticleModal from './components/LoadingArticleModal';
+import Config from "react-native-config";
 
 
 
@@ -39,7 +40,7 @@ const App: () => Node = () => {
   const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
   const AD_TO_SHOW_THESHOLD = 5;
   const { adLoaded, adDismissed, show, load, adShowing } = useInterstitialAd(
-    TestIds.INTERSTITIAL,
+    Config.INTERSTITIAL_AD_UNIT,
     {
       requestOptions: {
         requestNonPersonalizedAdsOnly: true,
@@ -72,6 +73,8 @@ const App: () => Node = () => {
 
   useEffect(() => {
     //clearAppData();
+    console.log('AD unit id', Config.INTERSTITIAL_AD_UNIT)
+    console.log('AD unit id', Config.ENV)
     loadNextArticle();
     load();
   }, []);
