@@ -39,7 +39,7 @@ const App: () => Node = () => {
 
   const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
   const AD_TO_SHOW_THESHOLD = 5;
-  const { adLoaded, adDismissed, show, load, adShowing } = useInterstitialAd(
+  const { adLoaded, show, load } = useInterstitialAd(
     Config.INTERSTITIAL_AD_UNIT,
     {
       requestOptions: {
