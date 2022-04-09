@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Linking
 } from 'react-native';
+import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
 import ArticleService from './services/ArticleService';
@@ -34,6 +35,17 @@ const App: () => Node = () => {
     text: '',
     imageUrl: ''
   });
+
+  const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
+  const AD_TO_SHOW_THESHOLD = 5;
+  const { adLoaded, adDismissed, show, load, adShowing } = useInterstitialAd(
+    TestIds.INTERSTITIAL,
+    {
+      requestOptions: {
+        requestNonPersonalizedAdsOnly: true,
+      },
+    }
+  );
 
   const scrollToTheTop = () => {
     scrollRef.current?.scrollTo({
@@ -54,14 +66,25 @@ const App: () => Node = () => {
       imageUrl: articleData.imageLink,
     });
     scrollToTheTop();
-    
     setIsLoading(false);
+    setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
   }
 
   useEffect(() => {
-      //clearAppData();
-      loadNextArticle();
+    //clearAppData();
+    loadNextArticle();
+    load();
   }, []);
+
+  const showAd = () => {
+    console.log("ADD LOADED", adLoaded)
+    if(adLoaded && articlesShownBeforeAd >= AD_TO_SHOW_THESHOLD) {
+      console.log("SHOW ADD")
+      show()
+      load()
+      setArticlesShownBeforeAd(0);
+    }
+  }
 
   const openLink = () => {
     Linking.openURL(`https://www.google.com/search?q=${article.header}`)
@@ -77,38 +100,38 @@ const App: () => Node = () => {
           scrollEventThrottle={16}
           stickyHeaderIndices={[0]}
         >
-          <View style={{alignItems: 'flex-end'}}>
-            <AppButton onPress={loadNextArticle} title='Next article'/>
+          <View style={{ alignItems: 'flex-end' }}>
+            <AppButton onPress={loadNextArticle} title='Next article' />
           </View>
           <View style={styles.imageContainerStyle}>
             <Image
-                style={[styles.headerImageStyle]}
-                source={{ uri: article.imageUrl, }}
-            />        
+              style={[styles.headerImageStyle]}
+              source={{ uri: article.imageUrl, }}
+            />
           </View>
           <Text style={styles.headerText}
           >
             {article.header}
           </Text>
           <TouchableOpacity onPress={openLink}>
-              <Text style={{color: '#d0b7f7', fontSize: 18, fontWeight:'800'}}>Open this article in a browser</Text>
+            <Text style={{ color: '#d0b7f7', fontSize: 18, fontWeight: '800' }}>Open this article in a browser</Text>
           </TouchableOpacity>
           <View >
-          <View
-            style={{
-              borderBottomColor: 'white',
-              borderBottomWidth: 0.5,
-              width: '40%',
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-          />
+            <View
+              style={{
+                borderBottomColor: 'white',
+                borderBottomWidth: 0.5,
+                width: '40%',
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
             <Text style={styles.text}>
               {article.text}
             </Text>
           </View>
         </ScrollView>
-        <LoadingArticleModal isLoading={isLoading}/>
+        <LoadingArticleModal isLoading={isLoading} showAd={showAd}/>
       </View>
     </SafeAreaView>
   );
@@ -123,7 +146,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  imageContainerStyle :{
+  imageContainerStyle: {
     height: 300,
     width: '100%',
     alignSelf: 'center',

@@ -3,7 +3,7 @@ import { StyleSheet, Modal, View, ActivityIndicator, Text } from "react-native";
 
 const LoadingArticleModal = (props) => {
     return (
-        <Modal visible={props.isLoading} style={{ backgroundColor: "black", }} animationType='fade'>
+        <Modal visible={props.isLoading} style={{ backgroundColor: "black", }} animationType='fade' onDismiss={() => props.showAd()}>
             <View style={styles.modalBackground}>
                 <ActivityIndicator animating={props.isLoading} color="white" size="large" />
                 <Text style={styles.text}> Loading the next article...</Text>
