@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "ios:prod": "react-native run-ios --scheme 'Production'",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
@@ -14,6 +15,7 @@
     "@react-native-async-storage/async-storage": "^1.15.17",
     "react": "17.0.2",
     "react-native": "0.67.1",
+    "react-native-config": "^1.4.5",
     "react-native-image-progress": "^1.2.0",
     "react-native-webview": "^11.17.1"
   },
