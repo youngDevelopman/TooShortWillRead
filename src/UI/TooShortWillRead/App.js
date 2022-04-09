@@ -73,8 +73,6 @@ const App: () => Node = () => {
 
   useEffect(() => {
     //clearAppData();
-    console.log('AD unit id', Config.INTERSTITIAL_AD_UNIT)
-    console.log('AD unit id', Config.ENV)
     loadNextArticle();
     load();
   }, []);
