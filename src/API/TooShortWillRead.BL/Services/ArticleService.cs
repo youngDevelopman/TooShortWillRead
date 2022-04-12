@@ -101,6 +101,15 @@ namespace TooShortWillRead.Web.Api.Services
         {
             var httpClient = _httpClientFactory.CreateClient();
             var uri = new Uri(request.Url);
+
+            if(uri.Host == "en.wikipedia.org")
+            {
+                await UploadArticleFromWikipedia(httpClient, uri);
+            }
+        }
+
+        public async Task UploadArticleFromWikipedia(HttpClient httpClient, Uri uri)
+        {
             var titleFromUrl = uri.Segments.Last();
 
             var pageId = await GetWikipediaPageIdFromTitleAsync(httpClient, titleFromUrl);
