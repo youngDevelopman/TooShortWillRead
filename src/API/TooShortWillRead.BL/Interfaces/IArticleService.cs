@@ -9,6 +9,8 @@ namespace TooShortWillRead.BL.Interfaces
     {
         Task UploadArticleAsync(UploadArticleRequest request);
 
+        Task UploadArticleFromUrlAsync(UploadArticleFromUrlRequest request);
+
         GetRandomArticleResponse GetRandomArticle();
 
         GetRandomArticleIdResponse GetRandomArticleId();

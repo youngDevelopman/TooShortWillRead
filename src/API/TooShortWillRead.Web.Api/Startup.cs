@@ -32,6 +32,7 @@ namespace TooShortWillRead.Web.Api
             services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
             services.AddScoped<IArticleService, ArticleService>();
 
+            services.AddHttpClient();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
