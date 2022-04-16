@@ -27,8 +27,6 @@ namespace TooShortWillRead.BL.Services.DataSources
             ILogger<BritannicaDataSource> logger)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://www.britannica.com");
-
             _browsingContext = browsingContext;
             _logger = logger;
 

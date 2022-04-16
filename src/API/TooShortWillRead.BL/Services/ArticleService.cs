@@ -104,6 +104,7 @@ namespace TooShortWillRead.Web.Api.Services
         {
             var articleUrl = new Uri(request.Url);
             IDataSource dataSource = _dataSourceFactory.ResolveDataSource(articleUrl);
+            await dataSource.GenerateRandomArticles();
             var article = await dataSource.GetArticle(articleUrl.ToString());
             
             await _pictureStorage.UploadAsync(article.ImageUrl);
@@ -117,82 +118,6 @@ namespace TooShortWillRead.Web.Api.Services
             };
             await _context.Articles.AddAsync(articleToAdd);
             await _context.SaveChangesAsync();
-        }
-
-        // Wikipedia
-
-        private async Task UploadArticleFromWikipedia(HttpClient httpClient, Uri uri)
-        {
-            var titleFromUrl = uri.Segments.Last();
-
-            var pageId = await GetWikipediaPageIdFromTitleAsync(httpClient, titleFromUrl);
-            var imageUrl = await GetWikipediaPageImageAsync(httpClient, pageId);
-            var (title, summary) = await GetWikipediaPageSummaryAndTitleAsync(httpClient, pageId);
-
-            await _pictureStorage.UploadAsync(new Uri(imageUrl));
-
-            var article = new Article()
-            {
-                Header = title,
-                ImageName = Path.GetFileName(imageUrl),
-                Text = summary,
-                DataSourceId = 2,
-                InternalId = pageId.ToString(),
-            };
-            await _context.Articles.AddAsync(article);
-            await _context.SaveChangesAsync();
-        }
-
-        private async Task<int> GetWikipediaPageIdFromTitleAsync(HttpClient httpClient, string pageTitle)
-        {
-            var response = await httpClient.GetAsync($"https://en.wikipedia.org/w/api.php?action=query&prop=info&format=json&titles={pageTitle}");
-
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonDocument.Parse(content).RootElement;
-            var pageId = json.GetProperty("query")
-                .GetProperty("pages")
-                .EnumerateObject()
-                .First()
-                .Value
-                .GetProperty("pageid")
-                .GetInt32();
-
-            return pageId;
-        }
-
-        private async Task<string> GetWikipediaPageImageAsync(HttpClient httpClient, int pageId)
-        {
-            var response = await httpClient.GetAsync($"https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pageids={pageId}");
-
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonDocument.Parse(content).RootElement;
-            var imageUrl = json.GetProperty("query")
-                .GetProperty("pages")
-                .EnumerateObject()
-                .First()
-                .Value
-                .GetProperty("original")
-                .GetProperty("source")
-                .GetString();
-
-            return imageUrl;
-        }
-
-        private async Task<(string, string)> GetWikipediaPageSummaryAndTitleAsync(HttpClient httpClient, int pageId)
-        {
-            var response = await httpClient.GetAsync($"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&exintro&pageids={pageId}&redirects=");
-
-            var content = await response.Content.ReadAsStringAsync();
-            var json = JsonDocument.Parse(content).RootElement;
-            var summaryObject = json.GetProperty("query")
-                .GetProperty("pages")
-                .EnumerateObject()
-                .First()
-                .Value;
-            var title = summaryObject.GetProperty("title").GetString();
-            var summary = summaryObject.GetProperty("extract").GetString();
-
-            return (title, summary);
         }
     }
 }
