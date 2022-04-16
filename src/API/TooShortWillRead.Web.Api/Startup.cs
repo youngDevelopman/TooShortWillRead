@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TooShortWillRead.BL.Configuration;
+using TooShortWillRead.BL.Extensions.DependencyInjection;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Services;
 using TooShortWillRead.DAL;
@@ -31,8 +32,7 @@ namespace TooShortWillRead.Web.Api
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(AngleSharpConfiguration.Default));
-
+            services.AddDataSources();
             services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
             services.AddScoped<IArticleService, ArticleService>();
 
