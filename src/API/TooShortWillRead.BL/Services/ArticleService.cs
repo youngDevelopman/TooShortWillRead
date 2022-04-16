@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
@@ -17,16 +20,19 @@ namespace TooShortWillRead.Web.Api.Services
 {
     public class ArticleService : IArticleService
     {
+        private readonly IBrowsingContext _browsingContext;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ApplicationDbContext _context;
         private readonly IPictureStorage _pictureStorage;
         private readonly Uri _blobStorageBaseUrl;
         public ArticleService(
+            IBrowsingContext browsingContext,
             IHttpClientFactory httpClientFactory,
             ApplicationDbContext context, 
             IPictureStorage pictureStorage, 
             IOptions<ArticlePictures> configuration)
         {
+            _browsingContext = browsingContext;
             _httpClientFactory = httpClientFactory;
             _context = context;
             _pictureStorage = pictureStorage;
@@ -102,13 +108,99 @@ namespace TooShortWillRead.Web.Api.Services
             var httpClient = _httpClientFactory.CreateClient();
             var uri = new Uri(request.Url);
 
-            if(uri.Host == "en.wikipedia.org")
+            if (uri.Host == "en.wikipedia.org")
             {
                 await UploadArticleFromWikipedia(httpClient, uri);
             }
+            else if(uri.Host == "www.britannica.com")
+            {
+                await UploadArticleFromBritannica(httpClient, uri);
+            }
         }
 
-        public async Task UploadArticleFromWikipedia(HttpClient httpClient, Uri uri)
+        // Britannica
+        private async Task UploadArticleFromBritannica(HttpClient httpClient, Uri uri)
+        {
+            var articleResponse = await httpClient.GetAsync(uri.ToString());
+            var content = await articleResponse.Content.ReadAsStringAsync();
+
+            var document = await _browsingContext.OpenAsync(req => req.Content(content));
+            var anchors = document.All;
+
+            string articleId = GetArticleId(document);
+            string summary = GetArticleSummary(document);
+            string header = GetArticleHeader(document);
+            string imageUrl = await GetArticleImageUrl(httpClient, document);
+
+            await _pictureStorage.UploadAsync(new Uri(imageUrl));
+
+            var article = new Article()
+            {
+                Header = header,
+                ImageName = Path.GetFileName(imageUrl),
+                Text = summary,
+                DataSourceId = 3,
+                InternalId = articleId,
+            };
+            await _context.Articles.AddAsync(article);
+            await _context.SaveChangesAsync();
+        }
+
+        private string GetArticleId(IDocument htmlDocument)
+        {
+            var divWithId = htmlDocument.All
+                    .Where(m => m.LocalName == "div" && m.HasAttribute("data-topic-id"))
+                    .FirstOrDefault() as IHtmlDivElement;
+            var articleId = divWithId?.Dataset["topic-id"];
+
+            return articleId;
+        }
+
+        private string GetArticleSummary(IDocument htmlDocument)
+        {
+            var topicParagraph = htmlDocument.All
+                    .Where(m => m.LocalName == "p" && m.ClassList.Contains("topic-paragraph"))
+                    .FirstOrDefault();
+            var summary = topicParagraph?.TextContent;
+
+            return summary;
+        }
+
+        private string GetArticleHeader(IDocument htmlDocument)
+        {
+            var headerElement = htmlDocument.All
+                    .Where(m => m.LocalName == "h1")
+                    .FirstOrDefault();
+            string header = headerElement.TextContent;
+            header = header.Replace("summary", "").Trim();
+
+            return header;
+        }
+
+        private async Task<string> GetArticleImageUrl(HttpClient httpClient, IDocument htmlDocument)
+        {
+            var imagesAnchorElement = (IHtmlAnchorElement)htmlDocument.All
+                   .Where(m => m.LocalName == "a" && m.Text() == "Images")
+                   .FirstOrDefault();
+            var absoluteImagePath = new Uri(imagesAnchorElement.Href).AbsolutePath;
+            var imagesRef = new Uri(new Uri("https://www.britannica.com"), absoluteImagePath);
+
+            var response = await httpClient.GetAsync(imagesRef);
+            var content = await response.Content.ReadAsStringAsync();
+            var document = await _browsingContext.OpenAsync(req => req.Content(content));
+
+            var imageElement = (IHtmlImageElement)document
+                .QuerySelectorAll("div#Images img")
+                .FirstOrDefault();
+
+            var imageUrl = new Uri(imageElement.Source).GetLeftPart(UriPartial.Path);
+
+            return imageUrl;
+        }
+
+        // Wikipedia
+
+        private async Task UploadArticleFromWikipedia(HttpClient httpClient, Uri uri)
         {
             var titleFromUrl = uri.Segments.Last();
 
