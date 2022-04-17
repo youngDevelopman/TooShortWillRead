@@ -3,14 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using TooShortWillRead.BL.Extensions.DependencyInjection;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Services;
-using TooShortWillRead.Crawler.DataSources;
-using TooShortWillRead.Crawler.DataSources.Wikipedia;
+using TooShortWillRead.BL.Services.DataSources;
 using TooShortWillRead.DAL;
 
 namespace TooShortWillRead.Crawler
@@ -29,11 +25,7 @@ namespace TooShortWillRead.Crawler
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
 
-                    services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(Configuration.Default));
-
-                    services.AddTransient<IDataSource, BritannicaDataSource>();
-                    //services.AddTransient<IDataSource, WikipediaDataSource>();
-
+                    services.AddDataSources();
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
                     services.AddHttpClient();
 

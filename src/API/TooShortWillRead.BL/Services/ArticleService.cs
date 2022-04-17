@@ -1,8 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TooShortWillRead.BL.Configuration;
 using TooShortWillRead.BL.Interfaces;
@@ -17,14 +22,17 @@ namespace TooShortWillRead.Web.Api.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IPictureStorage _pictureStorage;
+        private readonly IDataSourceFactory _dataSourceFactory;
         private readonly Uri _blobStorageBaseUrl;
         public ArticleService(
             ApplicationDbContext context, 
-            IPictureStorage pictureStorage, 
+            IPictureStorage pictureStorage,
+            IDataSourceFactory dataSourceFactory,
             IOptions<ArticlePictures> configuration)
         {
             _context = context;
             _pictureStorage = pictureStorage;
+            _dataSourceFactory= dataSourceFactory;
             _blobStorageBaseUrl = new Uri($"{configuration.Value.BaseUrl}/{configuration.Value.ContainerName}/");
         }
 
@@ -89,6 +97,25 @@ namespace TooShortWillRead.Web.Api.Services
             };
 
             await _context.Articles.AddAsync(article);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UploadArticleFromUrlAsync(UploadArticleFromUrlRequest request)
+        {
+            var articleUrl = new Uri(request.Url);
+            IDataSource dataSource = _dataSourceFactory.ResolveDataSource(articleUrl);
+            var article = await dataSource.GetArticleAsync(articleUrl.ToString());
+            
+            await _pictureStorage.UploadAsync(article.ImageUrl);
+            var articleToAdd = new Article()
+            {
+                Header = article.Header,
+                ImageName = article.ImageName,
+                Text = article.Text,
+                DataSourceId = ((int)article.DataSource),
+                InternalId = article.InternalId,
+            };
+            await _context.Articles.AddAsync(articleToAdd);
             await _context.SaveChangesAsync();
         }
     }
