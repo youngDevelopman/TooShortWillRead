@@ -8,6 +8,7 @@ namespace TooShortWillRead.BL.Interfaces
 {
     public interface IDataSourceFactory
     {
+        IEnumerable<IDataSource> GetAllDataSources();
         IDataSource ResolveDataSource(Uri uri);
     }
 }

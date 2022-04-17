@@ -7,8 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TooShortWillRead.BL.Enums;
 using TooShortWillRead.BL.Interfaces;
-using TooShortWillRead.Crawler.DataSources;
+using TooShortWillRead.BL.Models;
 using TooShortWillRead.DAL;
 using TooShortWillRead.DAL.Models;
 
@@ -17,17 +18,17 @@ namespace TooShortWillRead.Crawler
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IEnumerable<IDataSource> _dataSources;
+        private readonly IDataSourceFactory _dataSourceFactory;
         private readonly IPictureStorage _picturesStorage;
         private readonly IServiceProvider _serviceProvider;
         public Worker(
             ILogger<Worker> logger,
-            IEnumerable<IDataSource> dataSources, 
+            IDataSourceFactory dataSourceFactory, 
             IPictureStorage picturesStorage, 
             IServiceProvider serviceProvider)
         {
             _logger = logger;
-            _dataSources = dataSources;
+            _dataSourceFactory = dataSourceFactory;
             _picturesStorage = picturesStorage;
             _serviceProvider = serviceProvider;
         }
@@ -35,7 +36,7 @@ namespace TooShortWillRead.Crawler
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var sourcingTasks = new List<Task>();
-            foreach (var dataSource in _dataSources)
+            foreach (var dataSource in _dataSourceFactory.GetAllDataSources())
             {
                 sourcingTasks.Add(Task.Run(() => StartSourcingAsync(dataSource, stoppingToken)));
             }
@@ -93,7 +94,7 @@ namespace TooShortWillRead.Crawler
 
             // Add images
             _logger.LogInformation($"Add images");
-            var imageUrls = articles.Select(article => new Uri(article.ImageUrl));
+            var imageUrls = articles.Select(article => article.ImageUrl);
             await _picturesStorage.UploadAsync(imageUrls.ToList());
 
             _logger.LogInformation($"Articles have been added.");
@@ -110,7 +111,7 @@ namespace TooShortWillRead.Crawler
             {
                 var articleToUpdateFrom = articles.First(ar => ar.InternalId == a.InternalId);
                 a.Header = articleToUpdateFrom.Header;
-                a.ImageName = Path.GetFileName(articleToUpdateFrom.ImageUrl);
+                a.ImageName = articleToUpdateFrom.ImageName;
                 a.Text = articleToUpdateFrom.Text;
 
                 return a;
@@ -122,7 +123,7 @@ namespace TooShortWillRead.Crawler
 
             // Update images
             _logger.LogInformation($"Update images");
-            var imageUrls = articles.Select(article => new Uri(article.ImageUrl));
+            var imageUrls = articles.Select(article => article.ImageUrl);
             await _picturesStorage.UploadAsync(imageUrls.ToList());
 
             _logger.LogInformation($"Articles have been updated.");
@@ -137,7 +138,7 @@ namespace TooShortWillRead.Crawler
                     InternalId = article.InternalId,
                     Header = article.Header,
                     Text = article.Text,
-                    ImageName = Path.GetFileName(article.ImageUrl),
+                    ImageName = article.ImageName,
                 });
 
             return mapped.ToList();

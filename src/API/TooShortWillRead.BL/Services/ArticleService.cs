@@ -104,7 +104,6 @@ namespace TooShortWillRead.Web.Api.Services
         {
             var articleUrl = new Uri(request.Url);
             IDataSource dataSource = _dataSourceFactory.ResolveDataSource(articleUrl);
-            await dataSource.GenerateRandomArticles();
             var article = await dataSource.GetArticle(articleUrl.ToString());
             
             await _pictureStorage.UploadAsync(article.ImageUrl);

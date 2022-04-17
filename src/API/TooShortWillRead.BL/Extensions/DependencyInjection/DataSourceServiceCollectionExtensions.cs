@@ -10,7 +10,7 @@ using TooShortWillRead.BL.Services.DataSources;
 
 namespace TooShortWillRead.BL.Extensions.DependencyInjection
 {
-    public static class DataSourceCollectionExtensions
+    public static class DataSourceServiceCollectionExtensions
     {
         public static IServiceCollection AddDataSources(this IServiceCollection services)
         {

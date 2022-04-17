@@ -28,5 +28,11 @@ namespace TooShortWillRead.BL.Services.DataSources
                     throw new Exception($"Unable to resolve data source for the {uri} uri");
             }
         }
+
+        public IEnumerable<IDataSource> GetAllDataSources()
+        {
+            yield return _serviceProvider.GetService<WikipediaDataSource>();
+            yield return _serviceProvider.GetService<BritannicaDataSource>();
+        }
     }
 }

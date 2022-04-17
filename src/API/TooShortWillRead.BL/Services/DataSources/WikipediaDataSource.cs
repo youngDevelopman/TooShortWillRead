@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TooShortWillRead.BL.Enums;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Models;
 
@@ -18,6 +19,9 @@ namespace TooShortWillRead.BL.Services.DataSources
         {
             _httpClient = httpClient;
         }
+
+        public DataSourceEnum DataSource => DataSourceEnum.Wikipedia;
+
         public  async Task<List<DataSourceArticle>> GenerateRandomArticles()
         {
             var randomArticles = await GenerateListOfRandomArticles();

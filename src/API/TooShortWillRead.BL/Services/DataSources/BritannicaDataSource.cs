@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using TooShortWillRead.BL.Enums;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Models;
 
@@ -21,6 +22,9 @@ namespace TooShortWillRead.BL.Services.DataSources
         private readonly ILogger<BritannicaDataSource> _logger;
         private int _currentPage;
         private int _pageSize;
+
+        public DataSourceEnum DataSource => DataSourceEnum.Britannica;
+
         public BritannicaDataSource(
             HttpClient httpClient, 
             IBrowsingContext browsingContext,
