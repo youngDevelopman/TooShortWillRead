@@ -37,7 +37,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             _pageSize = 10;
         }
 
-        public async Task<List<DataSourceArticle>> GenerateRandomArticles()
+        public async Task<List<DataSourceArticle>> GenerateRandomArticlesAsync()
         {
             var randomArticles = await GenerateListOfRandomArticles();
 
@@ -46,7 +46,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             {
                 string articleRelativePath = anchor.PathName;
 
-                var article = await GetArticle(articleRelativePath);
+                var article = await GetArticleAsync(articleRelativePath);
 
                 if(article != null)
                 {
@@ -58,7 +58,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             return result;
         }
 
-        public async Task<DataSourceArticle> GetArticle(string url)
+        public async Task<DataSourceArticle> GetArticleAsync(string url)
         {
             var articleResponse = await _httpClient.GetAsync(url);
             var content = await articleResponse.Content.ReadAsStringAsync();
@@ -83,7 +83,7 @@ namespace TooShortWillRead.BL.Services.DataSources
 
             var article = new DataSourceArticle()
             {
-                DataSourceId = 3,
+                DataSource = this.DataSource,
                 Header = header,
                 ImageName = Path.GetFileName(imageUrl),
                 ImageUrl = new Uri(imageUrl),

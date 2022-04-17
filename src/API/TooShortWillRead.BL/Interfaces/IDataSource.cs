@@ -12,8 +12,8 @@ namespace TooShortWillRead.BL.Interfaces
     {
         DataSourceEnum DataSource { get; }
 
-        Task<DataSourceArticle> GetArticle(string url);
+        Task<DataSourceArticle> GetArticleAsync(string url);
 
-        Task<List<DataSourceArticle>> GenerateRandomArticles();
+        Task<List<DataSourceArticle>> GenerateRandomArticlesAsync();
     }
 }

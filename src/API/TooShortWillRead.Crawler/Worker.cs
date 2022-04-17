@@ -50,7 +50,7 @@ namespace TooShortWillRead.Crawler
             _logger.LogInformation($"=====START SOURCING FOR {dataSource.DataSource}=====");
             while (!stoppingToken.IsCancellationRequested)
             {
-                var randomArticles = await dataSource.GenerateRandomArticles();
+                var randomArticles = await dataSource.GenerateRandomArticlesAsync();
 
                 await AddOrUpdateArticles(randomArticles, dataSource.DataSource);
 

@@ -29,7 +29,7 @@ namespace TooShortWillRead.Web.Api.Services
             IPictureStorage pictureStorage,
             IDataSourceFactory dataSourceFactory,
             IOptions<ArticlePictures> configuration)
-        {;
+        {
             _context = context;
             _pictureStorage = pictureStorage;
             _dataSourceFactory= dataSourceFactory;
@@ -104,7 +104,7 @@ namespace TooShortWillRead.Web.Api.Services
         {
             var articleUrl = new Uri(request.Url);
             IDataSource dataSource = _dataSourceFactory.ResolveDataSource(articleUrl);
-            var article = await dataSource.GetArticle(articleUrl.ToString());
+            var article = await dataSource.GetArticleAsync(articleUrl.ToString());
             
             await _pictureStorage.UploadAsync(article.ImageUrl);
             var articleToAdd = new Article()
@@ -112,7 +112,7 @@ namespace TooShortWillRead.Web.Api.Services
                 Header = article.Header,
                 ImageName = article.ImageName,
                 Text = article.Text,
-                DataSourceId = article.DataSourceId,
+                DataSourceId = ((int)article.DataSource),
                 InternalId = article.InternalId,
             };
             await _context.Articles.AddAsync(articleToAdd);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TooShortWillRead.BL.Enums;
 
 namespace TooShortWillRead.BL.Models
 {
@@ -16,7 +17,7 @@ namespace TooShortWillRead.BL.Models
 
         public Uri ImageUrl { get; set; }
 
-        public int DataSourceId { get; set; }
+        public DataSourceEnum DataSource { get; set; }
 
         public string InternalId { get; set; }
     }

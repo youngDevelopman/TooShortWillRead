@@ -22,7 +22,7 @@ namespace TooShortWillRead.BL.Services.DataSources
 
         public DataSourceEnum DataSource => DataSourceEnum.Wikipedia;
 
-        public  async Task<List<DataSourceArticle>> GenerateRandomArticles()
+        public  async Task<List<DataSourceArticle>> GenerateRandomArticlesAsync()
         {
             var randomArticles = await GenerateListOfRandomArticles();
             var articles = new List<DataSourceArticle>();
@@ -39,7 +39,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             return articles;
         }
 
-        public async Task<DataSourceArticle> GetArticle(string url)
+        public async Task<DataSourceArticle> GetArticleAsync(string url)
         {
             var titleFromUrl = new Uri(url).Segments.Last();
 
@@ -49,7 +49,7 @@ namespace TooShortWillRead.BL.Services.DataSources
 
             var article = new DataSourceArticle()
             {
-                DataSourceId = 2,
+                DataSource = this.DataSource,
                 Header = title,
                 ImageName = Path.GetFileName(imageUrl),
                 ImageUrl = new Uri(imageUrl),
@@ -72,7 +72,7 @@ namespace TooShortWillRead.BL.Services.DataSources
 
             var article = new DataSourceArticle()
             {
-                DataSourceId = 2,
+                DataSource = this.DataSource,
                 Header = title,
                 ImageName = Path.GetFileName(imageUrl),
                 ImageUrl = new Uri(imageUrl),
