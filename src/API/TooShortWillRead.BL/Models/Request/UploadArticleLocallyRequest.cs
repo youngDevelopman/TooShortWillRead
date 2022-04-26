@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TooShortWillRead.BL.Models.Request
 {
-    public class UploadArticleRequest
+    public class UploadArticleLocallyRequest
     {
         [Required]
         public string Header { get; set; }

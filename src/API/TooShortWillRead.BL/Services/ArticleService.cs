@@ -2,8 +2,10 @@
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -11,6 +13,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TooShortWillRead.BL.Configuration;
 using TooShortWillRead.BL.Interfaces;
+using TooShortWillRead.BL.Models;
 using TooShortWillRead.BL.Models.Request;
 using TooShortWillRead.BL.Models.Response;
 using TooShortWillRead.DAL;
@@ -24,16 +27,19 @@ namespace TooShortWillRead.Web.Api.Services
         private readonly IPictureStorage _pictureStorage;
         private readonly IDataSourceFactory _dataSourceFactory;
         private readonly Uri _blobStorageBaseUrl;
+        private readonly ILogger<ArticleService> _logger;
         public ArticleService(
             ApplicationDbContext context, 
             IPictureStorage pictureStorage,
             IDataSourceFactory dataSourceFactory,
-            IOptions<ArticlePictures> configuration)
+            IOptions<ArticlePictures> configuration,
+            ILogger<ArticleService> logger)
         {
             _context = context;
             _pictureStorage = pictureStorage;
             _dataSourceFactory= dataSourceFactory;
             _blobStorageBaseUrl = new Uri($"{configuration.Value.BaseUrl}/{configuration.Value.ContainerName}/");
+            _logger = logger;
         }
 
         public GetArticleCountResponse GetArticleCount()
@@ -74,7 +80,7 @@ namespace TooShortWillRead.Web.Api.Services
             };
         }
 
-        public async Task UploadArticleAsync(UploadArticleRequest request)
+        public async Task UploadArticleLocallyAsync(UploadArticleLocallyRequest request)
         {
             using var memoryStream = new MemoryStream();
             await request.Image.CopyToAsync(memoryStream);
@@ -117,6 +123,87 @@ namespace TooShortWillRead.Web.Api.Services
             };
             await _context.Articles.AddAsync(articleToAdd);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task UploadArticleFromDataSourceAsync(UploadArticleFromDataSourceRequest request)
+        {
+            var articles = request.Articles;
+            var articlesToUpdate = new List<DataSourceArticle>();
+            var articlesToAdd = new List<DataSourceArticle>();
+            foreach (var article in articles)
+            {
+                if (_context.Articles.Any(a => a.DataSourceId == (int)article.DataSource && a.InternalId == article.InternalId))
+                {
+                    articlesToUpdate.Add(article);
+                }
+                else
+                {
+                    articlesToAdd.Add(article);
+                }
+            }
+
+            await AddArticles(articlesToAdd);
+            await UpdateArticles(articlesToUpdate);
+        }
+
+        private async Task AddArticles(List<DataSourceArticle> articles)
+        {
+            // Add record to the database
+            var mappedArticles = MapDataSourceArticlesToDbModel(articles);
+            _logger.LogInformation($"Add {articles.Count()} articles to the database...");
+            await _context.Articles.AddRangeAsync(mappedArticles);
+            await _context.SaveChangesAsync();
+
+            // Add images
+            _logger.LogInformation($"Add images");
+            var imageUrls = articles.Select(article => article.ImageUrl);
+            await _pictureStorage.UploadAsync(imageUrls.ToList());
+
+            _logger.LogInformation($"Articles have been added.");
+        }
+
+        private async Task UpdateArticles(List<DataSourceArticle> articles)
+        {
+            // Update record in the database
+            var articlesInDb = articles.Select(a =>
+                _context.Articles.First(
+                    dbArticle => dbArticle.DataSourceId == (int)a.DataSource && dbArticle.InternalId == a.InternalId));
+
+            var updatedArticles = articlesInDb.Select(a =>
+            {
+                var articleToUpdateFrom = articles.First(ar => ar.InternalId == a.InternalId);
+                a.Header = articleToUpdateFrom.Header;
+                a.ImageName = articleToUpdateFrom.ImageName;
+                a.Text = articleToUpdateFrom.Text;
+
+                return a;
+            });
+
+            _logger.LogInformation($"Update {articles.Count()} articles in the database...");
+            _context.Articles.UpdateRange(updatedArticles);
+            await _context.SaveChangesAsync();
+
+            // Update images
+            _logger.LogInformation($"Update images");
+            var imageUrls = articles.Select(article => article.ImageUrl);
+            await _pictureStorage.UploadAsync(imageUrls.ToList());
+
+            _logger.LogInformation($"Articles have been updated.");
+        }
+
+        private List<Article> MapDataSourceArticlesToDbModel(List<DataSourceArticle> articles)
+        {
+            var mapped = articles.Select(article =>
+                new Article()
+                {
+                    DataSourceId = ((int)article.DataSource),
+                    InternalId = article.InternalId,
+                    Header = article.Header,
+                    Text = article.Text,
+                    ImageName = article.ImageName,
+                });
+
+            return mapped.ToList();
         }
     }
 }
