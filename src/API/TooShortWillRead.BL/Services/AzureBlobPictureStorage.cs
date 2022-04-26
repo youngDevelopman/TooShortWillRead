@@ -19,6 +19,13 @@ namespace TooShortWillRead.BL.Services
             _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
         }
 
+        public async Task Delete(string name)
+        {
+            await _blobContainerClient
+                .GetBlobClient(name)
+                .DeleteIfExistsAsync();
+        }
+
         public async Task UploadAsync(string fileName, Stream stream)
         {
             await _blobContainerClient.UploadBlobAsync(fileName, stream);
