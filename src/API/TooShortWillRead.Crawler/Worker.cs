@@ -1,17 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TooShortWillRead.BL.Enums;
 using TooShortWillRead.BL.Interfaces;
-using TooShortWillRead.BL.Models;
-using TooShortWillRead.DAL;
-using TooShortWillRead.DAL.Models;
+using TooShortWillRead.BL.Models.Request;
 
 namespace TooShortWillRead.Crawler
 {
@@ -19,18 +12,15 @@ namespace TooShortWillRead.Crawler
     {
         private readonly ILogger<Worker> _logger;
         private readonly IDataSourceFactory _dataSourceFactory;
-        private readonly IPictureStorage _picturesStorage;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IArticleService _articleService;
         public Worker(
             ILogger<Worker> logger,
-            IDataSourceFactory dataSourceFactory, 
-            IPictureStorage picturesStorage, 
-            IServiceProvider serviceProvider)
+            IDataSourceFactory dataSourceFactory,
+            IArticleService articleService)
         {
             _logger = logger;
             _dataSourceFactory = dataSourceFactory;
-            _picturesStorage = picturesStorage;
-            _serviceProvider = serviceProvider;
+            _articleService = articleService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -51,97 +41,16 @@ namespace TooShortWillRead.Crawler
             while (!stoppingToken.IsCancellationRequested)
             {
                 var randomArticles = await dataSource.GenerateRandomArticlesAsync();
+                var request = new UploadArticleFromDataSourceRequest()
+                {
+                    Articles = randomArticles,
+                };
 
-                await AddOrUpdateArticles(randomArticles, dataSource.DataSource);
+                await _articleService.UploadArticleFromDataSourceAsync(request);
 
                 await Task.Delay(1000, stoppingToken);
             }
             _logger.LogInformation($"=====END SOURCING FOR {dataSource.DataSource}=====");
-        }
-
-        private async Task AddOrUpdateArticles(List<DataSourceArticle> articles, DataSourceEnum dataSource)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var dbContext =
-            scope.ServiceProvider
-                .GetRequiredService<ApplicationDbContext>();
-
-            var articlesToUpdate = new List<DataSourceArticle>();
-            var articlesToAdd = new List<DataSourceArticle>();
-            foreach (var article in articles)
-            {
-                if(dbContext.Articles.Any(a => a.DataSourceId == (int)dataSource && a.InternalId == article.InternalId))
-                {
-                    articlesToUpdate.Add(article);
-                }
-                else
-                {
-                    articlesToAdd.Add(article);
-                }
-            }
-
-            await AddArticles(dbContext, articlesToAdd, dataSource);
-            await UpdateArticles(dbContext, articlesToUpdate, dataSource);
-        }
-
-        private async Task AddArticles(ApplicationDbContext context, List<DataSourceArticle> articles, DataSourceEnum dataSource)
-        {
-            // Add record to the database
-            var mappedArticles = MapDataSourceArticlesToDbModel(articles, dataSource);
-            _logger.LogInformation($"Add {articles.Count()} articles to the database...");
-            await context.Articles.AddRangeAsync(mappedArticles);
-            await context.SaveChangesAsync();
-
-            // Add images
-            _logger.LogInformation($"Add images");
-            var imageUrls = articles.Select(article => article.ImageUrl);
-            await _picturesStorage.UploadAsync(imageUrls.ToList());
-
-            _logger.LogInformation($"Articles have been added.");
-        }
-
-        private async Task UpdateArticles(ApplicationDbContext context, List<DataSourceArticle> articles, DataSourceEnum dataSource)
-        {
-            // Update record in the database
-            var articlesInDb = articles.Select(a => 
-                context.Articles.First(
-                    dbArticle => dbArticle.DataSourceId == (int)dataSource && dbArticle.InternalId == a.InternalId));
-
-            var updatedArticles = articlesInDb.Select(a =>
-            {
-                var articleToUpdateFrom = articles.First(ar => ar.InternalId == a.InternalId);
-                a.Header = articleToUpdateFrom.Header;
-                a.ImageName = articleToUpdateFrom.ImageName;
-                a.Text = articleToUpdateFrom.Text;
-
-                return a;
-            });
-
-            _logger.LogInformation($"Update {articles.Count()} articles in the database...");
-            context.Articles.UpdateRange(updatedArticles);
-            await context.SaveChangesAsync();
-
-            // Update images
-            _logger.LogInformation($"Update images");
-            var imageUrls = articles.Select(article => article.ImageUrl);
-            await _picturesStorage.UploadAsync(imageUrls.ToList());
-
-            _logger.LogInformation($"Articles have been updated.");
-        }
-
-        private List<Article> MapDataSourceArticlesToDbModel(List<DataSourceArticle> articles, DataSourceEnum dataSource)
-        {
-            var mapped = articles.Select(article =>
-                new Article()
-                {
-                    DataSourceId = ((int)dataSource),
-                    InternalId = article.InternalId,
-                    Header = article.Header,
-                    Text = article.Text,
-                    ImageName = article.ImageName,
-                });
-
-            return mapped.ToList();
         }
     }
 }

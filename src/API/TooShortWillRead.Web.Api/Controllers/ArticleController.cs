@@ -21,9 +21,9 @@ namespace TooShortWillRead.Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload([FromForm] UploadArticleRequest request)
+        public async Task<IActionResult> Upload([FromForm] UploadArticleLocallyRequest request)
         {
-            await _articleService.UploadArticleAsync(request);
+            await _articleService.UploadArticleLocallyAsync(request);
             return Ok();
         }
 
