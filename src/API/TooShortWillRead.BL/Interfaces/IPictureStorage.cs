@@ -7,6 +7,8 @@ namespace TooShortWillRead.BL.Interfaces
 {
     public interface IPictureStorage
     {
+        Task Delete(string name);
+
         Task UploadAsync(Uri uri);
 
         Task UploadAsync(List<Uri> uris);

@@ -27,14 +27,6 @@ namespace TooShortWillRead.Web.Api.Controllers
             return Ok();
         }
 
-        [HttpPost("from-url")]
-        public async Task<IActionResult> Upload([FromBody]UploadArticleFromUrlRequest request)
-        {
-            await _articleService.UploadArticleFromUrlAsync(request);
-            return Ok();
-        }
-
-
         [HttpGet("{id}")]
         public ActionResult<GetArticleResponse> Get(Guid id)
         {
@@ -60,6 +52,20 @@ namespace TooShortWillRead.Web.Api.Controllers
         public ActionResult<GetRandomArticleResponse> GetRandomArticleId()
         {
             var articleId = _articleService.GetRandomArticleId();
+            return Ok(articleId);
+        }
+
+        [HttpPost("from-url")]
+        public async Task<IActionResult> Upload([FromBody] UploadArticleFromUrlRequest request)
+        {
+            await _articleService.UploadArticleFromUrlAsync(request);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<GetRandomArticleResponse> DeleteArticle(Guid id)
+        {
+            var articleId = _articleService.DeleteArticleAsync(id);
             return Ok(articleId);
         }
     }

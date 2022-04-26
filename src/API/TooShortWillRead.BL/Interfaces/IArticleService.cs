@@ -7,6 +7,8 @@ namespace TooShortWillRead.BL.Interfaces
 {
     public interface IArticleService
     {
+        Task DeleteArticleAsync(Guid id);
+
         Task UploadArticleFromDataSourceAsync(UploadArticleFromDataSourceRequest request);
 
         Task UploadArticleLocallyAsync(UploadArticleLocallyRequest request);

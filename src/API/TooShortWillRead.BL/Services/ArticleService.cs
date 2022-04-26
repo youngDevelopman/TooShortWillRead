@@ -205,5 +205,15 @@ namespace TooShortWillRead.Web.Api.Services
 
             return mapped.ToList();
         }
+
+        public async Task DeleteArticleAsync(Guid id)
+        {
+            var article = _context.Articles.First(a => a.Id == id);
+            string imageName = article.ImageName;
+            _context.Articles.Remove(article);
+            await _context.SaveChangesAsync();
+
+            await _pictureStorage.Delete(imageName);
+        }
     }
 }
