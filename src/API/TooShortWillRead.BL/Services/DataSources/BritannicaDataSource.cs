@@ -8,10 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TooShortWillRead.BL.Enums;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Models;
+using TooShortWillRead.DAL.Models;
 
 namespace TooShortWillRead.BL.Services.DataSources
 {
@@ -80,6 +82,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             string articleId = GetArticleId(document);
             string summary = GetArticleSummary(document);
             string header = GetArticleHeader(document);
+            var categories = GetCategories(document);
 
             var article = new DataSourceArticle()
             {
@@ -89,6 +92,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                 ImageUrl = new Uri(imageUrl),
                 InternalId = articleId,
                 Text = summary,
+                Categories = categories,
             };
 
             return article;
@@ -173,6 +177,16 @@ namespace TooShortWillRead.BL.Services.DataSources
             var imageUrl = new Uri(imageElement.Source).GetLeftPart(UriPartial.Path);
 
             return imageUrl;
+        }
+
+        private IEnumerable<string> GetCategories(IDocument document)
+        {
+            string pattern = @"\t|\n|\r";
+            var categories = document
+                .QuerySelectorAll("nav.breadcrumb > span:not(:first-child):not(:last-child)")
+                .Select(s => s.TextContent)
+                .Select(c => Regex.Replace(c, pattern, string.Empty));
+            return categories;
         }
     }
 }

@@ -120,6 +120,9 @@ namespace TooShortWillRead.Web.Api.Services
                 Text = article.Text,
                 DataSourceId = ((int)article.DataSource),
                 InternalId = article.InternalId,
+                Categories = article.Categories
+                    .Select(c => new Category() { Name = c })
+                    .ToList(),
             };
             await _context.Articles.AddAsync(articleToAdd);
             await _context.SaveChangesAsync();

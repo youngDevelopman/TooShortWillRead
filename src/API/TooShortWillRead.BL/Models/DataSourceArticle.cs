@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TooShortWillRead.BL.Enums;
 
 namespace TooShortWillRead.BL.Models
@@ -20,5 +17,7 @@ namespace TooShortWillRead.BL.Models
         public DataSourceEnum DataSource { get; set; }
 
         public string InternalId { get; set; }
+
+        public IEnumerable<string> Categories { get; set; }
     }
 }
