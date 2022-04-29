@@ -37,6 +37,10 @@ namespace TooShortWillRead.DAL.EntityConfiguration
             builder
                 .HasIndex(entity => new { entity.DataSourceId, entity.InternalId })
                 .IsUnique();
+
+            builder
+                .HasMany(entity => entity.Categories)
+                .WithMany(entity => entity.Articles);
         }
     }
 }
