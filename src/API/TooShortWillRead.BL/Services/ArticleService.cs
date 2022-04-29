@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -59,24 +60,33 @@ namespace TooShortWillRead.Web.Api.Services
 
         public GetRandomArticleResponse GetRandomArticle()
         {
-            var randomArticle = _context.Articles.OrderBy(r => Guid.NewGuid()).First();
+            var randomArticle = _context.Articles
+                .Include(a => a.Categories)
+                .OrderBy(r => Guid.NewGuid()).First();
+
             return new GetRandomArticleResponse()
             {
+                Id = randomArticle.Id,
                 Header = randomArticle.Header,
                 Text = randomArticle.Text,
                 ImageLink = new Uri(_blobStorageBaseUrl, randomArticle.ImageName),
+                Categories = randomArticle.Categories.Select(c => c.Name),
             };
         }
 
         public GetArticleResponse GetArticle(Guid id)
         {
-            var article = _context.Articles.FirstOrDefault(a => a.Id == id);
+            var article = _context.Articles
+                .Include(a => a.Categories)
+                .FirstOrDefault(a => a.Id == id);
+
             return new GetArticleResponse()
             {
                 Id = id,
                 Header = article.Header,
                 ImageLink = new Uri(_blobStorageBaseUrl, article.ImageName),
                 Text = article.Text,
+                Categories = article.Categories.Select(c => c.Name).ToList(),
             };
         }
 
@@ -149,6 +159,16 @@ namespace TooShortWillRead.Web.Api.Services
             await UpdateArticles(articlesToUpdate);
         }
 
+        public async Task DeleteArticleAsync(Guid id)
+        {
+            var article = _context.Articles.First(a => a.Id == id);
+            string imageName = article.ImageName;
+            _context.Articles.Remove(article);
+            await _context.SaveChangesAsync();
+
+            await _pictureStorage.Delete(imageName);
+        }
+
         private async Task AddArticles(List<DataSourceArticle> articles)
         {
             // Add record to the database
@@ -207,16 +227,6 @@ namespace TooShortWillRead.Web.Api.Services
                 });
 
             return mapped.ToList();
-        }
-
-        public async Task DeleteArticleAsync(Guid id)
-        {
-            var article = _context.Articles.First(a => a.Id == id);
-            string imageName = article.ImageName;
-            _context.Articles.Remove(article);
-            await _context.SaveChangesAsync();
-
-            await _pictureStorage.Delete(imageName);
         }
     }
 }
