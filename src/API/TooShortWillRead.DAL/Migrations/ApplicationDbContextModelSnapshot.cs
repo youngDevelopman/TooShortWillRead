@@ -76,7 +76,7 @@ namespace TooShortWillRead.DAL.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("TooShortWillRead.DAL.Models.DataSource", b =>

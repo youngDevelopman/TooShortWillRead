@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TooShortWillRead.BL.Models.Request
@@ -17,5 +18,7 @@ namespace TooShortWillRead.BL.Models.Request
         public IFormFile Image { get; set; }
 
         public string ImageName { get; set; }
+
+        public IEnumerable<string> Categories { get; set; }
     }
 }

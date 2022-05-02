@@ -8,14 +8,14 @@ namespace TooShortWillRead.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Name);
+                    table.PrimaryKey("PK_Categories", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,9 +35,9 @@ namespace TooShortWillRead.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ArticleCategory_Category_CategoriesName",
+                        name: "FK_ArticleCategory_Categories_CategoriesName",
                         column: x => x.CategoriesName,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Name",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -54,7 +54,7 @@ namespace TooShortWillRead.DAL.Migrations
                 name: "ArticleCategory");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Categories");
         }
     }
 }

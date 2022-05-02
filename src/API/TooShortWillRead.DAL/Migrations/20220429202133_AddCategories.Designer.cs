@@ -10,7 +10,7 @@ using TooShortWillRead.DAL;
 namespace TooShortWillRead.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220428211027_AddCategories")]
+    [Migration("20220429202133_AddCategories")]
     partial class AddCategories
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,7 @@ namespace TooShortWillRead.DAL.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("TooShortWillRead.DAL.Models.DataSource", b =>

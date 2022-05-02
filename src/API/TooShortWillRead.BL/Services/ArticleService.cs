@@ -110,10 +110,12 @@ namespace TooShortWillRead.Web.Api.Services
                 ImageName = fileName,
                 Text = request.Text,
                 DataSourceId = 1,
+                Categories = request.Categories
+                    .Select(c => new Category() { Name = c })
+                    .ToList(),
             };
 
-            await _context.Articles.AddAsync(article);
-            await _context.SaveChangesAsync();
+            await AddArticleToDatabaseAsync(article);
         }
 
         public async Task UploadArticleFromUrlAsync(UploadArticleFromUrlRequest request)
@@ -134,8 +136,8 @@ namespace TooShortWillRead.Web.Api.Services
                     .Select(c => new Category() { Name = c })
                     .ToList(),
             };
-            await _context.Articles.AddAsync(articleToAdd);
-            await _context.SaveChangesAsync();
+
+            await AddArticleToDatabaseAsync(articleToAdd);
         }
 
         public async Task UploadArticleFromDataSourceAsync(UploadArticleFromDataSourceRequest request)
@@ -169,13 +171,59 @@ namespace TooShortWillRead.Web.Api.Services
             await _pictureStorage.Delete(imageName);
         }
 
+        private async Task AddArticleToDatabaseAsync(Article article)
+        {
+            foreach (var category in article.Categories)
+            {
+                if(_context.Categories.Any(c => c.Name == category.Name))
+                {
+                    _context.Entry(category).State = EntityState.Unchanged;
+                }
+            }
+
+            await _context.Articles.AddAsync(article);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task AddArticlesToDatabaseAsync(List<Article> articles)
+        {
+            var distinctCategories = articles
+                .SelectMany(a => a.Categories)
+                .Select(c => c.Name)
+                .Distinct();
+
+            // Gather all Categories to be tracked by EF Core
+            var categoriesDict = new Dictionary<string, Category>();
+            foreach (var category in distinctCategories)
+            {
+                var categoryDb = await _context.Categories.FirstOrDefaultAsync(c => c.Name == category);
+                if (categoryDb == null)
+                {
+                    var c = new Category() { Name = category };
+                    await _context.Categories.AddAsync(c);
+                    categoryDb = c;
+                }
+                categoriesDict.Add(category, categoryDb);
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Change article references
+            foreach (var article in articles)
+            {
+                article.Categories = article.Categories.Select(c => categoriesDict[c.Name]).ToList();
+            }
+
+            await _context.Articles.AddRangeAsync(articles);
+            await _context.SaveChangesAsync();
+        }
+
         private async Task AddArticles(List<DataSourceArticle> articles)
         {
             // Add record to the database
             var mappedArticles = MapDataSourceArticlesToDbModel(articles);
             _logger.LogInformation($"Add {articles.Count()} articles to the database...");
-            await _context.Articles.AddRangeAsync(mappedArticles);
-            await _context.SaveChangesAsync();
+            await AddArticlesToDatabaseAsync(mappedArticles);
 
             // Add images
             _logger.LogInformation($"Add images");
@@ -189,21 +237,70 @@ namespace TooShortWillRead.Web.Api.Services
         {
             // Update record in the database
             var articlesInDb = articles.Select(a =>
-                _context.Articles.First(
+                _context.Articles
+                .Include(a => a.Categories)    
+                .First(
                     dbArticle => dbArticle.DataSourceId == (int)a.DataSource && dbArticle.InternalId == a.InternalId));
 
-            var updatedArticles = articlesInDb.Select(a =>
-            {
-                var articleToUpdateFrom = articles.First(ar => ar.InternalId == a.InternalId);
-                a.Header = articleToUpdateFrom.Header;
-                a.ImageName = articleToUpdateFrom.ImageName;
-                a.Text = articleToUpdateFrom.Text;
-
-                return a;
-            });
-
             _logger.LogInformation($"Update {articles.Count()} articles in the database...");
-            _context.Articles.UpdateRange(updatedArticles);
+            foreach (var article in articlesInDb)
+            {
+                var categories = article.Categories.ToList();
+                var articleToUpdateFrom = articles.First(ar => ar.InternalId == article.InternalId);
+                _context.Entry(article).CurrentValues.SetValues(articleToUpdateFrom);
+
+                var categoriesToRemove = new List<Category>();
+                foreach (var category in categories)
+                {
+                    if(!articleToUpdateFrom.Categories.Any(c => c == category.Name))
+                    {
+                        categoriesToRemove.Add(category);
+                    }
+                }
+
+                var categoriesToAdd = new List<Category>();
+                foreach (var category in articleToUpdateFrom.Categories)
+                {
+                    var t = category;
+                    if (!categories.Any(c => c.Name == category))
+                    {
+                        var trackedCategories = _context.ChangeTracker.Entries<Category>().ToList();
+                        var trackedCategory = trackedCategories.SingleOrDefault(c => c.Entity.Name == category);
+                        Category newCategory = null;
+                        if(trackedCategory != null)
+                        {
+                            newCategory = trackedCategory.Entity;
+                        }
+                        else
+                        {
+                            var categoryDb = await _context.Categories.SingleOrDefaultAsync(c => c.Name == category);
+                            if(categoryDb != null)
+                            {
+                                newCategory = categoryDb;
+                            }
+                            else
+                            {
+                                newCategory = new Category()
+                                {
+                                    Name = category,
+                                };
+                            }
+                            
+                        }
+                        categoriesToAdd.Add(newCategory);
+                    }
+                }
+
+                foreach (var category in categoriesToRemove)
+                {
+                    categories.Remove(category);
+                }
+
+                categories.AddRange(categoriesToAdd);
+                article.Categories = categories;
+            }
+
+            _context.Articles.UpdateRange(articlesInDb);
             await _context.SaveChangesAsync();
 
             // Update images
@@ -212,6 +309,7 @@ namespace TooShortWillRead.Web.Api.Services
             await _pictureStorage.UploadAsync(imageUrls.ToList());
 
             _logger.LogInformation($"Articles have been updated.");
+
         }
 
         private List<Article> MapDataSourceArticlesToDbModel(List<DataSourceArticle> articles)
@@ -224,6 +322,9 @@ namespace TooShortWillRead.Web.Api.Services
                     Header = article.Header,
                     Text = article.Text,
                     ImageName = article.ImageName,
+                    Categories = article.Categories
+                        .Select(c => new Category() { Name = c })
+                        .ToList(),
                 });
 
             return mapped.ToList();
