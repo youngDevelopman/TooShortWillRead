@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngleSharp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,9 +16,11 @@ namespace TooShortWillRead.BL.Services.DataSources
     public class WikipediaDataSource : IDataSource
     {
         private readonly HttpClient _httpClient;
-        public WikipediaDataSource(HttpClient httpClient)
+        private readonly IBrowsingContext _browsingContext;
+        public WikipediaDataSource(HttpClient httpClient, IBrowsingContext browsingContext)
         {
             _httpClient = httpClient;
+            _browsingContext = browsingContext;
         }
 
         public DataSourceEnum DataSource => DataSourceEnum.Wikipedia;
@@ -44,18 +47,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             var titleFromUrl = new Uri(url).Segments.Last();
 
             var pageId = await GetWikipediaPageIdFromTitleAsync(titleFromUrl);
-            var imageUrl = await GetWikipediaPageImageAsync(pageId);
-            var (title, summary) = await GetWikipediaPageSummaryAndTitleAsync(pageId);
-
-            var article = new DataSourceArticle()
-            {
-                DataSource = this.DataSource,
-                Header = title,
-                ImageName = Path.GetFileName(imageUrl),
-                ImageUrl = new Uri(imageUrl),
-                InternalId = pageId.ToString(),
-                Text = summary,
-            };
+            var article = await GetArticle(pageId);
 
             return article;
         }
@@ -69,6 +61,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             }
 
             var (title, summary) = await GetWikipediaPageSummaryAndTitleAsync(pageId);
+            var categories = await GetCategoriesAsync(pageId);
 
             var article = new DataSourceArticle()
             {
@@ -78,6 +71,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                 ImageUrl = new Uri(imageUrl),
                 InternalId = pageId.ToString(),
                 Text = summary,
+                Categories = categories,
             };
 
             return article;
@@ -154,6 +148,21 @@ namespace TooShortWillRead.BL.Services.DataSources
             var summary = summaryObject.GetProperty("extract").GetString();
 
             return (title, summary);
+        }
+
+        private async Task<IEnumerable<string>> GetCategoriesAsync(int pageId)
+        {
+            var articleResponse = await _httpClient.GetAsync($"?curid={pageId}");
+            var content = await articleResponse.Content.ReadAsStringAsync();
+            var document = await _browsingContext.OpenAsync(req => req.Content(content));
+            var categories = document
+                .QuerySelectorAll("a[title='Help:Category']")
+                .FirstOrDefault()
+                .NextElementSibling
+                .Children
+                .Select(element => element.TextContent);
+
+            return categories;
         }
     }
 }
