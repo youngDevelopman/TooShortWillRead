@@ -21,5 +21,7 @@ namespace TooShortWillRead.DAL.Models
         public DataSource DataSource { get; set; }
 
         public string InternalId { get; set; }
+
+        public virtual ICollection<Category> Categories { get; set; }
     }
 }
