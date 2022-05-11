@@ -16,7 +16,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Linking
+  Linking,
 } from 'react-native';
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
@@ -24,6 +24,7 @@ import Image from 'react-native-image-progress';
 import ArticleService from './services/ArticleService';
 import LoadingArticleModal from './components/LoadingArticleModal';
 import Config from "react-native-config";
+import CategoryList from './components/CategoryList';
 
 
 
@@ -34,7 +35,8 @@ const App: () => Node = () => {
     articleId: '',
     header: '',
     text: '',
-    imageUrl: ''
+    imageUrl: '',
+    categories: []
   });
 
   const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
@@ -65,6 +67,7 @@ const App: () => Node = () => {
       header: articleData.header,
       text: articleData.text,
       imageUrl: articleData.imageLink,
+      categories: articleData.categories,
     });
     scrollToTheTop();
     setIsLoading(false);
@@ -79,7 +82,7 @@ const App: () => Node = () => {
 
   const showAd = () => {
     console.log("ADD LOADED", adLoaded)
-    if(adLoaded && articlesShownBeforeAd >= AD_TO_SHOW_THESHOLD) {
+    if (adLoaded && articlesShownBeforeAd >= AD_TO_SHOW_THESHOLD) {
       console.log("SHOW ADD")
       show()
       load()
@@ -114,6 +117,7 @@ const App: () => Node = () => {
           >
             {article.header}
           </Text>
+          <CategoryList data={article.categories}/>
           <TouchableOpacity onPress={openLink}>
             <Text style={{ color: '#d0b7f7', fontSize: 18, fontWeight: '800' }}>Open this article in a browser</Text>
           </TouchableOpacity>
@@ -132,7 +136,7 @@ const App: () => Node = () => {
             </Text>
           </View>
         </ScrollView>
-        <LoadingArticleModal isLoading={isLoading} showAd={showAd}/>
+        <LoadingArticleModal isLoading={isLoading} showAd={showAd} />
       </View>
     </SafeAreaView>
   );

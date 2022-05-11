@@ -16,7 +16,13 @@ const ArticleService = {
     getArticleById: async function (articleId) {
         const randomArticleResponse = await fetch(`${TSWR_BASE_URL}/api/article/${articleId}`);
         const articleDataJson = await randomArticleResponse.json();
-        return new Article(articleDataJson.id, articleDataJson.header, articleDataJson.text, articleDataJson.imageLink);
+        return new Article(
+            articleDataJson.id, 
+            articleDataJson.header, 
+            articleDataJson.text, 
+            articleDataJson.imageLink, 
+            articleDataJson.categories
+        );
     },
     getArticlesCountAsync: async function () {
         const articlesCountResponse = await fetch(`${TSWR_BASE_URL}/api/article/count`);
