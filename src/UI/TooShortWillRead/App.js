@@ -17,7 +17,6 @@ import {
   View,
   TouchableOpacity,
   Linking,
-  FlatList
 } from 'react-native';
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
@@ -178,10 +177,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     color: '#FFFFFF',
     fontSize: 18
-  },
-  categories: {
-    flexWrap: 'wrap',
-    display: 'flex'
   }
 });
 
