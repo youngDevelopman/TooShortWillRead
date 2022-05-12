@@ -1,10 +1,17 @@
 ﻿{
   "profiles": {
-    "TooShortWillRead.Crawler": {
+    "Crawler (dev)": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Crawler (dev remote)": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development-Remote"
       }
     }
   }
