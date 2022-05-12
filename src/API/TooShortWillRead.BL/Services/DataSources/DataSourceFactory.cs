@@ -31,7 +31,7 @@ namespace TooShortWillRead.BL.Services.DataSources
 
         public IEnumerable<IDataSource> GetAllDataSources()
         {
-            yield return _serviceProvider.GetService<WikipediaDataSource>();
+            //yield return _serviceProvider.GetService<WikipediaDataSource>();
             yield return _serviceProvider.GetService<BritannicaDataSource>();
         }
     }

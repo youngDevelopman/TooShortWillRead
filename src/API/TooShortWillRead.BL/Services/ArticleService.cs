@@ -30,13 +30,13 @@ namespace TooShortWillRead.Web.Api.Services
         private readonly Uri _blobStorageBaseUrl;
         private readonly ILogger<ArticleService> _logger;
         public ArticleService(
-            ApplicationDbContext context, 
+            IDbContextFactory<ApplicationDbContext> dbContextFactory, 
             IPictureStorage pictureStorage,
             IDataSourceFactory dataSourceFactory,
             IOptions<ArticlePictures> configuration,
             ILogger<ArticleService> logger)
         {
-            _context = context;
+            _context = dbContextFactory.CreateDbContext();
             _pictureStorage = pictureStorage;
             _dataSourceFactory= dataSourceFactory;
             _blobStorageBaseUrl = new Uri($"{configuration.Value.BaseUrl}/{configuration.Value.ContainerName}/");

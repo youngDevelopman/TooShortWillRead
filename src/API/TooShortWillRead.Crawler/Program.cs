@@ -26,26 +26,14 @@ namespace TooShortWillRead.Crawler
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddDbContext<ApplicationDbContext>(options =>
+                    services.AddDbContextFactory<ApplicationDbContext>(options =>
                         options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
                     var t = hostContext.Configuration.GetSection("ArticlePictures");
                     services.Configure<ArticlePictures>(hostContext.Configuration.GetSection("ArticlePictures"));
 
                     services.AddDataSources();
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
-                    services.AddTransient<IArticleService>(serviceProvider =>
-                    {;
-                        using (var scope = serviceProvider.CreateScope())
-                        {
-                            var dbConext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                            var pictureStorage = scope.ServiceProvider.GetRequiredService<IPictureStorage>();
-                            var dataSourceFactory = scope.ServiceProvider.GetRequiredService<IDataSourceFactory>();
-                            var config = scope.ServiceProvider.GetRequiredService<IOptions<ArticlePictures>>();
-                            var logger = scope.ServiceProvider.GetRequiredService<ILogger<ArticleService>>();
-                            return new ArticleService(dbConext, pictureStorage, dataSourceFactory, config, logger);
-                        }
-
-                    });
+                    services.AddTransient<IArticleService, ArticleService>();
                     services.AddHttpClient();
 
                     services.AddHostedService<Worker>();
