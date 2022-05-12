@@ -452,3 +452,6 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+src\API\TooShortWillRead.Crawler\appsettings.Development.json
+src\API\TooShortWillRead.Crawler\appsettings.Development-Remote.json
