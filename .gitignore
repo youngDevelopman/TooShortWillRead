@@ -455,3 +455,6 @@ $RECYCLE.BIN/
 
 src/API/TooShortWillRead.Crawler/appsettings.Development.json
 src/API/TooShortWillRead.Crawler/appsettings.Development-Remote.json
+
+src/API/TooShortWillRead.Web.Api/appsettings.Development.json
+src/API/TooShortWillRead.Web.Api/appsettings.Development-Remote.json
