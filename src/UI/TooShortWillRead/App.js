@@ -25,6 +25,7 @@ import ArticleService from './services/ArticleService';
 import LoadingArticleModal from './components/LoadingArticleModal';
 import Config from "react-native-config";
 import CategoryList from './components/CategoryList';
+import LineSeparator from './components/LineSeparator';
 
 
 
@@ -118,19 +119,8 @@ const App: () => Node = () => {
             {article.header}
           </Text>
           <CategoryList data={article.categories}/>
-          <TouchableOpacity onPress={openLink}>
-            <Text style={{ color: '#d0b7f7', fontSize: 18, fontWeight: '800' }}>Open this article in a browser</Text>
-          </TouchableOpacity>
-          <View >
-            <View
-              style={{
-                borderBottomColor: 'white',
-                borderBottomWidth: 0.5,
-                width: '40%',
-                marginTop: 10,
-                marginBottom: 10,
-              }}
-            />
+          <LineSeparator/>
+          <View>
             <Text style={styles.text}>
               {article.text}
             </Text>
