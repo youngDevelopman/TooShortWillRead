@@ -40,6 +40,7 @@
 		477C29AB6F957C76286836AE /* Pods-TooShortWillRead-TooShortWillReadTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TooShortWillRead-TooShortWillReadTests.debug.xcconfig"; path = "Target Support Files/Pods-TooShortWillRead-TooShortWillReadTests/Pods-TooShortWillRead-TooShortWillReadTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4B0DD88CB97F81F5FCC8E618 /* Pods-TooShortWillRead-TooShortWillReadTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TooShortWillRead-TooShortWillReadTests.release.xcconfig"; path = "Target Support Files/Pods-TooShortWillRead-TooShortWillReadTests/Pods-TooShortWillRead-TooShortWillReadTests.release.xcconfig"; sourceTree = "<group>"; };
 		51F6F692BD913ABDEB7C2C8D /* Pods-TooShortWillRead.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TooShortWillRead.debug.xcconfig"; path = "Target Support Files/Pods-TooShortWillRead/Pods-TooShortWillRead.debug.xcconfig"; sourceTree = "<group>"; };
+		784ADCBA282F0626007785B5 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		78FBC8AF27BD2180009B2EFF /* TooShortWillReadDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = TooShortWillReadDebug.entitlements; path = TooShortWillRead/TooShortWillReadDebug.entitlements; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TooShortWillRead/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B0FF2DE93C242B19E5FC8C9D /* Pods-TooShortWillRead.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TooShortWillRead.release.xcconfig"; path = "Target Support Files/Pods-TooShortWillRead/Pods-TooShortWillRead.release.xcconfig"; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 		13B07FAE1A68108700A75B9A /* TooShortWillRead */ = {
 			isa = PBXGroup;
 			children = (
+				784ADCB9282F05F3007785B5 /* Fonts */,
 				78FBC8AF27BD2180009B2EFF /* TooShortWillReadDebug.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -106,6 +108,14 @@
 				DC47D4EB2CDA2E77700870AB /* libPods-TooShortWillRead-TooShortWillReadTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		784ADCB9282F05F3007785B5 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				784ADCBA282F0626007785B5 /* FontAwesome.ttf */,
+			);
+			name = Fonts;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {

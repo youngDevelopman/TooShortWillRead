@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
@@ -25,6 +26,7 @@ import ArticleService from './services/ArticleService';
 import LoadingArticleModal from './components/LoadingArticleModal';
 import Config from "react-native-config";
 import CategoryList from './components/CategoryList';
+import LineSeparator from './components/LineSeparator';
 
 
 
@@ -113,24 +115,16 @@ const App: () => Node = () => {
               source={{ uri: article.imageUrl, }}
             />
           </View>
-          <Text style={styles.headerText}
-          >
-            {article.header}
-          </Text>
-          <CategoryList data={article.categories}/>
-          <TouchableOpacity onPress={openLink}>
-            <Text style={{ color: '#d0b7f7', fontSize: 18, fontWeight: '800' }}>Open this article in a browser</Text>
-          </TouchableOpacity>
-          <View >
-            <View
-              style={{
-                borderBottomColor: 'white',
-                borderBottomWidth: 0.5,
-                width: '40%',
-                marginTop: 10,
-                marginBottom: 10,
-              }}
-            />
+          <View style={styles.header}>
+            <Text style={styles.headerText}
+            >
+              {article.header}
+            </Text>
+            <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb'/>
+          </View>
+          <CategoryList data={article.categories} />
+          <LineSeparator />
+          <View>
             <Text style={styles.text}>
               {article.text}
             </Text>
@@ -167,9 +161,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   header: {
-    backgroundColor: '#9E2A10',
-    fontSize: 22,
-    alignContent: 'center',
+    flexDirection: "row",
     alignItems: 'center'
   },
   text: {
