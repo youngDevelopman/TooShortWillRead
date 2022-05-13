@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
@@ -114,12 +115,15 @@ const App: () => Node = () => {
               source={{ uri: article.imageUrl, }}
             />
           </View>
-          <Text style={styles.headerText}
-          >
-            {article.header}
-          </Text>
-          <CategoryList data={article.categories}/>
-          <LineSeparator/>
+          <View style={styles.header}>
+            <Text style={styles.headerText}
+            >
+              {article.header}
+            </Text>
+            <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb'/>
+          </View>
+          <CategoryList data={article.categories} />
+          <LineSeparator />
           <View>
             <Text style={styles.text}>
               {article.text}
@@ -157,9 +161,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   header: {
-    backgroundColor: '#9E2A10',
-    fontSize: 22,
-    alignContent: 'center',
+    flexDirection: "row",
     alignItems: 'center'
   },
   text: {
