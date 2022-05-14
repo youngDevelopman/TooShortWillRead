@@ -29,7 +29,7 @@ namespace TooShortWillRead.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ArticlePictures>(Configuration.GetSection("ArticlePictures"));
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContextFactory<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDataSources();
