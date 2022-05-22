@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
 import Image from 'react-native-image-progress';
+import ImageModal from 'react-native-image-modal';
 import ArticleService from './services/ArticleService';
 import LoadingArticleModal from './components/LoadingArticleModal';
 import Config from "react-native-config";
@@ -109,18 +110,25 @@ const App: () => Node = () => {
           <View style={{ alignItems: 'flex-end' }}>
             <AppButton onPress={loadNextArticle} title='Next article' />
           </View>
-          <View style={styles.imageContainerStyle}>
-            <Image
-              style={[styles.headerImageStyle]}
-              source={{ uri: article.imageUrl, }}
+          <ImageModal
+              resizeMode="center"
+              modalImageResizeMode='center'
+              imageBackgroundColor='black'
+              style={{
+                width: '100%',
+                height: undefined,
+                aspectRatio: 1,
+              }}
+              source={{
+                uri: article.imageUrl,
+              }}
             />
-          </View>
           <View style={styles.header}>
             <Text style={styles.headerText}
             >
               {article.header}
             </Text>
-            <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb'/>
+            <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb' />
           </View>
           <CategoryList data={article.categories} />
           <LineSeparator />
@@ -150,7 +158,8 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     overflow: "hidden",
-    borderRadius: 10
+    borderRadius: 10,
+    backgroundColor: 'white'
   },
   headerText: {
     textAlign: 'left',
