@@ -21,7 +21,6 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import AppButton from './components/AppButton';
-import Image from 'react-native-image-progress';
 import ImageModal from 'react-native-image-modal';
 import ArticleService from './services/ArticleService';
 import LoadingArticleModal from './components/LoadingArticleModal';
