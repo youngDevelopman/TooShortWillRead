@@ -27,6 +27,7 @@ import LoadingArticleModal from './components/LoadingArticleModal';
 import Config from "react-native-config";
 import CategoryList from './components/CategoryList';
 import LineSeparator from './components/LineSeparator';
+import { NavigationContainer } from '@react-navigation/native';
 
 
 
@@ -97,19 +98,20 @@ const App: () => Node = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }}>
-        <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
-        <ScrollView
-          ref={scrollRef}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          stickyHeaderIndices={[0]}
-        >
-          <View style={{ alignItems: 'flex-end' }}>
-            <AppButton onPress={loadNextArticle} title='Next article' />
-          </View>
-          <ImageModal
+    <NavigationContainer>
+      <SafeAreaView style={styles.container}>
+        <View style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }}>
+          <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
+          <ScrollView
+            ref={scrollRef}
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            stickyHeaderIndices={[0]}
+          >
+            <View style={{ alignItems: 'flex-end' }}>
+              <AppButton onPress={loadNextArticle} title='Next article' />
+            </View>
+            <ImageModal
               resizeMode="center"
               modalImageResizeMode='center'
               imageBackgroundColor='black'
@@ -122,24 +124,25 @@ const App: () => Node = () => {
                 uri: article.imageUrl,
               }}
             />
-          <View style={styles.header}>
-            <Text style={styles.headerText}
-            >
-              {article.header}
-            </Text>
-            <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb' />
-          </View>
-          <CategoryList data={article.categories} />
-          <LineSeparator />
-          <View>
-            <Text style={styles.text}>
-              {article.text}
-            </Text>
-          </View>
-        </ScrollView>
-        <LoadingArticleModal isLoading={isLoading} showAd={showAd} />
-      </View>
-    </SafeAreaView>
+            <View style={styles.header}>
+              <Text style={styles.headerText}
+              >
+                {article.header}
+              </Text>
+              <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb' />
+            </View>
+            <CategoryList data={article.categories} />
+            <LineSeparator />
+            <View>
+              <Text style={styles.text}>
+                {article.text}
+              </Text>
+            </View>
+          </ScrollView>
+          <LoadingArticleModal isLoading={isLoading} showAd={showAd} />
+        </View>
+      </SafeAreaView>
+    </NavigationContainer>
   );
 };
 
