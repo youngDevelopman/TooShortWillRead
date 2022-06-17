@@ -20,7 +20,7 @@ const App: () => Node = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Article" component={ArticleScreen} options={{headerShown:false}}/>
-        <Stack.Screen name="Browser" component={BrowserScreen} />
+        <Stack.Screen name="Browser" component={BrowserScreen} options={{headerShown:false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

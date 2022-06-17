@@ -74,8 +74,9 @@ const ArticleScreen = ({ navigation }) => {
     }
 
     const openLink = () => {
-        //Linking.openURL(`https://www.google.com/search?q=${article.header}`)
-        navigation.navigate('Browser');
+        navigation.navigate('Browser', {
+            uri: `https://www.google.com/search?q=${article.header}`
+        });
     }
 
 

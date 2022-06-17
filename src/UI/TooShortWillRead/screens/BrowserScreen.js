@@ -1,12 +1,25 @@
 import React from "react";
-import { Text } from "react-native";
+import { Text, View, StyleSheet, SafeAreaView } from "react-native";
+import WebView from "react-native-webview";
 
-const BrowserScreen = ({ navigation }) => {
+const BrowserScreen = ({ route, navigation }) => {
+    const { uri } = route.params;
     return (
-        <Text>
-            Browser screen
-        </Text>
+        <SafeAreaView style={styles.containter}>
+            <WebView style={styles.webView}
+                source={{ uri: uri }}
+            />
+        </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+    containter: {
+        flex: 1
+    },
+    webView: {
+        marginTop: 0,
+    }
+})
 
 export default BrowserScreen;
