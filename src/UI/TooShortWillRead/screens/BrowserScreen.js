@@ -48,14 +48,14 @@ const BrowserScreen = ({ route, navigation }) => {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: 'gray' }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 50, marginBottom: 10, }}>
+        <View style={styles.containter}>
+            <View style={styles.headerContainer}>
                 <View style={{ flex: 1, }}>
-                    <TouchableOpacity onPress={goBackHandler} style={{ alignSelf: 'flex-start', paddingLeft: 10 }}>
-                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 17 }}>Done</Text>
+                    <TouchableOpacity onPress={goBackHandler} style={styles.doneButtonContainer}>
+                        <Text style={styles.doneButton}>Done</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{ flex: 3, backgroundColor: '#585858', borderRadius: 20 }}>
+                <View style={{ flex: 4, ...styles.hostnameContainer }}>
                     <Text style={styles.headerText}>
                         {currentHostname}
                     </Text>
@@ -77,39 +77,34 @@ const BrowserScreen = ({ route, navigation }) => {
                 }}
             />
             <View
-                style={{
-                    flexDirection: "row",
-                    backgroundColor: 'grey',
-                    alignItems: 'center',
-                    marginBottom: 10,
-                }}>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                style={styles.footerContainer}>
+                <View style={styles.backAndForwardButtonsContainer}>
                     <Icon.Button
                         name="angle-left"
                         style={{ opacity: canGoBack ? 1 : 0.3, alignItems: 'center' }}
                         onPress={backButtonHandler}
-                        backgroundColor='grey'
+                        backgroundColor={styles.primaryColor}
                         size={35}
                         activeOpacity={0.3}
-                        underlayColor="grey" />
+                        underlayColor={styles.primaryColor} />
                     <Icon.Button
                         name="angle-right"
                         style={{ opacity: canGoForward ? 1 : 0.3 }}
                         onPress={frontButtonHandler}
-                        backgroundColor='grey'
+                        backgroundColor={styles.primaryColor}
                         size={35}
                         activeOpacity={0.3}
-                        underlayColor="grey" />
+                        underlayColor={styles.primaryColor} />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent:'flex-end' }}>
+                <View style={styles.goToBrowserContainer}>
                     <Icon.Button
                         name="safari"
                         style={{ opacity: 1 }}
                         onPress={openBrowser}
-                        backgroundColor='grey'
+                        backgroundColor={styles.primaryColor}
                         size={35}
                         activeOpacity={0.3}
-                        underlayColor="grey" />
+                        underlayColor={styles.primaryColor} />
                 </View>
             </View>
         </View>
@@ -117,11 +112,17 @@ const BrowserScreen = ({ route, navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        backgroundColor: 'gray',
-        justifyContent: 'center',
-        alignItems: 'center'
+    primaryColor: 'grey',
+    containter: {
+        flex: 1,
+        backgroundColor: 'grey'
+    },
+    headerContainer: {
+        flexDirection: 'row', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        marginTop: 50, 
+        marginBottom: 10, 
     },
     headerText: {
         justifyContent: 'center',
@@ -131,11 +132,34 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 2
     },
-    containter: {
-        flex: 1
+    doneButtonContainer: {
+        alignSelf: 'flex-start', 
+        paddingLeft: 10
     },
-    webView: {
-        marginTop: 0,
+    doneButton: { 
+        color: 'white', 
+        fontWeight: 'bold', 
+        fontSize: 17 
+    },
+    hostnameContainer: {
+        backgroundColor: '#585858', 
+        borderRadius: 20
+    },
+    footerContainer: {
+        flexDirection: "row",
+        backgroundColor: 'grey',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    backAndForwardButtonsContainer: { 
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent: 'space-around' 
+    },
+    goToBrowserContainer: { 
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent:'flex-end' 
     }
 })
 
