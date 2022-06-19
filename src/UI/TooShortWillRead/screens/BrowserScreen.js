@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Linking } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Linking, ActivityIndicator } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import WebView from "react-native-webview";
 
@@ -12,6 +12,7 @@ const BrowserScreen = ({ route, navigation }) => {
     const [canGoForward, setCanGoForward] = useState(false);
     const [currentUrl, setCurrentUrl] = useState('');
     const [currentHostname, setCurrentHostname] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     backButtonHandler = () => {
         if (webviewRef.current) webviewRef.current.goBack()
@@ -60,8 +61,8 @@ const BrowserScreen = ({ route, navigation }) => {
                         {currentHostname}
                     </Text>
                 </View>
-                <View
-                    style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
+                    <ActivityIndicator animating={isLoading} color='#585858'/>
                 </View>
             </View>
             <WebView style={styles.webView}
@@ -75,6 +76,9 @@ const BrowserScreen = ({ route, navigation }) => {
                     setCurrentHostname(hostname);
                     setCurrentUrl(navState.url);
                 }}
+                onLoadStart={() => setIsLoading(true)}
+                onLoad={() => setIsLoading(false)}
+                allowsBackForwardNavigationGestures
             />
             <View
                 style={styles.footerContainer}>
@@ -118,11 +122,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'grey'
     },
     headerContainer: {
-        flexDirection: 'row', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        marginTop: 50, 
-        marginBottom: 10, 
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 50,
+        marginBottom: 10,
     },
     headerText: {
         justifyContent: 'center',
@@ -133,16 +137,16 @@ const styles = StyleSheet.create({
         marginBottom: 2
     },
     doneButtonContainer: {
-        alignSelf: 'flex-start', 
+        alignSelf: 'flex-start',
         paddingLeft: 10
     },
-    doneButton: { 
-        color: 'white', 
-        fontWeight: 'bold', 
-        fontSize: 17 
+    doneButton: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 17
     },
     hostnameContainer: {
-        backgroundColor: '#585858', 
+        backgroundColor: '#585858',
         borderRadius: 20
     },
     footerContainer: {
@@ -151,15 +155,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
     },
-    backAndForwardButtonsContainer: { 
-        flex: 1, 
-        flexDirection: 'row', 
-        justifyContent: 'space-around' 
+    backAndForwardButtonsContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around'
     },
-    goToBrowserContainer: { 
-        flex: 1, 
-        flexDirection: 'row', 
-        justifyContent:'flex-end' 
+    goToBrowserContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
     }
 })
 
