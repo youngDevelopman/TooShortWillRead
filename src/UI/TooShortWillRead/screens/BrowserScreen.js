@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 50,
-        marginBottom: 10,
+        marginBottom: 15,
     },
     headerText: {
         justifyContent: 'center',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         backgroundColor: 'grey',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     backAndForwardButtonsContainer: {
         flex: 1,
