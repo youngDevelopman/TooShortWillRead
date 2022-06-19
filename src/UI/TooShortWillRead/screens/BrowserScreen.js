@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, Linking } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import WebView from "react-native-webview";
 
@@ -11,6 +11,7 @@ const BrowserScreen = ({ route, navigation }) => {
     const [canGoBack, setCanGoBack] = useState(false);
     const [canGoForward, setCanGoForward] = useState(false);
     const [currentUrl, setCurrentUrl] = useState('');
+    const [currentHostname, setCurrentHostname] = useState('');
 
     backButtonHandler = () => {
         if (webviewRef.current) webviewRef.current.goBack()
@@ -22,6 +23,10 @@ const BrowserScreen = ({ route, navigation }) => {
 
     goBackHandler = () => {
         navigation.goBack();
+    }
+
+    openBrowser = () => {
+        Linking.openURL(currentUrl);
     }
 
     const getHostname = (url) => {
@@ -44,15 +49,15 @@ const BrowserScreen = ({ route, navigation }) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: 'gray' }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50, marginBottom: 10, }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 50, marginBottom: 10, }}>
                 <View style={{ flex: 1, }}>
                     <TouchableOpacity onPress={goBackHandler} style={{ alignSelf: 'flex-start', paddingLeft: 10 }}>
                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 17 }}>Done</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={{ flex: 3 }}>
+                <View style={{ flex: 3, backgroundColor: '#585858', borderRadius: 20 }}>
                     <Text style={styles.headerText}>
-                        {currentUrl}
+                        {currentHostname}
                     </Text>
                 </View>
                 <View
@@ -67,7 +72,8 @@ const BrowserScreen = ({ route, navigation }) => {
                     setCanGoBack(navState.canGoBack)
                     setCanGoForward(navState.canGoForward)
                     const hostname = getHostname(navState.url);
-                    setCurrentUrl(hostname)
+                    setCurrentHostname(hostname);
+                    setCurrentUrl(navState.url);
                 }}
             />
             <View
@@ -99,6 +105,7 @@ const BrowserScreen = ({ route, navigation }) => {
                     <Icon.Button
                         name="safari"
                         style={{ opacity: 1 }}
+                        onPress={openBrowser}
                         backgroundColor='grey'
                         size={35}
                         activeOpacity={0.3}
@@ -121,7 +128,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 17,
         color: 'white',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 2
     },
     containter: {
         flex: 1
