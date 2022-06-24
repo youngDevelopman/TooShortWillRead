@@ -138,6 +138,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                     .Where(m => m.LocalName == "p" && m.ClassList.Contains("topic-paragraph"))
                     .FirstOrDefault();
             var summary = topicParagraph?.TextContent;
+            summary = UppercaseFirst(summary);
 
             return summary;
         }
@@ -149,6 +150,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                     .FirstOrDefault();
             string header = headerElement.TextContent;
             header = header.Replace("summary", "").Trim();
+            header = UppercaseFirst(header);
 
             return header;
         }
@@ -187,6 +189,17 @@ namespace TooShortWillRead.BL.Services.DataSources
                 .Select(s => s.TextContent)
                 .Select(c => Regex.Replace(c, pattern, string.Empty));
             return categories;
+        }
+
+        private string UppercaseFirst(string str)
+        {
+            // Check for empty string.
+            if (string.IsNullOrEmpty(str))
+            {
+                return string.Empty;
+            }
+            // Return char and concat substring.
+            return char.ToUpper(str[0]) + str.Substring(1);
         }
     }
 }
