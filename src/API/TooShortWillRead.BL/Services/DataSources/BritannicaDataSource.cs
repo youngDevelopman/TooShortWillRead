@@ -158,7 +158,7 @@ namespace TooShortWillRead.BL.Services.DataSources
         private async Task<string> GetArticleImageUrl(IDocument htmlDocument)
         {
             var imagesAnchorElement = (IHtmlAnchorElement)htmlDocument.All
-                   .Where(m => m.LocalName == "a" && m.Text() == "Images")
+                   .Where(m => m.LocalName == "a" && m.Text().Trim() == "Images")
                    .FirstOrDefault();
             if(imagesAnchorElement == null)
             {
