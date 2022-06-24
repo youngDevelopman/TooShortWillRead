@@ -23,5 +23,9 @@ namespace TooShortWillRead.DAL.Models
         public string InternalId { get; set; }
 
         public virtual ICollection<Category> Categories { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

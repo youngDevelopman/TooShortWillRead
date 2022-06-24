@@ -30,6 +30,14 @@ namespace TooShortWillRead.DAL.EntityConfiguration
                 .IsRequired();
 
             builder
+                .Property(entity => entity.CreatedAt)
+                .HasDefaultValueSql("getutcdate()");
+
+            builder
+                .Property(entity => entity.UpdatedAt)
+                .HasDefaultValueSql("getutcdate()");
+
+            builder
                 .HasOne(entity => entity.DataSource)
                 .WithMany()
                 .HasForeignKey(entity => entity.DataSourceId);
