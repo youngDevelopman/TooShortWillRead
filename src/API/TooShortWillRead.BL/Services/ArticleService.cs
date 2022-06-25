@@ -70,6 +70,7 @@ namespace TooShortWillRead.Web.Api.Services
                 Header = randomArticle.Header,
                 Text = randomArticle.Text,
                 ImageLink = new Uri(_blobStorageBaseUrl, randomArticle.ImageName),
+                OriginalUrl = randomArticle.OriginalUrl,
                 Categories = randomArticle.Categories.Select(c => c.Name),
             };
         }
@@ -86,6 +87,7 @@ namespace TooShortWillRead.Web.Api.Services
                 Header = article.Header,
                 ImageLink = new Uri(_blobStorageBaseUrl, article.ImageName),
                 Text = article.Text,
+                OriginalUrl = article.OriginalUrl,
                 Categories = article.Categories.Select(c => c.Name).ToList(),
             };
         }
