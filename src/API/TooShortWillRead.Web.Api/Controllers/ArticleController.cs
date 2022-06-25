@@ -46,7 +46,6 @@ namespace TooShortWillRead.Web.Api.Controllers
         {
             var article = _articleService.GetArticleCount();
             return Ok(article);
-
         }
 
         [HttpGet("random/id")]
