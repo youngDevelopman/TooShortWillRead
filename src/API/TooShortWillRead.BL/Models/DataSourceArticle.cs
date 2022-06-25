@@ -18,6 +18,8 @@ namespace TooShortWillRead.BL.Models
 
         public string InternalId { get; set; }
 
+        public Uri OriginalUrl { get; set; }
+
         public IEnumerable<string> Categories { get; set; }
     }
 }

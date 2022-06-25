@@ -72,6 +72,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                 InternalId = pageId.ToString(),
                 Text = summary,
                 Categories = categories,
+                OriginalUrl = GetOriginalLink(pageId),
             };
 
             return article;
@@ -163,6 +164,14 @@ namespace TooShortWillRead.BL.Services.DataSources
                 .Select(element => element.TextContent);
 
             return categories;
+        }
+
+        private Uri GetOriginalLink(int pageId)
+        {
+            var uriBuilder = new UriBuilder(_httpClient.BaseAddress.ToString());
+            uriBuilder.Query = $"curid={pageId}";
+
+            return uriBuilder.Uri;
         }
     }
 }

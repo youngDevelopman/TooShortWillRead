@@ -13,6 +13,8 @@ namespace TooShortWillRead.BL.Models.Response
 
         public Uri ImageLink { get; set; }
 
+        public Uri OriginalUrl { get; set; }
+
         public IEnumerable<string> Categories { get; internal set; }
     }
 }

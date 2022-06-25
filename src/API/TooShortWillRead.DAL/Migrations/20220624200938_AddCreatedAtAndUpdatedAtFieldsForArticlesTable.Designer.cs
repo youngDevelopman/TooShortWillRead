@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TooShortWillRead.DAL;
 
 namespace TooShortWillRead.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220624200938_AddCreatedAtAndUpdatedAtFieldsForArticlesTable")]
+    partial class AddCreatedAtAndUpdatedAtFieldsForArticlesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +61,6 @@ namespace TooShortWillRead.DAL.Migrations
 
                     b.Property<string>("InternalId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("OriginalUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
                         .IsRequired()
