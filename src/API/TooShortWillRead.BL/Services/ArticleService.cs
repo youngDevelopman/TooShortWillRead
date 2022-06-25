@@ -132,6 +132,7 @@ namespace TooShortWillRead.Web.Api.Services
                 Text = article.Text,
                 DataSourceId = ((int)article.DataSource),
                 InternalId = article.InternalId,
+                OriginalUrl = article.OriginalUrl,
                 Categories = article.Categories
                     .Select(c => new Category() { Name = c })
                     .ToList(),

@@ -47,10 +47,10 @@ namespace TooShortWillRead.BL.Services.DataSources
             foreach (var anchor in randomArticles)
             {
                 string articleRelativePath = anchor.PathName;
+                var articleUrl = new Uri(_httpClient.BaseAddress, articleRelativePath);
+                var article = await GetArticleAsync(articleUrl.ToString());
 
-                var article = await GetArticleAsync(articleRelativePath);
-
-                if(article != null)
+                if (article != null)
                 {
                     result.Add(article);
                 }
@@ -93,6 +93,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                 InternalId = articleId,
                 Text = summary,
                 Categories = categories,
+                OriginalUrl = new Uri(url),
             };
 
             return article;

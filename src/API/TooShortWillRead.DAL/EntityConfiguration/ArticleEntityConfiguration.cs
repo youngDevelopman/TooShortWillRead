@@ -38,6 +38,10 @@ namespace TooShortWillRead.DAL.EntityConfiguration
                 .HasDefaultValueSql("getutcdate()");
 
             builder
+                .Property(entity => entity.OriginalUrl)
+                .HasConversion(v => v.ToString(), v => new Uri(v));
+
+            builder
                 .HasOne(entity => entity.DataSource)
                 .WithMany()
                 .HasForeignKey(entity => entity.DataSourceId);
