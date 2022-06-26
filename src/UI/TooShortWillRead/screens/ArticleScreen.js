@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Config from "react-native-config";
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import ArticleService from "../services/ArticleService";
+import ExternalLinks from "../components/ExternalLinks";
 
 const ArticleScreen = ({ navigation }) => {
 
@@ -19,6 +20,7 @@ const ArticleScreen = ({ navigation }) => {
         header: '',
         text: '',
         imageUrl: '',
+        originalUrl: '',
         categories: []
     });
 
@@ -50,6 +52,7 @@ const ArticleScreen = ({ navigation }) => {
             header: articleData.header,
             text: articleData.text,
             imageUrl: articleData.imageLink,
+            originalUrl: articleData.originalLink,
             categories: articleData.categories,
         });
         scrollToTheTop();
@@ -73,10 +76,8 @@ const ArticleScreen = ({ navigation }) => {
         }
     }
 
-    const openLink = () => {
-        navigation.navigate('Browser', {
-            uri: `https://www.google.com/search?q=${article.header}`
-        });
+    const getGooglePageLink = () => {
+        return `https://www.google.com/search?q=${article.header}`
     }
 
 
@@ -111,7 +112,6 @@ const ArticleScreen = ({ navigation }) => {
                         >
                             {article.header}
                         </Text>
-                        <Icon.Button name="external-link" backgroundColor='black' onPress={openLink} fontSize='22' color='#379cdb' />
                     </View>
                     <CategoryList data={article.categories} />
                     <LineSeparator />
@@ -120,6 +120,8 @@ const ArticleScreen = ({ navigation }) => {
                             {article.text}
                         </Text>
                     </View>
+                    <LineSeparator />
+                    <ExternalLinks googleUrl={getGooglePageLink()} originalUrl={article.originalUrl} navigation={navigation}/>
                 </ScrollView>
                 <LoadingArticleModal isLoading={isLoading} showAd={showAd} />
             </View>
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
     headerText: {
       textAlign: 'left',
       color: 'white',
-      fontSize: 22,
+      fontSize: 30,
       fontWeight: "bold",
       paddingTop: 10,
       paddingBottom: 10
