@@ -21,6 +21,7 @@ const ArticleService = {
             articleDataJson.header, 
             articleDataJson.text, 
             articleDataJson.imageLink, 
+            articleDataJson.originalUrl,
             articleDataJson.categories
         );
     },

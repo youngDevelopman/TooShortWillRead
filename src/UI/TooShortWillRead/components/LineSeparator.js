@@ -10,7 +10,7 @@ const LineSeparator = (props) => {
 const styles = StyleSheet.create({
     line: {
         borderBottomColor: 'white',
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 1,
         width: '40%',
         marginTop: 10,
         marginBottom: 10,
