@@ -5,7 +5,7 @@ import CategoryList from "../components/CategoryList";
 import LineSeparator from "../components/LineSeparator";
 import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import Config from "react-native-config";
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import ArticleService from "../services/ArticleService";
@@ -91,8 +91,19 @@ const ArticleScreen = ({ navigation }) => {
                     scrollEventThrottle={16}
                     stickyHeaderIndices={[0]}
                 >
-                    <View style={{ alignItems: 'flex-end' }}>
-                        <AppButton onPress={loadNextArticle} title='Next article' />
+                    <View>
+                        <View style={{
+                            flexDirection: 'row', 
+                            textAlign: 'center', 
+                            justifyContent: 'space-between', 
+                            paddingVertical: 8,
+                            paddingHorizontal: 10,
+                            marginTop: 10,
+                            marginBottom: 10
+                        }}>
+                            <Icon name="star"  color='dodgerblue' size={30} />
+                            <AppButton onPress={loadNextArticle} title='Next article' />
+                        </View>
                     </View>
                     <ImageModal
                         resizeMode="center"
@@ -121,7 +132,7 @@ const ArticleScreen = ({ navigation }) => {
                         </Text>
                     </View>
                     <LineSeparator />
-                    <ExternalLinks googleUrl={getGooglePageLink()} originalUrl={article.originalUrl} navigation={navigation}/>
+                    <ExternalLinks googleUrl={getGooglePageLink()} originalUrl={article.originalUrl} navigation={navigation} />
                 </ScrollView>
                 <LoadingArticleModal isLoading={isLoading} showAd={showAd} />
             </View>
@@ -131,41 +142,41 @@ const ArticleScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-      backgroundColor: '#000000',
-      flex: 1,
+        backgroundColor: '#000000',
+        flex: 1,
     },
     headerImageStyle: {
-      height: '100%',
-      width: '100%',
+        height: '100%',
+        width: '100%',
     },
     imageContainerStyle: {
-      height: 300,
-      width: '100%',
-      alignSelf: 'center',
-      overflow: "hidden",
-      borderRadius: 10,
-      backgroundColor: 'white'
+        height: 300,
+        width: '100%',
+        alignSelf: 'center',
+        overflow: "hidden",
+        borderRadius: 10,
+        backgroundColor: 'white'
     },
     headerText: {
-      textAlign: 'left',
-      color: 'white',
-      fontSize: 30,
-      fontWeight: "bold",
-      paddingTop: 10,
-      paddingBottom: 10
+        textAlign: 'left',
+        color: 'white',
+        fontSize: 30,
+        fontWeight: "bold",
+        paddingTop: 10,
+        paddingBottom: 10
     },
     header: {
-      flexDirection: "row",
-      alignItems: 'center'
+        flexDirection: "row",
+        alignItems: 'center'
     },
     text: {
-      textAlign: 'auto',
-      textAlignVertical: 'center',
-      color: '#FFFFFF',
-      fontSize: 18
+        textAlign: 'auto',
+        textAlignVertical: 'center',
+        color: '#FFFFFF',
+        fontSize: 18
     }
-  });
-  
-  
+});
+
+
 
 export default ArticleScreen;
