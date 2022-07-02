@@ -12,7 +12,7 @@ import { Text, View, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import ArticleScreen from './screens/ArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 
@@ -44,22 +44,33 @@ const App: () => Node = () => {
         tabBarStyle: {
           backgroundColor: 'rgba(34,36,40,1)',
         },
+        tabBarIcon: ({ focused, color, size }) => {
+          console.log('TAB NAvigator')
+        },
       })}>
         <Tab.Screen name="Article" component={ArticleStackScreen}
           options={{
             headerShown: false,
             tabBarShowLabel: false,
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="book-reader" color='dodgerblue' size={25} />
-            ),
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName = 'book-outline'
+              if(focused){
+                iconName = 'book'
+              }
+              return <Ionicons name={iconName} color='dodgerblue' size={25} />
+            }
           }} />
         <Tab.Screen name="Favourites" component={FavouriteArticlesScreen}
           options={{
             tabBarShowLabel: false,
             tabBarLabel: 'Home',
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="star" solid color='dodgerblue' size={25} />
-            ),
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName = 'star-outline'
+              if(focused){
+                iconName = 'star'
+              }
+              return <Ionicons name={iconName} color='dodgerblue' size={25} />
+            },
           }} />
       </Tab.Navigator>
     </NavigationContainer>

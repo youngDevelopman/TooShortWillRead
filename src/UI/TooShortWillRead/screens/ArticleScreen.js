@@ -5,7 +5,7 @@ import CategoryList from "../components/CategoryList";
 import LineSeparator from "../components/LineSeparator";
 import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from "react-native-config";
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import ArticleService from "../services/ArticleService";
@@ -101,7 +101,7 @@ const ArticleScreen = ({ navigation }) => {
                             marginTop: 10,
                             marginBottom: 10
                         }}>
-                            <Icon name="star"  color='dodgerblue' size={30} />
+                            <Ionicons name="star"  color='dodgerblue' size={30} />
                             <AppButton onPress={loadNextArticle} title='Next article' />
                         </View>
                     </View>
