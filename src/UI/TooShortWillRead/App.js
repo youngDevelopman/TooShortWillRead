@@ -43,10 +43,7 @@ const App: () => Node = () => {
       <Tab.Navigator screenOptions={({ route }) => ({
         tabBarStyle: {
           backgroundColor: 'rgba(34,36,40,1)',
-        },
-        tabBarIcon: ({ focused, color, size }) => {
-          console.log('TAB NAvigator')
-        },
+        }
       })}>
         <Tab.Screen name="Article" component={ArticleStackScreen}
           options={{
@@ -63,7 +60,6 @@ const App: () => Node = () => {
         <Tab.Screen name="Favourites" component={FavouriteArticlesScreen}
           options={{
             tabBarShowLabel: false,
-            tabBarLabel: 'Home',
             tabBarIcon: ({ focused, color, size }) => {
               let iconName = 'star-outline'
               if(focused){
