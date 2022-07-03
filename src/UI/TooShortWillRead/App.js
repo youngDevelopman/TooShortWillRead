@@ -13,6 +13,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FavouritesScreen from './screens/FavouritesScreen';
 import ArticleScreen from './screens/ArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 
@@ -27,16 +28,22 @@ function ArticleStackScreen() {
   )
 }
 
-const Tab = createBottomTabNavigator();
+const FavouriteArticleStack = createNativeStackNavigator();
 
 function FavouriteArticlesScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Favourite Articles!</Text>
-    </View>
+    <FavouriteArticleStack.Navigator>
+      <FavouriteArticleStack.Screen name="Favourites" component={FavouritesScreen} options={({ route }) => ({
+        headerTintColor: 'dodgerblue',
+        headerStyle: {
+          backgroundColor: 'rgba(34,36,40,1)',
+        }
+      })}/>
+    </FavouriteArticleStack.Navigator>
   );
 }
 
+const Tab = createBottomTabNavigator();
 const App: () => Node = () => {
   return (
     <NavigationContainer>
@@ -59,6 +66,7 @@ const App: () => Node = () => {
           }} />
         <Tab.Screen name="Favourites" component={FavouriteArticlesScreen}
           options={{
+            headerShown: false,
             tabBarShowLabel: false,
             tabBarIcon: ({ focused, color, size }) => {
               let iconName = 'star-outline'
