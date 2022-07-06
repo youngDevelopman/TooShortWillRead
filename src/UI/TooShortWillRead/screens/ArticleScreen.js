@@ -5,16 +5,18 @@ import CategoryList from "../components/CategoryList";
 import LineSeparator from "../components/LineSeparator";
 import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Config from "react-native-config";
 import { useInterstitialAd, TestIds } from '@react-native-admob/admob';
 import ArticleService from "../services/ArticleService";
+import FavouriteArticlesAsyncStorage from "../services/FavouriteArticlesAsyncStorage";
 import ExternalLinks from "../components/ExternalLinks";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const ArticleScreen = ({ navigation }) => {
 
     const scrollRef = useRef();
     const [isLoading, setIsLoading] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
     const [article, setArticle] = useState({
         articleId: '',
         header: '',
@@ -43,7 +45,6 @@ const ArticleScreen = ({ navigation }) => {
     }
 
     const loadNextArticle = async () => {
-        //console.log(await AsyncStorage.getAllKeys());
         setIsLoading(true);
         const articleData = await ArticleService.loadNewArticleAsync();
         setArticle({
@@ -55,9 +56,15 @@ const ArticleScreen = ({ navigation }) => {
             originalUrl: articleData.originalLink,
             categories: articleData.categories,
         });
+
+        const exists = await FavouriteArticlesAsyncStorage.articleExists(articleData.id);
+        setIsFavourite(exists);
+
         scrollToTheTop();
         setIsLoading(false);
         setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
+        const a = await FavouriteArticlesAsyncStorage.getAllArticles();
+        console.log(a);
     }
 
     useEffect(() => {
@@ -73,6 +80,17 @@ const ArticleScreen = ({ navigation }) => {
             show()
             load()
             setArticlesShownBeforeAd(0);
+        }
+    }
+
+    const toggleFavouriteButton = async () => {
+        if(isFavourite) {
+            await FavouriteArticlesAsyncStorage.removeArticle(article.articleId);
+            setIsFavourite(false);
+        }
+        else {
+            await FavouriteArticlesAsyncStorage.addArticle(article.articleId, article.header, article.imageUrl, article.categories);
+            setIsFavourite(true);
         }
     }
 
@@ -101,7 +119,7 @@ const ArticleScreen = ({ navigation }) => {
                             marginTop: 10,
                             marginBottom: 10
                         }}>
-                            <Ionicons name="star"  color='dodgerblue' size={30} />
+                            <Icon name={isFavourite ? 'star' : 'star-outline'}  color='dodgerblue' size={30} onPress={toggleFavouriteButton} />
                             <AppButton onPress={loadNextArticle} title='Next article' />
                         </View>
                     </View>
