@@ -63,8 +63,6 @@ const ArticleScreen = ({ navigation }) => {
         scrollToTheTop();
         setIsLoading(false);
         setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
-        const a = await FavouriteArticlesAsyncStorage.getAllArticles();
-        console.log(a);
     }
 
     useEffect(() => {
