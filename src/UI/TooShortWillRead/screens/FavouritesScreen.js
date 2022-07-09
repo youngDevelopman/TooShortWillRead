@@ -54,7 +54,7 @@ const Item = ({ item }) => {
                     />
                 </View>
                 <View style={{ flex: 5 }}>
-                    <Text style={styles.headerText}>{item.title}</Text>
+                    <Text style={styles.headerText}>{item.header}</Text>
                     <CategoryList data={item.categories.slice(0, 2)} style={{ marginTop: 10 }} />
                 </View>
             </View>
@@ -75,7 +75,6 @@ renderSeparator = () => (
 
 const FavouritesScreen = () => {
     const  { favouriteArticles } = useSelector(state => state.favouriteArticlesReducer)
-    console.log('favourite articles from the store', favouriteArticles);
     const renderItem = ({ item }) => {
         return <Item item={item} />
     }
@@ -88,7 +87,6 @@ const FavouritesScreen = () => {
                 ItemSeparatorComponent={this.renderSeparator}
             />
         </View>
-
     );
 }
 

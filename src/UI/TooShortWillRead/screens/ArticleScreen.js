@@ -11,12 +11,14 @@ import ArticleService from "../services/ArticleService";
 import FavouriteArticlesAsyncStorage from "../services/FavouriteArticlesAsyncStorage";
 import ExternalLinks from "../components/ExternalLinks";
 import Icon from "react-native-vector-icons/Ionicons";
+import { addFavouriteArticle, removeFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const ArticleScreen = ({ navigation }) => {
 
     const scrollRef = useRef();
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
-    const [isFavourite, setIsFavourite] = useState(false);
     const [article, setArticle] = useState({
         articleId: '',
         header: '',
@@ -25,6 +27,9 @@ const ArticleScreen = ({ navigation }) => {
         originalUrl: '',
         categories: []
     });
+    
+    const isFavourite  = useSelector(state => 
+        state.favouriteArticlesReducer.favouriteArticles.find(a => a.articleId === article.articleId) != undefined);
 
     const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
     const AD_TO_SHOW_THESHOLD = 5;
@@ -56,10 +61,7 @@ const ArticleScreen = ({ navigation }) => {
             originalUrl: articleData.originalLink,
             categories: articleData.categories,
         });
-
-        const exists = await FavouriteArticlesAsyncStorage.articleExists(articleData.id);
-        setIsFavourite(exists);
-
+        
         scrollToTheTop();
         setIsLoading(false);
         setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
@@ -81,14 +83,18 @@ const ArticleScreen = ({ navigation }) => {
         }
     }
 
-    const toggleFavouriteButton = async () => {
+    const toggleFavouriteButton = () => {
         if(isFavourite) {
-            await FavouriteArticlesAsyncStorage.removeArticle(article.articleId);
-            setIsFavourite(false);
+            dispatch(removeFavouriteArticle(article.articleId));
         }
         else {
-            await FavouriteArticlesAsyncStorage.addArticle(article.articleId, article.header, article.imageUrl, article.categories);
-            setIsFavourite(true);
+            const articleToAdd = { 
+                articleId: article.articleId, 
+                header: article.header, 
+                imageUrl: article.imageUrl, 
+                categories: article.categories 
+            };
+            dispatch(addFavouriteArticle(articleToAdd));
         }
     }
 
