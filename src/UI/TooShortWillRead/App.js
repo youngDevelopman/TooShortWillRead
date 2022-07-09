@@ -10,7 +10,8 @@ import React from 'react';
 import type { Node } from 'react';
 import { Text, View, Button } from 'react-native';
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -49,38 +50,40 @@ const Tab = createBottomTabNavigator();
 const App: () => Node = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Tab.Navigator screenOptions={({ route }) => ({
-          tabBarStyle: {
-            backgroundColor: 'rgba(34,36,40,1)',
-          }
-        })}>
-          <Tab.Screen name="Article" component={ArticleStackScreen}
-            options={{
-              headerShown: false,
-              tabBarShowLabel: false,
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName = 'book-outline'
-                if (focused) {
-                  iconName = 'book'
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Tab.Navigator screenOptions={({ route }) => ({
+            tabBarStyle: {
+              backgroundColor: 'rgba(34,36,40,1)',
+            }
+          })}>
+            <Tab.Screen name="Article" component={ArticleStackScreen}
+              options={{
+                headerShown: false,
+                tabBarShowLabel: false,
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName = 'book-outline'
+                  if (focused) {
+                    iconName = 'book'
+                  }
+                  return <Ionicons name={iconName} color='dodgerblue' size={25} />
                 }
-                return <Ionicons name={iconName} color='dodgerblue' size={25} />
-              }
-            }} />
-          <Tab.Screen name="Favourites" component={FavouriteArticlesScreen}
-            options={{
-              headerShown: false,
-              tabBarShowLabel: false,
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName = 'star-outline'
-                if (focused) {
-                  iconName = 'star'
-                }
-                return <Ionicons name={iconName} color='dodgerblue' size={25} />
-              },
-            }} />
-        </Tab.Navigator>
-      </NavigationContainer>
+              }} />
+            <Tab.Screen name="Favourites" component={FavouriteArticlesScreen}
+              options={{
+                headerShown: false,
+                tabBarShowLabel: false,
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName = 'star-outline'
+                  if (focused) {
+                    iconName = 'star'
+                  }
+                  return <Ionicons name={iconName} color='dodgerblue' size={25} />
+                },
+              }} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 };
