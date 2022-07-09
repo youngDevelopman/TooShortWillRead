@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, FlatList, View, TouchableOpacity, Image } from "react-native";
 import CategoryList from "../components/CategoryList";
+import { useSelector } from "react-redux";
 
 const DATA = [
     {
@@ -48,36 +49,40 @@ const Item = ({ item }) => {
                 <View style={{ flex: 2.1 }}>
                     <Image
                         style={styles.image}
-                        source={{uri: item.imageUrl}}
+                        source={{ uri: item.imageUrl }}
                         resizeMode={"cover"} // <- needs to be "cover" for borderRadius to take effect on Android
                     />
                 </View>
                 <View style={{ flex: 5 }}>
                     <Text style={styles.headerText}>{item.title}</Text>
-                    <CategoryList data={item.categories.slice(0, 2)} style={{marginTop: 10}}/>
+                    <CategoryList data={item.categories.slice(0, 2)} style={{ marginTop: 10 }} />
                 </View>
             </View>
         </TouchableOpacity>
     )
 }
+
 renderSeparator = () => (
     <View
-      style={{
-        backgroundColor: 'white',
-        height: 1,
-        opacity: 0.6,
-        marginHorizontal: 16,
-      }}
+        style={{
+            backgroundColor: 'white',
+            height: 1,
+            opacity: 0.6,
+            marginHorizontal: 16,
+        }}
     />
-  );
+);
+
 const FavouritesScreen = () => {
+    const  { favouriteArticles } = useSelector(state => state.favouriteArticlesReducer)
+    console.log('favourite articles from the store', favouriteArticles);
     const renderItem = ({ item }) => {
         return <Item item={item} />
     }
     return (
         <View style={styles.container}>
             <FlatList
-                data={DATA}
+                data={favouriteArticles}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 ItemSeparatorComponent={this.renderSeparator}
@@ -109,9 +114,9 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     itemContainer: {
-         flexDirection: 'row', 
-         flex: 1, 
-         alignItems: 'center'  
+        flexDirection: 'row',
+        flex: 1,
+        alignItems: 'center'
     }
 })
 
