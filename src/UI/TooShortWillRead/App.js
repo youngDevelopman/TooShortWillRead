@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { Node } from 'react';
 import { Text, View, Button } from 'react-native';
 import { Provider } from 'react-redux';
@@ -19,6 +19,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FavouritesScreen from './screens/FavouritesScreen';
 import ArticleScreen from './screens/ArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
+import { loadArticlesCount } from './redux/actions/loadArticlesCount';
 
 const ArticleStack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ function FavouriteArticlesScreen() {
 
 const Tab = createBottomTabNavigator();
 const App: () => Node = () => {
+  useEffect(() => store.dispatch(loadArticlesCount()), []);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

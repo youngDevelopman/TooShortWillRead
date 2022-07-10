@@ -19,7 +19,7 @@ const favouriteArticlesPersistConfig = {
 const readArticlesPersistConfig = {
     key: 'readArticlesReducer',
     storage: AsyncStorage,
-    blacklist: ['currentArticle']
+    blacklist: ['currentArticle', 'articlesCount']
 };
 
 const rootReducer = combineReducers({

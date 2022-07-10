@@ -2,6 +2,7 @@ export const LOAD_ARTICLE_START = 'LOAD_ARTICLE_START';
 export const LOAD_ARTICLE_SUCCESS = 'LOAD_ARTICLE_SUCCESS';
 export const LOAD_ARTICLE_FAILURE = 'LOAD_ARTICLE_FAILURE';
 export const SAVE_ARTICLE_AS_READ = 'SAVE_ARTICLE_AS_READ';
+export const SAVE_ARTICLES_COUNT = 'SAVE_ARTICLES_COUNT';
 
 export const loadArticleStart = () => ({
     type: LOAD_ARTICLE_START,
@@ -20,4 +21,9 @@ export const loadArticleFailure = error => ({
 export const saveArticleAsRead = articleId => ({
     type: SAVE_ARTICLE_AS_READ,
     payload: articleId
+});
+
+export const saveArticlesCount = articlesCount => ({
+    type: SAVE_ARTICLES_COUNT,
+    payload: articlesCount
 });

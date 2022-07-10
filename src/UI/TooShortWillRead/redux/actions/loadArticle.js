@@ -6,7 +6,8 @@ const LOAD_ARTICLES_ATTEMPS_TRESHOLD = Config.LOAD_ARTICLES_ATTEMPS_TRESHOLD;
 const RUN_READ_ARTICLES_CLEANUP_TRESHOLD = Config.RUN_READ_ARTICLES_CLEANUP_TRESHOLD;
 
 export const loadArticle = () => async (dispatch, getState) => {
-    const { readArticles } = getState().readArticlesReducer;
+    const readArticlesState = getState().readArticlesReducer;
+    const { readArticles } = readArticlesState;
     dispatch(loadArticleStart());
 
     let isUnique = false;
@@ -21,8 +22,9 @@ export const loadArticle = () => async (dispatch, getState) => {
         attempts++;
     } while (!isUnique && attempts <= LOAD_ARTICLES_ATTEMPS_TRESHOLD);
 
-    if (attempts >= RUN_READ_ARTICLES_CLEANUP_TRESHOLD) {
-        const articlesCount =  await ArticleService.getArticlesCountAsync();
+    if (attempts >= 0) {
+        const { articlesCount } =  readArticlesState;
+        console.log('ARTICLES COUNT', articlesCount);
        // await ArticlesAsyncStorage.cleanArticles(articlesCount);
     }
 
