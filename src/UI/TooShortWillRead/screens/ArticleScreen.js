@@ -19,18 +19,12 @@ const ArticleScreen = ({ navigation }) => {
 
     const scrollRef = useRef();
     const dispatch = useDispatch();
-    const [isLoading, setIsLoading] = useState(false);
-    const [article, setArticle] = useState({
-        articleId: '',
-        header: '',
-        text: '',
-        imageUrl: '',
-        originalUrl: '',
-        categories: []
-    });
-    
+
+    const currentArticle = useSelector(state => state.readArticlesReducer.currentArticle);
+    const {isLoading, article} = currentArticle;
+    const articleId = article.articleId;
     const isFavourite  = useSelector(state => 
-        state.favouriteArticlesReducer.favouriteArticles.find(a => a.articleId === article.articleId) != undefined);
+        state.favouriteArticlesReducer.favouriteArticles.find(a => a.articleId === articleId) !== undefined);
 
     const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
     const AD_TO_SHOW_THESHOLD = 5;
@@ -51,22 +45,10 @@ const ArticleScreen = ({ navigation }) => {
     }
 
     const loadNextArticle = async () => {
-        setIsLoading(true);
-        const articleData = await ArticleService.loadNewArticleAsync();
-        setArticle({
-            ...article,
-            articleId: articleData.id,
-            header: articleData.header,
-            text: articleData.text,
-            imageUrl: articleData.imageLink,
-            originalUrl: articleData.originalLink,
-            categories: articleData.categories,
-        });
+        dispatch(loadArticle());
         
         scrollToTheTop();
-        setIsLoading(false);
         setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
-        dispatch(loadArticle());
     }
 
     useEffect(() => {
@@ -86,6 +68,7 @@ const ArticleScreen = ({ navigation }) => {
     }
 
     const toggleFavouriteButton = () => {
+        console.log('FAV ARTICLE', article)
         if(isFavourite) {
             dispatch(removeFavouriteArticle(article.articleId));
         }

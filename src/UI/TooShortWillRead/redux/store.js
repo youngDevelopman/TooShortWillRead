@@ -8,6 +8,7 @@ import readArticlesReducer from './reducers/readArticlesReducer';
 const rootPersistConfig = {
     key: 'root',
     storage: AsyncStorage,
+    blacklist: ['readArticlesReducer']
 };
 
 const favouriteArticlesPersistConfig = {

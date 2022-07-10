@@ -18,6 +18,6 @@ export const loadArticleFailure = error => ({
 });
 
 export const saveArticleAsRead = articleId => ({
-    type: LOAD_ARTICLE_START,
+    type: SAVE_ARTICLE_AS_READ,
     payload: articleId
 });
