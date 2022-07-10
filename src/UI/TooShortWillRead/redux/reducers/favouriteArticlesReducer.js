@@ -7,7 +7,6 @@ const initialState = {
 function favouriteArticlesReducer(state = initialState, action) {
     switch (action.type) {
         case ADD_FAVOURITE_ARTICLE:
-            console.log('fav article payload', action.payload)
             return { ...state, favouriteArticles: [action.payload, ...state.favouriteArticles] };
         case REMOVE_FAVOURITE_ARTICLE:
             return { ...state, favouriteArticles: state.favouriteArticles.filter(a => a.id !== action.payload) };

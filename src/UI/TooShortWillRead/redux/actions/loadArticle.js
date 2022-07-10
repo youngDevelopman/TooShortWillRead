@@ -6,9 +6,7 @@ const LOAD_ARTICLES_ATTEMPS_TRESHOLD = Config.LOAD_ARTICLES_ATTEMPS_TRESHOLD;
 const RUN_READ_ARTICLES_CLEANUP_TRESHOLD = Config.RUN_READ_ARTICLES_CLEANUP_TRESHOLD;
 
 export const loadArticle = () => async (dispatch, getState) => {
-    console.log(getState());
     const { readArticles } = getState().readArticlesReducer;
-    console.log('articles read', readArticles)
     dispatch(loadArticleStart());
 
     let isUnique = false;
@@ -31,5 +29,4 @@ export const loadArticle = () => async (dispatch, getState) => {
     dispatch(saveArticleAsRead(articleId));
     const article = await ArticleService.getArticleById(articleId);
     dispatch(loadArticleSuccess(article));
-    //console.log('current article',getState().readArticlesReducer.currentArticle)
 } 
