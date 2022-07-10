@@ -23,8 +23,10 @@ const ArticleScreen = ({ navigation }) => {
     const currentArticle = useSelector(state => state.readArticlesReducer.currentArticle);
     const {isLoading, article} = currentArticle;
     const articleId = article.articleId;
-    const isFavourite  = useSelector(state => 
-        state.favouriteArticlesReducer.favouriteArticles.find(a => a.articleId === articleId) !== undefined);
+    const isFavourite  = useSelector(state => {
+        const result = state.favouriteArticlesReducer.favouriteArticles.find(a => a.id === article.id) !== undefined
+        return result;
+    });
 
     const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
     const AD_TO_SHOW_THESHOLD = 5;
@@ -70,15 +72,17 @@ const ArticleScreen = ({ navigation }) => {
     const toggleFavouriteButton = () => {
         console.log('FAV ARTICLE', article)
         if(isFavourite) {
-            dispatch(removeFavouriteArticle(article.articleId));
+            dispatch(removeFavouriteArticle(article.id));
         }
         else {
             const articleToAdd = { 
-                articleId: article.articleId, 
+                id: article.id, 
                 header: article.header, 
                 imageUrl: article.imageUrl, 
                 categories: article.categories 
             };
+            console.log('CURRENT', article)
+            console.log('article to add', articleToAdd);
             dispatch(addFavouriteArticle(articleToAdd));
         }
     }
