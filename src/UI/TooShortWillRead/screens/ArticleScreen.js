@@ -13,6 +13,7 @@ import ExternalLinks from "../components/ExternalLinks";
 import Icon from "react-native-vector-icons/Ionicons";
 import { addFavouriteArticle, removeFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
 import { useDispatch, useSelector } from "react-redux";
+import { loadArticle } from "../redux/actions/loadArticle";
 
 const ArticleScreen = ({ navigation }) => {
 
@@ -65,6 +66,7 @@ const ArticleScreen = ({ navigation }) => {
         scrollToTheTop();
         setIsLoading(false);
         setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
+        dispatch(loadArticle());
     }
 
     useEffect(() => {
