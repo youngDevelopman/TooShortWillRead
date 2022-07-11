@@ -3,45 +3,6 @@ import { StyleSheet, Text, FlatList, View, TouchableOpacity, Image } from "react
 import CategoryList from "../components/CategoryList";
 import { useSelector } from "react-redux";
 
-const DATA = [
-    {
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-        title: "Yamagata Arimoto",
-        imageUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
-        categories: ['Health & Medicine', 'Politics, Law & Government']
-    },
-    {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-        title: "Northern Mariana Islandsaaaaaaaaaaaaaaaa",
-        imageUrl: 'https://i.picsum.photos/id/1020/4288/2848.jpg?hmac=Jo3ofatg0fee3HGOliAIIkcg4KGXC8UOTO1dm5qIIPc',
-        categories: ['category 1', 'category 2', 'category 3', 'category 4']
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        title: "Map",
-        imageUrl: 'https://i.picsum.photos/id/1025/4951/3301.jpg?hmac=_aGh5AtoOChip_iaMo8ZvvytfEojcgqbCH7dzaz-H8Y',
-        categories: ['category 1', 'category 2', 'category 3', 'category 4', 'category 5']
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d82",
-        title: "Denali",
-        imageUrl: 'https://i.picsum.photos/id/1025/4951/3301.jpg?hmac=_aGh5AtoOChip_iaMo8ZvvytfEojcgqbCH7dzaz-H8Y',
-        categories: ['category 1', 'category 2', 'category 3', 'category 4', 'category 5']
-    },
-    {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f73",
-        title: "Kanye",
-        imageUrl: 'https://i.picsum.photos/id/1020/4288/2848.jpg?hmac=Jo3ofatg0fee3HGOliAIIkcg4KGXC8UOTO1dm5qIIPc',
-        categories: ['category 1', 'category 2', 'category 3', 'category 4']
-    },
-    {
-        id: "bd7acbea-c1b1-46c2-aed5-3ad53abb29ba",
-        title: "Yamagata Arimoto",
-        imageUrl: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
-        categories: ['Health & Medicine', 'Politics, Law & Government']
-    },
-];
-
 const Item = ({ item }) => {
     return (
         <TouchableOpacity style={styles.item} activeOpacity={0.7}>
