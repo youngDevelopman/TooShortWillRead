@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { addFavouriteArticle, removeFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
 import { useDispatch, useSelector } from "react-redux";
 import { loadArticle } from "../redux/actions/loadArticle";
+import { incrementArticlesShownBeforeAdCount } from "../redux/actions/readArticlesActions";
 
 const ArticleScreen = ({ navigation }) => {
 
@@ -22,7 +23,7 @@ const ArticleScreen = ({ navigation }) => {
     const {isLoading, article} = currentArticle;
     const isFavourite  = useSelector(state => state.favouriteArticlesReducer.favouriteArticles.find(a => a.id === article.id) !== undefined);
 
-    const [articlesShownBeforeAd, setArticlesShownBeforeAd] = useState(0);
+    const articlesShownBeforeAd = useSelector(state => state.readArticlesReducer.articlesShownBeforeAd);
     const AD_TO_SHOW_THESHOLD = 5;
     const { adLoaded, show, load } = useInterstitialAd(
         Config.INTERSTITIAL_AD_UNIT,
@@ -44,7 +45,7 @@ const ArticleScreen = ({ navigation }) => {
         dispatch(loadArticle());
         
         scrollToTheTop();
-        setArticlesShownBeforeAd(articlesShownBeforeAd + 1);
+        dispatch(incrementArticlesShownBeforeAdCount())
     }
 
     useEffect(() => {

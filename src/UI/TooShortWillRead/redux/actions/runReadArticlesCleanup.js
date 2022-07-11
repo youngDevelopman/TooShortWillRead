@@ -4,12 +4,12 @@ import { cleanMostOutdatedArticles } from "./readArticlesActions";
 const RUN_READ_ARTICLES_CLEANUP_TRESHOLD = Config.RUN_READ_ARTICLES_CLEANUP_TRESHOLD;
 const CLENUP_ARTICLES_PERCENTAGE_TRESHOLD = Config.CLENUP_ARTICLES_PERCENTAGE_TRESHOLD;
 export const runReadArticlesCleanup = (attemps) => async (dispatch, getState) => {
-    console.log('Run articles cleanup...');
     if (attemps => RUN_READ_ARTICLES_CLEANUP_TRESHOLD) {
         const { articlesCount, readArticles } = getState().readArticlesReducer;
         const articlesRead = readArticles.length;
         const loadedArticlesPercentage = (100 * articlesRead) / articlesCount;
         if (loadedArticlesPercentage >= CLENUP_ARTICLES_PERCENTAGE_TRESHOLD) {
+            console.log('Run articles cleanup...');
             const numberOfArticlesToClean = Math.round((ARTICLES_PERCENTAGE_TO_CLEAN * articlesRead) / 100);
             dispatch(cleanMostOutdatedArticles(numberOfArticlesToClean));
         }
