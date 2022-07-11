@@ -1,4 +1,4 @@
-import { SAVE_ARTICLES_COUNT, LOAD_ARTICLE_FAILURE, LOAD_ARTICLE_START, LOAD_ARTICLE_SUCCESS, SAVE_ARTICLE_AS_READ } from "../actions/readArticlesActions";
+import { SAVE_ARTICLES_COUNT, LOAD_ARTICLE_FAILURE, LOAD_ARTICLE_START, LOAD_ARTICLE_SUCCESS, SAVE_ARTICLE_AS_READ, CLEAN_MOST_OUTDATED_ARTICLES } from "../actions/readArticlesActions";
 
 const initialState = {
     articlesCount: 0,
@@ -29,6 +29,8 @@ function readArticlesReducer(state = initialState, action) {
             return { ...state, readArticles: [...state.readArticles, action.payload] };
         case SAVE_ARTICLES_COUNT:
             return { ...state, articlesCount: action.payload };
+        case CLEAN_MOST_OUTDATED_ARTICLES:
+            return {...state, readArticles: state.readArticles.slice(action.payload)}
         default:
             return state;
     }
