@@ -3,9 +3,9 @@ import { StyleSheet, Text, FlatList, View, TouchableOpacity, Image } from "react
 import CategoryList from "../components/CategoryList";
 import { useSelector } from "react-redux";
 
-const Item = ({ item }) => {
+const Item = ({ item, onPress }) => {
     return (
-        <TouchableOpacity style={styles.item} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.item} activeOpacity={0.7} onPress={() => onPress(item.id)}>
             <View style={styles.itemContainer}>
                 <View style={{ flex: 2.1 }}>
                     <Image
@@ -23,6 +23,8 @@ const Item = ({ item }) => {
     )
 }
 
+
+
 renderSeparator = () => (
     <View
         style={{
@@ -34,10 +36,17 @@ renderSeparator = () => (
     />
 );
 
-const FavouritesScreen = () => {
-    const  { favouriteArticles } = useSelector(state => state.favouriteArticlesReducer)
+const FavouritesScreen = ({ navigation }) => {
+    const  { favouriteArticles } = useSelector(state => state.favouriteArticlesReducer);
+
+    const openFavouriteArticle = (articleId) => {
+        navigation.navigate('FavouriteArticle', {
+            articleId: articleId
+        });
+    };
+
     const renderItem = ({ item }) => {
-        return <Item item={item} />
+        return <Item item={item} onPress={openFavouriteArticle}/>
     }
     return (
         <View style={styles.container}>

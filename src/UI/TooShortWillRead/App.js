@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FavouritesScreen from './screens/FavouritesScreen';
+import FavouriteArticleScreen from './screens/FavouriteArticleScreen';
 import ArticleScreen from './screens/ArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 import { loadArticlesCount } from './redux/actions/loadArticlesCount';
@@ -43,6 +44,7 @@ function FavouriteArticlesScreen() {
           backgroundColor: 'rgba(34,36,40,1)',
         }
       })} />
+      <ArticleStack.Screen name="FavouriteArticle" component={FavouriteArticleScreen}/>
     </FavouriteArticleStack.Navigator>
   );
 }
