@@ -17,16 +17,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FavouritesScreen from './screens/FavouritesScreen';
-import ArticleScreen from './screens/ArticleScreen';
+import FavouriteArticleScreen from './screens/FavouriteArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 import { loadArticlesCount } from './redux/actions/loadArticlesCount';
+import MainArticleScreen from './screens/MainArticleScreen';
 
 const ArticleStack = createNativeStackNavigator();
 
 function ArticleStackScreen() {
   return (
     <ArticleStack.Navigator>
-      <ArticleStack.Screen name="Article" component={ArticleScreen} options={{ headerShown: false }} />
+      <ArticleStack.Screen name="Article" component={MainArticleScreen} options={{ headerShown: false }} />
       <ArticleStack.Screen name="Browser" component={BrowserScreen} options={{ headerShown: false }} />
     </ArticleStack.Navigator>
   )
@@ -43,6 +44,7 @@ function FavouriteArticlesScreen() {
           backgroundColor: 'rgba(34,36,40,1)',
         }
       })} />
+      <ArticleStack.Screen name="FavouriteArticle" component={FavouriteArticleScreen} options={{ headerShown: false }}/>
     </FavouriteArticleStack.Navigator>
   );
 }
