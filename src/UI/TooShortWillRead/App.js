@@ -44,7 +44,7 @@ function FavouriteArticlesScreen() {
           backgroundColor: 'rgba(34,36,40,1)',
         }
       })} />
-      <ArticleStack.Screen name="FavouriteArticle" component={FavouriteArticleScreen}/>
+      <ArticleStack.Screen name="FavouriteArticle" component={FavouriteArticleScreen} options={{ headerShown: false }}/>
     </FavouriteArticleStack.Navigator>
   );
 }
