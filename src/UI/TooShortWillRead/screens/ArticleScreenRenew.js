@@ -6,9 +6,8 @@ import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
 import ExternalLinks from "../components/ExternalLinks";
 
-const ArticleScreenRenew = ({ article, isLoading, header, navigation }) => {
-    const scrollRef = useRef();
-
+const ArticleScreenRenew = ({ article, isLoading, header, navigation, scrollRef }) => {
+    
     const getGooglePageLink = () => {
         return `https://www.google.com/search?q=${article.header}`
     }

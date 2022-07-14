@@ -21,13 +21,14 @@ import FavouriteArticleScreen from './screens/FavouriteArticleScreen';
 import ArticleScreen from './screens/ArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 import { loadArticlesCount } from './redux/actions/loadArticlesCount';
+import MainArticleScreen from './screens/MainArticleScreen';
 
 const ArticleStack = createNativeStackNavigator();
 
 function ArticleStackScreen() {
   return (
     <ArticleStack.Navigator>
-      <ArticleStack.Screen name="Article" component={ArticleScreen} options={{ headerShown: false }} />
+      <ArticleStack.Screen name="Article" component={MainArticleScreen} options={{ headerShown: false }} />
       <ArticleStack.Screen name="Browser" component={BrowserScreen} options={{ headerShown: false }} />
     </ArticleStack.Navigator>
   )
