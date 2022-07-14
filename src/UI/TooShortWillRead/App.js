@@ -18,7 +18,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FavouritesScreen from './screens/FavouritesScreen';
 import FavouriteArticleScreen from './screens/FavouriteArticleScreen';
-import ArticleScreen from './screens/ArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 import { loadArticlesCount } from './redux/actions/loadArticlesCount';
 import MainArticleScreen from './screens/MainArticleScreen';
