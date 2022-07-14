@@ -5,7 +5,7 @@ import { loadFavouriteArticle } from "../redux/actions/loadFavouriteArticle";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
-import ArticleScreenRenew from "./ArticleScreenRenew";
+import ArticleScreen from "./ArticleScreenRenew";
 
 const Header = ({ onFavouritePress, onClosePress, favouriteButtonIcon }) => {
     return (
@@ -78,7 +78,7 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     }
 
     return (
-        <ArticleScreenRenew
+        <ArticleScreen
             article={article}
             isLoading={isLoading}
             header={<Header 

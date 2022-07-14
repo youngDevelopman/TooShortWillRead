@@ -6,8 +6,8 @@ import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
 import ExternalLinks from "../components/ExternalLinks";
 
-const ArticleScreenRenew = ({ article, isLoading, header, navigation, scrollRef }) => {
-    
+const ArticleScreen = ({ article, isLoading, header, navigation, scrollRef }) => {
+
     const getGooglePageLink = () => {
         return `https://www.google.com/search?q=${article.header}`
     }
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
 
 
 
-export default ArticleScreenRenew;
+export default ArticleScreen;
