@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
-import ArticleScreen from "./ArticleScreenRenew";
+import ArticleScreen from "./ArticleScreen";
 import AppButton from "../components/AppButton";
 import { loadArticle } from "../redux/actions/loadArticle";
 import { incrementArticlesShownBeforeAdCount } from "../redux/actions/readArticlesActions";

@@ -5,7 +5,7 @@ import { loadFavouriteArticle } from "../redux/actions/loadFavouriteArticle";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
-import ArticleScreen from "./ArticleScreenRenew";
+import ArticleScreen from "./ArticleScreen";
 
 const Header = ({ onFavouritePress, onClosePress, favouriteButtonIcon }) => {
     return (
