@@ -27,8 +27,7 @@ const Header = ({ onFavouritePress, onNextArticleLoadPress, favouriteButtonIcon 
     )
 }
 
-const LoadingComponent = ({opacity, zIndex, isLoading, loadingText}) => {
-    console.log('Z INDEX: ', zIndex);
+const LoadingComponent = ({opacity, zIndex, isLoading}) => {
     return (
         <Animated.View style={{
             backgroundColor: 'black',
@@ -72,7 +71,6 @@ export default function MainArticleScreen({ route, navigation }) {
           useNativeDriver: true
         }).start(({finished}) => {
             if (finished) {
-                console.log('animation ended!');
                 setzIndex(-20);
             }
         })
@@ -80,12 +78,10 @@ export default function MainArticleScreen({ route, navigation }) {
 
     useEffect(() => {
         if(isLoading) {
-            console.log('fade in')
             fadeIn();
             setzIndex(100);
         }
         else {
-            console.log('fade out');
             scrollToTheTop();
             fadeOut();
             setzIndex(100);
@@ -136,7 +132,7 @@ export default function MainArticleScreen({ route, navigation }) {
     return (
         <ArticleScreen
             article={article}
-            loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} loadingText="Loading next article"/>}
+            loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading}/>}
             scrollRef={scrollRef}
             header={<Header 
                         onFavouritePress={toggleFavouriteButton} 

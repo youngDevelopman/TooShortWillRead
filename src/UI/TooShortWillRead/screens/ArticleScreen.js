@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, ActivityIndicator, Animated } from "react-native";
 import CategoryList from "../components/CategoryList";
 import LineSeparator from "../components/LineSeparator";
-import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
 import ExternalLinks from "../components/ExternalLinks";
 
