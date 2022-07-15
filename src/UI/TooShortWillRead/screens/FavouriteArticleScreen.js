@@ -78,7 +78,7 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     }
 
     return (
-        <ArticleScreen
+         <ArticleScreen
             article={article}
             isLoading={isLoading}
             header={<Header 
