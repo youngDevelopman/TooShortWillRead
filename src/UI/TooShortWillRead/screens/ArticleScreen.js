@@ -1,13 +1,11 @@
 import React, { useRef } from "react";
-import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView } from "react-native";
+import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, ActivityIndicator, Animated } from "react-native";
 import CategoryList from "../components/CategoryList";
 import LineSeparator from "../components/LineSeparator";
-import LoadingArticleModal from "../components/LoadingArticleModal";
 import ImageModal from "react-native-image-modal";
 import ExternalLinks from "../components/ExternalLinks";
 
-const ArticleScreen = ({ article, isLoading, header, navigation, scrollRef }) => {
-
+const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRef }) => {    
     const getGooglePageLink = () => {
         return `https://www.google.com/search?q=${article.header}`
     }
@@ -52,8 +50,8 @@ const ArticleScreen = ({ article, isLoading, header, navigation, scrollRef }) =>
                     <LineSeparator />
                     <ExternalLinks googleUrl={getGooglePageLink()} originalUrl={article.originalUrl} navigation={navigation} />
                 </ScrollView>
-                
             </View>
+            {loadingComponent}
         </SafeAreaView>
     )
 }
