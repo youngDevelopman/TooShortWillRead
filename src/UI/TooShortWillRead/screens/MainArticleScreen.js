@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, ActivityIndicator, Text } from "react-native";
+import { View, Animated, ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
@@ -20,7 +20,10 @@ const Header = ({ onFavouritePress, onNextArticleLoadPress, favouriteButtonIcon 
                 marginTop: 10,
                 marginBottom: 10
             }}>
-                <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30} onPress={onFavouritePress} />
+                <TouchableOpacity onPress={onFavouritePress} activeOpacity={0.7}>
+                    <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30}/>
+                </TouchableOpacity>
+                
                 <AppButton onPress={onNextArticleLoadPress} title='Next article' />
             </View>
         </View>
