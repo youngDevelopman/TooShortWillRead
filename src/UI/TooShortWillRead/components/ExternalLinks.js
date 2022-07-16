@@ -3,6 +3,7 @@ import { View, StyleSheet, FlatList, Text } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ExternalLinks = (props) => {
+    console.log(props)
     const sectionsToDisplay = [];
 
     if(props.googleUrl !== null && props.googleUrl !== undefined){

@@ -133,6 +133,7 @@ export default function FavouriteArticleScreen({ route, navigation }) {
          <ArticleScreen
             article={article}
             loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading}/>}
+            navigation={navigation}
             header={<Header 
                         onFavouritePress={toggleFavouriteButton} 
                         onClosePress={closeArticleScreen} 
