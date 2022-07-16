@@ -15,7 +15,7 @@ const ExternalLinks = (props) => {
 
     const renderList = sectionsToDisplay.map((item) => {
         return (
-            <View style={styles.sectionContainer}>
+            <View style={styles.sectionContainer} key={item.title}>
                 <View style={{justifyContent: 'center'}}>
                     <Icon name="circle" color='#FFFFFF' size={12} />
                 </View>

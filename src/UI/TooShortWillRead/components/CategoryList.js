@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 const CategoryList = (props) => {
     const renderList = props.data.map((item) => {
         return (
-            <View style={{paddingRight: 8, paddingBottom: 8 }}>
+            <View style={{paddingRight: 8, paddingBottom: 8 }} key={item}>
                 <View style={styles.category}>
                     <Text style={styles.text}>
                         {item}
