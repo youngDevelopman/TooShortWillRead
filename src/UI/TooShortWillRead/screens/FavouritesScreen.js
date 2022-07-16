@@ -28,7 +28,7 @@ const Item = ({ item, onPress }) => {
 
 
 
-renderSeparator = () => (
+const renderSeparator = () => (
     <View
         style={{
             backgroundColor: 'white',
@@ -80,7 +80,7 @@ const FavouritesScreen = ({ navigation }) => {
                 data={favouriteArticles}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
-                ItemSeparatorComponent={this.renderSeparator}
+                ItemSeparatorComponent={renderSeparator}
             />
         </View>
     );
