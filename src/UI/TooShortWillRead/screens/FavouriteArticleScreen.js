@@ -19,7 +19,9 @@ const Header = ({ onFavouritePress, onClosePress, favouriteButtonIcon }) => {
                 marginTop: 10,
                 marginBottom: 10
             }}>
-                <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30} onPress={onFavouritePress} />
+                <TouchableOpacity onPress={onFavouritePress} activeOpacity={0.7}>
+                    <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30} />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={onClosePress} activeOpacity={0.7}>
                     <View style={{
                         position: 'relative',
@@ -37,7 +39,7 @@ const Header = ({ onFavouritePress, onClosePress, favouriteButtonIcon }) => {
     )
 }
 
-const LoadingComponent = ({opacity, zIndex, isLoading}) => {
+const LoadingComponent = ({ opacity, zIndex, isLoading }) => {
     return (
         <Animated.View style={{
             backgroundColor: 'black',
@@ -49,7 +51,7 @@ const LoadingComponent = ({opacity, zIndex, isLoading}) => {
             opacity: opacity,
             zIndex: zIndex
         }}>
-            <ActivityIndicator color="white" size="large" animating={isLoading}/>
+            <ActivityIndicator color="white" size="large" animating={isLoading} />
         </Animated.View>
     )
 }
@@ -58,44 +60,44 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     const dispatch = useDispatch();
     const { articleId } = route.params;
 
-    useEffect(() => dispatch(loadFavouriteArticle(articleId)), []);
+    useEffect(() => { dispatch(loadFavouriteArticle(articleId)) }, []);
     const currentArticle = useSelector(state => state.favouriteArticlesReducer.currentFavouriteArticle);
     const { isLoading, article } = currentArticle;
 
-        // Loading animation
-        const [zIndex, setzIndex] = useState(-20);
-        const loadingFadeAnim = useRef(new Animated.Value(1)).current;
-        const fadeIn = () => {
-            // Will change fadeAnim value to 1 in 5 seconds
-            Animated.timing(loadingFadeAnim, {
-              toValue: 1,
-              duration: 500,
-              useNativeDriver: true
-            }).start();
-          };
-          const fadeOut = () => {
-            // Will change fadeAnim value to 0 in 3 seconds
-            Animated.timing(loadingFadeAnim, {
-              toValue: 0,
-              duration: 500,
-              useNativeDriver: true
-            }).start(({finished}) => {
-                if (finished) {
-                    setzIndex(-20);
-                }
-            })
-          };
-    
-        useEffect(() => {
-            if(isLoading) {
-                fadeIn();
-                setzIndex(100);
+    // Loading animation
+    const [zIndex, setzIndex] = useState(-20);
+    const loadingFadeAnim = useRef(new Animated.Value(1)).current;
+    const fadeIn = () => {
+        // Will change fadeAnim value to 1 in 5 seconds
+        Animated.timing(loadingFadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true
+        }).start();
+    };
+    const fadeOut = () => {
+        // Will change fadeAnim value to 0 in 3 seconds
+        Animated.timing(loadingFadeAnim, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true
+        }).start(({ finished }) => {
+            if (finished) {
+                setzIndex(-20);
             }
-            else {
-                fadeOut();
-                setzIndex(100);
-            }
-        }, [isLoading]);
+        })
+    };
+
+    useEffect(() => {
+        if (isLoading) {
+            fadeIn();
+            setzIndex(100);
+        }
+        else {
+            fadeOut();
+            setzIndex(100);
+        }
+    }, [isLoading]);
 
     // Favourite article config
     const getFavouriteIcon = () => {
@@ -130,12 +132,13 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     }
 
     return (
-         <ArticleScreen
+        <ArticleScreen
             article={article}
-            loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading}/>}
-            header={<Header 
-                        onFavouritePress={toggleFavouriteButton} 
-                        onClosePress={closeArticleScreen} 
-                        favouriteButtonIcon={favouriteButtonIcon} />} />
+            loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />}
+            navigation={navigation}
+            header={<Header
+                onFavouritePress={toggleFavouriteButton}
+                onClosePress={closeArticleScreen}
+                favouriteButtonIcon={favouriteButtonIcon} />} />
     )
 }
