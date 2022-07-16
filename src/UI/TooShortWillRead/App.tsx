@@ -36,7 +36,8 @@ const FavouriteArticleStack = createNativeStackNavigator();
 function FavouriteArticlesScreen() {
   return (
     <FavouriteArticleStack.Navigator>
-      <FavouriteArticleStack.Screen name="Favourites" component={FavouritesScreen} options={({ route }) => ({
+      <FavouriteArticleStack.Screen name="Favourites List" component={FavouritesScreen} options={({ route }) => ({
+        title: "Favorites",
         headerTintColor: 'dodgerblue',
         headerStyle: {
           backgroundColor: 'rgba(34,36,40,1)',
@@ -56,7 +57,7 @@ function Tabs() {
         backgroundColor: 'rgba(34,36,40,1)',
       }
     })}>
-      <Tab.Screen name="Article" component={ArticleStackScreen}
+      <Tab.Screen name="Main Article" component={ArticleStackScreen}
         options={{
           headerShown: false,
           tabBarShowLabel: false,

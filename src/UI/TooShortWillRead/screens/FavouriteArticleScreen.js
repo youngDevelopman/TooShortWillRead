@@ -60,7 +60,7 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     const dispatch = useDispatch();
     const { articleId } = route.params;
 
-    useEffect(() => dispatch(loadFavouriteArticle(articleId)), []);
+    useEffect(() => { dispatch(loadFavouriteArticle(articleId)) }, []);
     const currentArticle = useSelector(state => state.favouriteArticlesReducer.currentFavouriteArticle);
     const { isLoading, article } = currentArticle;
 

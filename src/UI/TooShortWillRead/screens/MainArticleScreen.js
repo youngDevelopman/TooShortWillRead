@@ -51,7 +51,7 @@ export default function MainArticleScreen({ route, navigation }) {
     const dispatch = useDispatch();
     const scrollRef = useRef();
 
-    useEffect(() => loadNextArticle(), []);
+    useEffect(() =>{ loadNextArticle() }, []);
     const currentArticle = useSelector(state => state.readArticlesReducer.currentArticle);
     const { isLoading, article } = currentArticle;
 
