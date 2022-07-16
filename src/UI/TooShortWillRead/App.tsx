@@ -7,8 +7,7 @@
  */
 
 import React, { useEffect } from 'react';
-import type { Node } from 'react';
-import { Text, View, Button } from 'react-native';
+import type { ReactNode } from 'react'; // ok
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './redux/store';
@@ -86,14 +85,16 @@ function Tabs() {
 }
 
 const MainStack = createNativeStackNavigator();
-const App: () => Node = () => {
-  useEffect(() => store.dispatch(loadArticlesCount()), []);
+const App: () => ReactNode = () => {
+  useEffect(() => {
+    store.dispatch(loadArticlesCount());
+  }, []);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
           <MainStack.Navigator>
-            <MainStack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }}/>
+            <MainStack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
             <MainStack.Screen name="Browser" component={BrowserScreen} options={{ headerShown: false }} />
           </MainStack.Navigator>
         </NavigationContainer>
