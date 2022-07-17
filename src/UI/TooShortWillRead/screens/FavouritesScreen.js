@@ -2,8 +2,6 @@ import React from "react";
 import { StyleSheet, Text, FlatList, View, TouchableOpacity, Image } from "react-native";
 import CategoryList from "../components/CategoryList";
 import { useSelector } from "react-redux";
-import ContextMenu from "react-native-context-menu-view";
-import { removeFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
 import { useDispatch } from "react-redux";
 
 const Item = ({ item, onPress }) => {
@@ -50,30 +48,9 @@ const FavouritesScreen = ({ navigation }) => {
     };
 
     const renderItem = ({ item }) => {
-        return (
-            <ContextMenu
-                previewBackgroundColor={"black"}
-                actions={[{ title: "Open article" }, { title: "Remove from favourites", destructive: true, systemIcon: 'trash' }]}
-                onPress={(e) => {
-                    const {index} = e.nativeEvent;
-                    console.warn(
-                        `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`
-                      );
-                    switch(index) {
-                        case 0:
-                            openFavouriteArticle(item.id);
-                            break;
-                        case 1:
-                            dispatch(removeFavouriteArticle(item.id));
-                            break;
-                    }
-
-                }}
-            >
-                <Item item={item} onPress={openFavouriteArticle} />
-            </ContextMenu>
-        )
+        return <Item item={item} onPress={openFavouriteArticle} />
     }
+
     return (
         <View style={styles.container}>
             <FlatList
