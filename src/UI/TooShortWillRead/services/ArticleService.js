@@ -4,6 +4,7 @@ import Config from "react-native-config";
 const TSWR_BASE_URL = Config.TSWR_BASE_URL;
 const ArticleService = {
     getRandomArticleIdAsync: async function () {
+        console.log('BASE URL', TSWR_BASE_URL);
         const randomArticleIdResponse = await fetch(`${TSWR_BASE_URL}/api/article/random/id`);
         const articleIdJson = await randomArticleIdResponse.json();
         return articleIdJson.id;
