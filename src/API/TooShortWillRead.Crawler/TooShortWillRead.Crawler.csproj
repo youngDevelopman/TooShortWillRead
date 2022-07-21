@@ -1,14 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-TooShortWillRead.Crawler-47A943C8-901D-4B23-86AC-58C6F5EC992A</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Crawler (dev)' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Crawler (dev remote)' " />
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.16.1" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="AngleSharp" Version="0.17.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
   </ItemGroup>
 
