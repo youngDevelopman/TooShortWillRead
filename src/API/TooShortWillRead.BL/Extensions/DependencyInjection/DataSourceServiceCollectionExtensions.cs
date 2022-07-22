@@ -14,9 +14,9 @@ namespace TooShortWillRead.BL.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDataSources(this IServiceCollection services)
         {
-            services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(AngleSharp.Configuration.Default));
+            services.AddSingleton<IBrowsingContext>(serviceProvider => BrowsingContext.New(AngleSharp.Configuration.Default));
 
-            services.AddHttpClient<BritannicaDataSource>(config =>
+            services.AddHttpClient<IDataSource, BritannicaDataSource>(config =>
             {
                 config.BaseAddress = new Uri("https://www.britannica.com");
             });
@@ -25,7 +25,7 @@ namespace TooShortWillRead.BL.Extensions.DependencyInjection
                 config.BaseAddress = new Uri("https://en.wikipedia.org");
             });
 
-            services.AddTransient<IDataSourceFactory, DataSourceFactory>();
+            services.AddSingleton<IDataSourceFactory, DataSourceFactory>();
 
             return services;
         }

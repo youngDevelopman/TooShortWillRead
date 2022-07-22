@@ -5,8 +5,12 @@
     <UserSecretsId>dotnet-TooShortWillRead.Crawler-47A943C8-901D-4B23-86AC-58C6F5EC992A</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Crawler (dev)' " />
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Crawler (dev remote)' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Crawler (dev)' ">
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Crawler (dev remote)' ">
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.17.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
@@ -17,5 +21,13 @@
   <ItemGroup>
     <ProjectReference Include="..\TooShortWillRead.BL\TooShortWillRead.BL.csproj" />
     <ProjectReference Include="..\TooShortWillRead.DAL\TooShortWillRead.DAL.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="ArticlesGenerators\" />
+    <None Remove="Config\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ArticlesGenerators\" />
+    <Folder Include="Config\" />
   </ItemGroup>
 </Project>

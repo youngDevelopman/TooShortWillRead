@@ -32,6 +32,7 @@ namespace TooShortWillRead.Crawler
                     services.Configure<ArticlePictures>(hostContext.Configuration.GetSection("ArticlePictures"));
 
                     services.AddDataSources();
+                    services.AddArticlesGenerators(hostContext.Configuration);
                     services.AddTransient<IPictureStorage, AzureBlobPictureStorage>();
                     services.AddTransient<IArticleService, ArticleService>();
                     services.AddHttpClient();
