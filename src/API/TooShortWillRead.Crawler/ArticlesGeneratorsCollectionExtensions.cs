@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Services.DataSources;
 using TooShortWillRead.Crawler.ArticlesGenerators;
 using TooShortWillRead.Crawler.Config;
@@ -20,7 +21,12 @@ namespace TooShortWillRead.Crawler
         { 
             var dataSourcesToRun = configuration.GetSection("Crawler:DataSourcesToRun").Get<string[]>();
 
-            services.AddHttpClient();
+            if(dataSourcesToRun.Length != 0)
+            {
+                services.AddSingleton<IBrowsingContext>(serviceProvider => BrowsingContext.New(AngleSharp.Configuration.Default));
+                services.AddHttpClient();
+                services.AddSingleton<IDataSourceFactory, DataSourceFactory>();
+            }
 
             foreach (var dataSource in dataSourcesToRun)
             {

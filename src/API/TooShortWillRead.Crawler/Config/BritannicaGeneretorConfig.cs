@@ -6,6 +6,8 @@ namespace TooShortWillRead.Crawler.Config
         public int PageSize { get; set; }
 
         public int CurrentPage { get; set; }
+
+        public string BaseUrl { get; set; }
     }
 }
 
