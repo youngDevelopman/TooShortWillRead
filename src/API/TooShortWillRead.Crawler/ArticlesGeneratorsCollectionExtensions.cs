@@ -32,6 +32,9 @@ namespace TooShortWillRead.Crawler
             {
                 switch(dataSource)
                 {
+                    case "Wikipedia":
+                        RegisterWikipediaServices(services, configuration);
+                        break;
                     case "Britannica":
                         RegisterBritaniccaServices(services, configuration);
                         break;
@@ -39,6 +42,35 @@ namespace TooShortWillRead.Crawler
             }
 
             return services;
+        }
+
+        private static void RegisterWikipediaServices(
+            IServiceCollection services,
+            Microsoft.Extensions.Configuration.IConfiguration configuration)
+        {
+            services.Configure<WikipediaGeneratorConfig>(configuration.GetSection($"Crawler:Wikipedia"));
+            var baseUrl = configuration.GetSection("Crawler:Wikipedia:BaseUrl").Get<string>();
+
+            services.AddHttpClient("Wikipedia", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(baseUrl);
+            });
+
+            services.AddTransient<IArticlesGenerator>(serviceProvider =>
+            {
+                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient("Wikipedia");
+
+                var browsingContext = serviceProvider.GetRequiredService<IBrowsingContext>();
+                var logger = serviceProvider.GetRequiredService<ILogger<WikipediaDataSource>>();
+                var dataSource = new WikipediaDataSource(httpClient, browsingContext, logger);
+
+
+                var options = serviceProvider.GetRequiredService<IOptions<WikipediaGeneratorConfig>>();
+                var generator = new WikipediaArticlesGenerator(httpClient, dataSource, options);
+
+                return generator;
+            });
         }
 
         private static void RegisterBritaniccaServices(
