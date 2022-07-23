@@ -39,7 +39,8 @@ namespace TooShortWillRead.Crawler
 
         private async Task StartSourcingAsync(IArticlesGenerator articlesGenerator, CancellationToken stoppingToken)
         {
-            //_logger.LogInformation($"=====START SOURCING FOR {dataSource.DataSource}=====");
+            var type = articlesGenerator.GetType();
+            _logger.LogInformation($"=====START SOURCING FOR {articlesGenerator.GetType().Name}=====");
             while (!stoppingToken.IsCancellationRequested)
             {
                 var randomArticles = await articlesGenerator.GenerateArticlesAsync();
@@ -52,7 +53,7 @@ namespace TooShortWillRead.Crawler
 
                 await Task.Delay(1000, stoppingToken);
             }
-            //_logger.LogInformation($"=====END SOURCING FOR {dataSource.DataSource}=====");
+            _logger.LogInformation($"=====END SOURCING FOR {articlesGenerator.GetType().Name}=====");
         }
     }
 }
