@@ -325,6 +325,7 @@ namespace TooShortWillRead.Web.Api.Services
                     Header = article.Header,
                     Text = article.Text,
                     ImageName = article.ImageName,
+                    OriginalUrl = article.OriginalUrl,
                     Categories = article.Categories
                         .Select(c => new Category() { Name = c })
                         .ToList(),

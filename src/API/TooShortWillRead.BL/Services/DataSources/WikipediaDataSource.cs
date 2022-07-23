@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using TooShortWillRead.BL.Enums;
 using TooShortWillRead.BL.Interfaces;
 using TooShortWillRead.BL.Models;
@@ -17,36 +19,35 @@ namespace TooShortWillRead.BL.Services.DataSources
     {
         private readonly HttpClient _httpClient;
         private readonly IBrowsingContext _browsingContext;
-        public WikipediaDataSource(HttpClient httpClient, IBrowsingContext browsingContext)
+        private readonly ILogger<WikipediaDataSource> _logger;
+        public WikipediaDataSource(
+            HttpClient httpClient,
+            IBrowsingContext browsingContext,
+            ILogger<WikipediaDataSource> logger)
         {
             _httpClient = httpClient;
             _browsingContext = browsingContext;
+            _logger = logger;
         }
 
         public DataSourceEnum DataSource => DataSourceEnum.Wikipedia;
 
-        public  async Task<List<DataSourceArticle>> GenerateRandomArticlesAsync()
-        {
-            var randomArticles = await GenerateListOfRandomArticles();
-            var articles = new List<DataSourceArticle>();
-            foreach(var article in randomArticles)
-            {
-                var articleToAdd = await GetArticle(article);
-                if(articleToAdd == null)
-                {
-                    continue;
-                }
-                articles.Add(articleToAdd);
-            }
-
-            return articles;
-        }
-
         public async Task<DataSourceArticle> GetArticleAsync(string url)
         {
-            var titleFromUrl = new Uri(url).Segments.Last();
+            var uri = new Uri(url);
+            var queryStrings = HttpUtility.ParseQueryString(uri.Query);
+            var curid = queryStrings["curid"];
+            int pageId;
+            if (curid != null)
+            {
+                pageId = int.Parse(curid);
+            }
+            else
+            {
+                var titleFromUrl = uri.Segments.Last();
+                pageId = await GetWikipediaPageIdFromTitleAsync(titleFromUrl);
+            }
 
-            var pageId = await GetWikipediaPageIdFromTitleAsync(titleFromUrl);
             var article = await GetArticle(pageId);
 
             return article;
@@ -76,23 +77,6 @@ namespace TooShortWillRead.BL.Services.DataSources
             };
 
             return article;
-        }
-
-        private async Task<List<int>> GenerateListOfRandomArticles()
-        {
-            var randomArticlesResponse = await _httpClient.GetAsync("w/api.php?action=query&list=random&rnnamespace=0&rnlimit=10&format=json");
-            var content = await randomArticlesResponse.Content.ReadAsStringAsync();
-
-            var json = JsonDocument.Parse(content).RootElement;
-            var randomArticlesJsonList = json.GetProperty("query").GetProperty("random");
-
-            var randomArticles = randomArticlesJsonList.EnumerateArray().Select(article =>
-            {
-                var pageId = article.GetProperty("id").GetInt32();
-                return pageId;
-            });
-
-            return randomArticles.ToList();
         }
 
         private async Task<int> GetWikipediaPageIdFromTitleAsync(string pageTitle)

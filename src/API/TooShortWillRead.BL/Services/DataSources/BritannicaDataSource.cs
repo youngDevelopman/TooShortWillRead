@@ -22,8 +22,6 @@ namespace TooShortWillRead.BL.Services.DataSources
         private readonly HttpClient _httpClient;
         private readonly IBrowsingContext _browsingContext;
         private readonly ILogger<BritannicaDataSource> _logger;
-        private int _currentPage;
-        private int _pageSize;
 
         public DataSourceEnum DataSource => DataSourceEnum.Britannica;
 
@@ -35,29 +33,6 @@ namespace TooShortWillRead.BL.Services.DataSources
             _httpClient = httpClient;
             _browsingContext = browsingContext;
             _logger = logger;
-
-            _pageSize = 10;
-        }
-
-        public async Task<List<DataSourceArticle>> GenerateRandomArticlesAsync()
-        {
-            var randomArticles = await GenerateListOfRandomArticles();
-
-            var result = new List<DataSourceArticle>();
-            foreach (var anchor in randomArticles)
-            {
-                string articleRelativePath = anchor.PathName;
-                var articleUrl = new Uri(_httpClient.BaseAddress, articleRelativePath);
-                var article = await GetArticleAsync(articleUrl.ToString());
-
-                if (article != null)
-                {
-                    result.Add(article);
-                }
-
-            }
-            _currentPage++;
-            return result;
         }
 
         public async Task<DataSourceArticle> GetArticleAsync(string url)
@@ -97,19 +72,6 @@ namespace TooShortWillRead.BL.Services.DataSources
             };
 
             return article;
-        }
-
-        private async Task<List<IHtmlAnchorElement>> GenerateListOfRandomArticles()
-        {
-            var randomArticlesResponse = await _httpClient.GetAsync($"ajax/summary/browse?p={_currentPage}&n={_pageSize}");
-            var content = await randomArticlesResponse.Content.ReadAsStringAsync();
-
-            var document = await _browsingContext.OpenAsync(req => req.Content(content));
-            var anchors = document.All
-                .Where(m => m.LocalName == "a" && m.ClassList.Contains("card-media"))
-                .Select(a => a as IHtmlAnchorElement);
-
-            return anchors.ToList();
         }
 
         private bool IsSummaryArticle(IDocument htmlDocument)
