@@ -23,9 +23,9 @@ namespace TooShortWillRead.Crawler
 
             if(dataSourcesToRun.Length != 0)
             {
-                services.AddSingleton<IBrowsingContext>(serviceProvider => BrowsingContext.New(AngleSharp.Configuration.Default));
+                services.AddTransient<IBrowsingContext>(serviceProvider => BrowsingContext.New(AngleSharp.Configuration.Default));
                 services.AddHttpClient();
-                services.AddSingleton<IDataSourceFactory, DataSourceFactory>();
+                services.AddTransient<IDataSourceFactory, DataSourceFactory>();
             }
 
             foreach (var dataSource in dataSourcesToRun)
