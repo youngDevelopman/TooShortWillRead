@@ -40,7 +40,7 @@ function FavouriteArticlesScreen() {
         title: "Favorites",
         headerTintColor: 'dodgerblue',
         headerStyle: {
-          backgroundColor: 'rgba(34,36,40,1)',
+          backgroundColor: 'black',
         }
       })} />
       <FavouriteArticleStack.Screen name="FavouriteArticle" component={FavouriteArticleScreen} options={{ headerShown: false }} />
@@ -54,7 +54,8 @@ function Tabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
       tabBarStyle: {
-        backgroundColor: 'rgba(34,36,40,1)',
+        backgroundColor: 'black',
+        borderTopWidth: 0,
       }
     })}>
       <Tab.Screen name="Main Article" component={ArticleStackScreen}
