@@ -38,7 +38,7 @@ function FavouriteArticlesScreen() {
     <FavouriteArticleStack.Navigator>
       <FavouriteArticleStack.Screen name="Favourites List" component={FavouritesScreen} options={({ route }) => ({
         title: "Favorites",
-        headerTintColor: 'dodgerblue',
+        headerTintColor: 'white',
         headerStyle: {
           backgroundColor: 'black',
         }
@@ -67,7 +67,7 @@ function Tabs() {
             if (focused) {
               iconName = 'book'
             }
-            return <Ionicons name={iconName} color='dodgerblue' size={25} />
+            return <Ionicons name={iconName} color='white' size={25} />
           }
         }} />
       <Tab.Screen name="Favourites" component={FavouriteArticlesScreen}
@@ -79,7 +79,7 @@ function Tabs() {
             if (focused) {
               iconName = 'star'
             }
-            return <Ionicons name={iconName} color='dodgerblue' size={25} />
+            return <Ionicons name={iconName} color='white' size={25} />
           },
         }} />
     </Tab.Navigator>
