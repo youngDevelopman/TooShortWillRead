@@ -41,7 +41,6 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
                         </Text>
                     </View>
                     <CategoryList data={article.categories} />
-                    <LineSeparator />
                     <View>
                         <Text style={styles.text}>
                             {article.text}
@@ -78,6 +77,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 30,
         fontWeight: "bold",
+        fontFamily: 'Exo 2',
         paddingTop: 10,
         paddingBottom: 10
     },
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         color: '#FFFFFF',
         fontSize: 18,
-        fontFamily: 'Exo 2'
+        fontFamily: 'Exo 2',
+        lineHeight: 25
     }
 });
 
