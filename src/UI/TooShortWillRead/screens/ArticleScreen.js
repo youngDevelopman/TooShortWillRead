@@ -89,7 +89,8 @@ const styles = StyleSheet.create({
         textAlign: 'auto',
         textAlignVertical: 'center',
         color: '#FFFFFF',
-        fontSize: 18
+        fontSize: 18,
+        fontFamily: 'Exo 2'
     }
 });
 
