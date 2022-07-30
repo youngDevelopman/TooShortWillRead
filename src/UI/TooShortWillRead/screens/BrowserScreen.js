@@ -85,7 +85,6 @@ const BrowserScreen = ({ route, navigation }) => {
                 <View style={styles.backAndForwardButtonsContainer}>
                     <Icon.Button
                         name="angle-left"
-                        style={{ opacity: canGoBack ? 1 : 0.3, alignItems: 'center' }}
                         onPress={backButtonHandler}
                         backgroundColor={styles.primaryColor}
                         color={ canGoBack ? styles.secondaryColor : 'grey'}
@@ -95,7 +94,6 @@ const BrowserScreen = ({ route, navigation }) => {
                     />
                     <Icon.Button
                         name="angle-right"
-                        style={{ opacity: canGoForward ? 1 : 0.3 }}
                         onPress={frontButtonHandler}
                         backgroundColor={styles.primaryColor}
                         color={ canGoForward ? styles.secondaryColor : 'grey'}
