@@ -53,7 +53,7 @@ const BrowserScreen = ({ route, navigation }) => {
             <View style={styles.headerContainer}>
                 <View style={{ flex: 1, }}>
                     <TouchableOpacity onPress={goBackHandler} style={styles.doneButtonContainer}>
-                        <Text style={styles.doneButton}>Done</Text>
+                        <Text style={[styles.doneButton, {color: styles.secondaryColor}]}>Done</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ flex: 4, ...styles.hostnameContainer }}>
@@ -85,27 +85,30 @@ const BrowserScreen = ({ route, navigation }) => {
                 <View style={styles.backAndForwardButtonsContainer}>
                     <Icon.Button
                         name="angle-left"
-                        style={{ opacity: canGoBack ? 1 : 0.3, alignItems: 'center' }}
                         onPress={backButtonHandler}
                         backgroundColor={styles.primaryColor}
+                        color={ canGoBack ? styles.secondaryColor : 'grey'}
                         size={35}
                         activeOpacity={0.3}
-                        underlayColor={styles.primaryColor} />
+                        underlayColor={styles.primaryColor}
+                    />
                     <Icon.Button
                         name="angle-right"
-                        style={{ opacity: canGoForward ? 1 : 0.3 }}
                         onPress={frontButtonHandler}
                         backgroundColor={styles.primaryColor}
+                        color={ canGoForward ? styles.secondaryColor : 'grey'}
                         size={35}
                         activeOpacity={0.3}
                         underlayColor={styles.primaryColor} />
                 </View>
                 <View style={styles.goToBrowserContainer}>
                     <Icon.Button
+                        brand
                         name="safari"
                         style={{ opacity: 1 }}
                         onPress={openBrowser}
                         backgroundColor={styles.primaryColor}
+                        color={styles.secondaryColor}
                         size={35}
                         activeOpacity={0.3}
                         underlayColor={styles.primaryColor} />
@@ -116,10 +119,11 @@ const BrowserScreen = ({ route, navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    primaryColor: 'grey',
+    primaryColor: 'dimgray',
+    secondaryColor: 'dodgerblue',
     containter: {
         flex: 1,
-        backgroundColor: 'grey'
+        backgroundColor: 'dimgray'
     },
     headerContainer: {
         flexDirection: 'row',
@@ -141,7 +145,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     doneButton: {
-        color: 'white',
         fontWeight: 'bold',
         fontSize: 17
     },
@@ -151,9 +154,9 @@ const styles = StyleSheet.create({
     },
     footerContainer: {
         flexDirection: "row",
-        backgroundColor: 'grey',
+        backgroundColor: 'dimgray',
         alignItems: 'center',
-        marginBottom: 15,
+        marginBottom: 20,
     },
     backAndForwardButtonsContainer: {
         flex: 1,
