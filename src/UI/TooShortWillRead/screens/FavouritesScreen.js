@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 25,
         fontWeight: 'bold',
-        color: 'white'
+        color: 'white',
+        fontFamily: 'Exo 2'
     },
     itemContainer: {
         flexDirection: 'row',
