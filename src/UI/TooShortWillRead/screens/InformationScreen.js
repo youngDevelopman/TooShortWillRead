@@ -10,6 +10,7 @@ const InformationScreen = () => {
                     fontSize: 20, 
                     color: 'white',
                     paddingBottom: 10,
+                    paddingTop: 100
                     }}>
                         Thanks for downloading {'\n'} Too Short; Will Read!
             </Text>
@@ -55,8 +56,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        textAlign: "center",
-        paddingTop: 200,
         backgroundColor: 'black'
     }
 });
