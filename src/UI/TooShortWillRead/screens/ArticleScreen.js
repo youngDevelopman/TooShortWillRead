@@ -131,6 +131,7 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
                     ref={bottomSheetRef}
                     snapPoints={snapPoints}
                     onChange={handleSheetChanges}
+                    enablePanDownToClose={true}
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.externalLinksContainer}
                 >
