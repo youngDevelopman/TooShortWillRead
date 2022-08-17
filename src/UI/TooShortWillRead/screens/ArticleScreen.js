@@ -70,18 +70,7 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
     // variables
     const snapPoints = useMemo(() => ['25%'], []);
 
-    // callbacks
-    const handleSheetChanges = useCallback((index) => {
-        console.log('handleSheetChanges', index);
-    }, []);
-
-    const getGooglePageLink = () => {
-        return `https://www.google.com/search?q=${article.header}`
-    }
-
     const openExternalLinksModal = () => {
-        console.log('External links open')
-        console.log(bottomSheetRef.current);
         bottomSheetRef.current.expand();
     }
 
@@ -130,7 +119,6 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
                     index={-1}
                     ref={bottomSheetRef}
                     snapPoints={snapPoints}
-                    onChange={handleSheetChanges}
                     enablePanDownToClose={true}
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.externalLinksContainer}
