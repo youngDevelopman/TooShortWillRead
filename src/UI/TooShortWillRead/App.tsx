@@ -20,6 +20,7 @@ import FavouriteArticleScreen from './screens/FavouriteArticleScreen';
 import BrowserScreen from './screens/BrowserScreen';
 import { loadArticlesCount } from './redux/actions/loadArticlesCount';
 import MainArticleScreen from './screens/MainArticleScreen';
+import InformationScreen from './screens/InformationScreen';
 
 const ArticleStack = createNativeStackNavigator();
 
@@ -80,6 +81,18 @@ function Tabs() {
               iconName = 'star'
             }
             return <Ionicons name={iconName} color='white' size={25} />
+          },
+        }} />
+      <Tab.Screen name="Info" component={InformationScreen}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName = 'information-circle-outline'
+            if (focused) {
+              iconName = 'information-circle'
+            }
+            return <Ionicons name={iconName} color='white' size={30} />
           },
         }} />
     </Tab.Navigator>
