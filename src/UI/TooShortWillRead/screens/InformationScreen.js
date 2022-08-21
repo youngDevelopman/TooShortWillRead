@@ -1,16 +1,17 @@
 import React from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import LineSeparator from "../components/LineSeparator";
 
 const InformationScreen = () => {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text style={
                 {
                     fontSize: 20, 
                     color: 'white',
                     paddingBottom: 10,
-                    paddingTop: 100
+                    paddingTop: 50
                     }}>
                         Thanks for downloading {'\n'} Too Short; Will Read!
             </Text>
@@ -47,7 +48,7 @@ const InformationScreen = () => {
                     );
                 }}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 
