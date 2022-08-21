@@ -58,6 +58,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             string summary = GetArticleSummary(document);
             string header = GetArticleHeader(document);
             var categories = GetCategories(document);
+            var originalUrl = GetFullArticleUrl(document);
 
             var article = new DataSourceArticle()
             {
@@ -68,7 +69,7 @@ namespace TooShortWillRead.BL.Services.DataSources
                 InternalId = articleId,
                 Text = summary,
                 Categories = categories,
-                OriginalUrl = new Uri(url),
+                OriginalUrl = originalUrl,
             };
 
             return article;
@@ -129,7 +130,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             }
 
             var absoluteImagePath = new Uri(imagesAnchorElement.Href).AbsolutePath;
-            var imagesRef = new Uri(new Uri("https://www.britannica.com"), absoluteImagePath);
+            var imagesRef = new Uri(new Uri(_httpClient.BaseAddress.ToString()), absoluteImagePath);
 
             var response = await _httpClient.GetAsync(imagesRef);
             var content = await response.Content.ReadAsStringAsync();
@@ -142,6 +143,22 @@ namespace TooShortWillRead.BL.Services.DataSources
             var imageUrl = new Uri(imageElement.Source).GetLeftPart(UriPartial.Path);
 
             return imageUrl;
+        }
+
+        private Uri GetFullArticleUrl(IDocument htmlDocument)
+        {
+            string searchStr = "Below is the article summary. For the full article, see";
+
+            var anchorElement = (IHtmlAnchorElement)htmlDocument
+                .QuerySelectorAll(@$"div:contains(""{searchStr}"")")
+                .Last()
+                .Children
+                .First();
+
+            var absolutePath = new Uri(anchorElement.Href).AbsolutePath;
+            var fullArticleUrl = new Uri(new Uri(_httpClient.BaseAddress.ToString()), absolutePath);
+
+            return fullArticleUrl;
         }
 
         private IEnumerable<string> GetCategories(IDocument document)
