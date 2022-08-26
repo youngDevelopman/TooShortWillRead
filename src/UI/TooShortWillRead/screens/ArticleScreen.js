@@ -77,7 +77,7 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
     return (
         <View style={styles.container}>
             <SafeAreaView style={styles.container}>
-                <View style={{ paddingLeft: 10, paddingRight: 10, flex: 1 }}>
+                <View style={{ paddingLeft: 10, paddingRight: 10 }}>
                     <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
                     <ScrollView
                         ref={scrollRef}
@@ -140,7 +140,6 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#000000',
-        flex: 1,
     },
     headerImageStyle: {
         height: '100%',
