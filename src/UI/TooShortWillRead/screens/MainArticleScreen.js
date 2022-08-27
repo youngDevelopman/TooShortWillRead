@@ -16,10 +16,17 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 class ArticleSwipable extends Swipeable {
     closeIstantly = () => {
-      const { dragX, rowTranslation } = this.state;
-      dragX.setValue(0);
-      rowTranslation.setValue(0);
-      this.setState({ rowState: Math.sign(0) });
+        const { dragX, rowTranslation } = this.state;
+        dragX.setValue(0);
+        rowTranslation.setValue(0);
+        this.setState({ rowState: Math.sign(0) });
+    }
+    getDragX = () => {
+        return this.state.dragX;
+    }
+
+    getRowTransition = () => {
+        return this.state.rowTranslation;
     }
 }
 
@@ -38,8 +45,6 @@ const Header = ({ onFavouritePress, onNextArticleLoadPress, favouriteButtonIcon 
                 <TouchableOpacity onPress={onFavouritePress} activeOpacity={0.7}>
                     <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30} />
                 </TouchableOpacity>
-
-                <AppButton onPress={onNextArticleLoadPress} title='Next article' />
             </View>
         </View>
     )
@@ -67,6 +72,33 @@ export default function MainArticleScreen({ route, navigation }) {
     const scrollRef = useRef();
 
     const swipeableRef = useRef(null);
+    const nextArticleIconScale = useRef(new Animated.Value(0)).current;
+    const tt = nextArticleIconScale.interpolate({
+        inputRange: [0, 135],
+        outputRange: [0, 2.5],
+        extrapolate: 'clamp'
+    });
+
+    const nextArticleFadeOutAnim = () => {
+        Animated.timing(nextArticleIconScale, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true
+        }).start()
+    };
+
+    useEffect(() => {
+        //nextArticleIconScale.addListener(value => console.log('nextArticleIconScale', value))
+        swipeableRef.current.getDragX().addListener(dragX => {
+            //console.log('DRAG X EVENT', dragX);
+            nextArticleIconScale.setValue(Math.abs(dragX.value));
+        })
+        swipeableRef.current.getRowTransition().addListener(x => {
+            //console.log('Row transition', x);
+            nextArticleIconScale.setValue(Math.abs(x.value));
+        })
+    }, [swipeableRef]);
+
 
     useEffect(() => { loadNextArticle() }, []);
     const currentArticle = useSelector(state => state.readArticlesReducer.currentArticle);
@@ -152,13 +184,15 @@ export default function MainArticleScreen({ route, navigation }) {
 
     const loadArticleSwipe = (direction) => {
         console.log('direction', direction)
+        nextArticleFadeOutAnim();
         loadNextArticle();
     };
 
     const iconRef = useRef();
     renderRightActions = (progress, dragX) => {
-        console.log('progress', progress)
-        console.log('dragX', dragX);
+        console.log('swipable state', swipeableRef.state)
+        //console.log('progress', progress)
+        //console.log('dragX', dragX);
         const dragXAbs = Animated.multiply(dragX, -1);
         const scale = dragXAbs.interpolate({
             inputRange: [0, 135],
@@ -174,9 +208,8 @@ export default function MainArticleScreen({ route, navigation }) {
                 flex: 1
             }}>
                 <AnimatedIcon
-                    
                     name={'arrow-forward-circle'} color='dodgerblue' size={60} ref={iconRef}
-                    style={{ alignSelf:'flex-end', paddingRight:20, transform: [{scale: scale}]}}/>   
+                    style={{ alignSelf: 'flex-end', paddingRight: 20, transform: [{ scale: tt }] }} />
             </View>
         );
     };
@@ -184,19 +217,17 @@ export default function MainArticleScreen({ route, navigation }) {
     return (
         <View>
             <ArticleSwipable
-                friction={1}
                 ref={swipeableRef}
                 renderRightActions={this.renderRightActions}
                 onSwipeableClose={() => console.log('close')}
                 onSwipeableOpen={loadArticleSwipe}
-                onSwipeableWillOpen={() => setzIndex(100)}>
+                onSwipeableWillOpen={() =>{ setzIndex(100); }}>
                 <ArticleScreen
                     article={article}
                     navigation={navigation}
                     scrollRef={scrollRef}
                     header={<Header
                         onFavouritePress={toggleFavouriteButton}
-                        onNextArticleLoadPress={loadNextArticle}
                         favouriteButtonIcon={favouriteButtonIcon} />} />
 
             </ArticleSwipable>
