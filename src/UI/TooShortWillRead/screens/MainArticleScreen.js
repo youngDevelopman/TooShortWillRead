@@ -10,6 +10,7 @@ import { incrementArticlesShownBeforeAdCount } from "../redux/actions/readArticl
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Dimensions } from "react-native";
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
@@ -80,7 +81,6 @@ export default function MainArticleScreen({ route, navigation }) {
             duration: 500,
             useNativeDriver: true
         }).start(({ finished }) => {
-            setzIndex(100);
             swipeableRef.current.closeIstantly();
         });
     };
@@ -157,25 +157,26 @@ export default function MainArticleScreen({ route, navigation }) {
 
     const iconRef = useRef();
     renderRightActions = (progress, dragX) => {
-        //console.log('progress', progress)
-        //console.log('dragX', dragX);
+        console.log('progress', progress)
+        console.log('dragX', dragX);
         const dragXAbs = Animated.multiply(dragX, -1);
         const scale = dragXAbs.interpolate({
-            inputRange: [0, 100],
-            outputRange: [0, 100],
+            inputRange: [0, 135],
+            outputRange: [0, 2.5],
+            extrapolate: 'clamp'
         });
         //console.log('scale', scale)
         return (
             <View style={{
                 justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'black',
                 flex: 1
             }}>
-                <View>
-                    <AnimatedIcon
+                <AnimatedIcon
                     
                     name={'arrow-forward-circle'} color='dodgerblue' size={60} ref={iconRef}
-                    style={{  textAlign: 'right', position: 'absolute', top: 100, left: 320, transform: [{scale: 3}]}}/>
-                </View>       
+                    style={{ alignSelf:'flex-end', paddingRight:20, transform: [{scale: scale}]}}/>   
             </View>
         );
     };
