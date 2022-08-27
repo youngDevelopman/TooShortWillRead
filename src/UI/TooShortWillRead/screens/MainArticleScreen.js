@@ -11,6 +11,8 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
+
 class ArticleSwipable extends Swipeable {
     closeIstantly = () => {
       const { dragX, rowTranslation } = this.state;
@@ -18,7 +20,7 @@ class ArticleSwipable extends Swipeable {
       rowTranslation.setValue(0);
       this.setState({ rowState: Math.sign(0) });
     }
-  }
+}
 
 const Header = ({ onFavouritePress, onNextArticleLoadPress, favouriteButtonIcon }) => {
     return (
@@ -78,11 +80,8 @@ export default function MainArticleScreen({ route, navigation }) {
             duration: 500,
             useNativeDriver: true
         }).start(({ finished }) => {
-            console.log('start fade in');
+            setzIndex(100);
             swipeableRef.current.closeIstantly();
-            if (finished) {
-                console.log('finished fade in');
-            }
         });
     };
     const fadeOut = () => {
@@ -94,7 +93,6 @@ export default function MainArticleScreen({ route, navigation }) {
             console.log('start fade out');
             if (finished) {
                 console.log('finished fade out');
-                //swipeableRef.current.close();
                 setzIndex(-20);
             }
         })
@@ -103,7 +101,6 @@ export default function MainArticleScreen({ route, navigation }) {
     useEffect(() => {
         if (isLoading) {
             fadeIn();
-            setzIndex(100);
         }
         else {
             scrollToTheTop();
@@ -158,21 +155,27 @@ export default function MainArticleScreen({ route, navigation }) {
         loadNextArticle();
     };
 
+    const iconRef = useRef();
     renderRightActions = (progress, dragX) => {
         //console.log('progress', progress)
-        //console.log('dragX', dragX)
-        const trans = dragX.interpolate({
+        //console.log('dragX', dragX);
+        const dragXAbs = Animated.multiply(dragX, -1);
+        const scale = dragXAbs.interpolate({
             inputRange: [0, 100],
-            outputRange: [0, 1],
+            outputRange: [0, 100],
         });
+        //console.log('scale', scale)
         return (
             <View style={{
                 justifyContent: 'center',
                 flex: 1
             }}>
-                <Text style={{ textAlign: 'right' }}>
-                    This is test1111
-                </Text>
+                <View>
+                    <AnimatedIcon
+                    
+                    name={'arrow-forward-circle'} color='dodgerblue' size={60} ref={iconRef}
+                    style={{  textAlign: 'right', position: 'absolute', top: 100, left: 320, transform: [{scale: 3}]}}/>
+                </View>       
             </View>
         );
     };
@@ -180,10 +183,12 @@ export default function MainArticleScreen({ route, navigation }) {
     return (
         <View>
             <ArticleSwipable
+                friction={1}
                 ref={swipeableRef}
                 renderRightActions={this.renderRightActions}
                 onSwipeableClose={() => console.log('close')}
-                onSwipeableOpen={loadArticleSwipe}>
+                onSwipeableOpen={loadArticleSwipe}
+                onSwipeableWillOpen={() => setzIndex(100)}>
                 <ArticleScreen
                     article={article}
                     navigation={navigation}
