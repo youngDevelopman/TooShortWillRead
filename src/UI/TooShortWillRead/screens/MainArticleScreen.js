@@ -4,9 +4,30 @@ import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
 import ArticleScreen from "./ArticleScreen";
-import AppButton from "../components/AppButton";
 import { loadArticle } from "../redux/actions/loadArticle";
 import { incrementArticlesShownBeforeAdCount } from "../redux/actions/readArticlesActions";
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { SafeAreaView } from "react-native-safe-area-context";
+
+
+
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
+
+class ArticleSwipable extends Swipeable {
+    closeIstantly = () => {
+        const { dragX, rowTranslation } = this.state;
+        dragX.setValue(0);
+        rowTranslation.setValue(0);
+        this.setState({ rowState: Math.sign(0) });
+    }
+    getDragX = () => {
+        return this.state.dragX;
+    }
+
+    getRowTransition = () => {
+        return this.state.rowTranslation;
+    }
+}
 
 const Header = ({ onFavouritePress, onNextArticleLoadPress, favouriteButtonIcon }) => {
     return (
@@ -21,16 +42,14 @@ const Header = ({ onFavouritePress, onNextArticleLoadPress, favouriteButtonIcon 
                 marginBottom: 10
             }}>
                 <TouchableOpacity onPress={onFavouritePress} activeOpacity={0.7}>
-                    <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30}/>
+                    <Ionicons name={favouriteButtonIcon} color='dodgerblue' size={30} />
                 </TouchableOpacity>
-                
-                <AppButton onPress={onNextArticleLoadPress} title='Next article' />
             </View>
         </View>
     )
 }
 
-const LoadingComponent = ({opacity, zIndex, isLoading}) => {
+const LoadingComponent = ({ opacity, zIndex, isLoading }) => {
     return (
         <Animated.View style={{
             backgroundColor: 'black',
@@ -42,7 +61,7 @@ const LoadingComponent = ({opacity, zIndex, isLoading}) => {
             opacity: opacity,
             zIndex: zIndex
         }}>
-            <ActivityIndicator color="white" size="large" animating={isLoading}/>
+            <ActivityIndicator color="white" size="large" animating={isLoading} />
         </Animated.View>
     )
 }
@@ -51,7 +70,36 @@ export default function MainArticleScreen({ route, navigation }) {
     const dispatch = useDispatch();
     const scrollRef = useRef();
 
-    useEffect(() =>{ loadNextArticle() }, []);
+    const swipeableRef = useRef(null);
+    const nextArticleIconScale = useRef(new Animated.Value(0)).current;
+    const nextArticleInconScaleInterpolated = nextArticleIconScale.interpolate({
+        inputRange: [0, 135],
+        outputRange: [0, 2.5],
+        extrapolate: 'clamp'
+    });
+
+    const nextArticleFadeOutAnim = () => {
+        Animated.timing(nextArticleIconScale, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true
+        }).start()
+    };
+
+    useEffect(() => {
+        //nextArticleIconScale.addListener(value => console.log('nextArticleIconScale', value))
+        swipeableRef.current.getDragX().addListener(dragX => {
+            //console.log('DRAG X EVENT', dragX);
+            nextArticleIconScale.setValue(Math.abs(dragX.value));
+        })
+        swipeableRef.current.getRowTransition().addListener(x => {
+            //console.log('Row transition', x);
+            nextArticleIconScale.setValue(Math.abs(x.value));
+        })
+    }, [swipeableRef]);
+
+
+    useEffect(() => { loadNextArticle() }, []);
     const currentArticle = useSelector(state => state.readArticlesReducer.currentArticle);
     const { isLoading, article } = currentArticle;
 
@@ -59,30 +107,31 @@ export default function MainArticleScreen({ route, navigation }) {
     const [zIndex, setzIndex] = useState(-20);
     const loadingFadeAnim = useRef(new Animated.Value(0)).current;
     const fadeIn = () => {
-        // Will change fadeAnim value to 1 in 5 seconds
         Animated.timing(loadingFadeAnim, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true
-        }).start();
-      };
-      const fadeOut = () => {
-        // Will change fadeAnim value to 0 in 3 seconds
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true
+        }).start(({ finished }) => {
+            swipeableRef.current.closeIstantly();
+        });
+    };
+    const fadeOut = () => {
         Animated.timing(loadingFadeAnim, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true
-        }).start(({finished}) => {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true
+        }).start(({ finished }) => {
+            console.log('start fade out');
             if (finished) {
+                console.log('finished fade out');
                 setzIndex(-20);
             }
         })
-      };
+    };
 
     useEffect(() => {
-        if(isLoading) {
+        if (isLoading) {
             fadeIn();
-            setzIndex(100);
         }
         else {
             scrollToTheTop();
@@ -128,19 +177,51 @@ export default function MainArticleScreen({ route, navigation }) {
 
     const loadNextArticle = async () => {
         dispatch(loadArticle());
-    
+
         dispatch(incrementArticlesShownBeforeAdCount())
     }
 
+    const loadArticleSwipe = (direction) => {
+        console.log('direction', direction)
+        nextArticleFadeOutAnim();
+        loadNextArticle();
+    };
+
+    const iconRef = useRef();
+    renderRightActions = (progress, dragX) => {
+        return (
+            <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'black',
+                flex: 1
+            }}>
+                <AnimatedIcon
+                    name={'arrow-forward-circle'} color='dodgerblue' size={60} ref={iconRef}
+                    style={{ alignSelf: 'flex-end', paddingRight: 20, transform: [{ scale: nextArticleInconScaleInterpolated }] }} />
+            </View>
+        );
+    };
+
     return (
-        <ArticleScreen
-            article={article}
-            loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading}/>}
-            navigation={navigation}
-            scrollRef={scrollRef}
-            header={<Header 
-                        onFavouritePress={toggleFavouriteButton} 
-                        onNextArticleLoadPress={loadNextArticle} 
-                        favouriteButtonIcon={favouriteButtonIcon} />} />
+        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}} edges={['right', 'left', 'top']}>
+            <ArticleSwipable
+                style={{backgroundColor: 'red'}}
+                ref={swipeableRef}
+                renderRightActions={this.renderRightActions}
+                onSwipeableClose={() => console.log('close')}
+                onSwipeableOpen={loadArticleSwipe}
+                onSwipeableWillOpen={() =>{ setzIndex(100); }}>
+                <ArticleScreen
+                    article={article}
+                    navigation={navigation}
+                    scrollRef={scrollRef}
+                    header={<Header
+                        onFavouritePress={toggleFavouriteButton}
+                        favouriteButtonIcon={favouriteButtonIcon} />} 
+                    isLoading={isLoading}/>
+            </ArticleSwipable>
+            <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
+        </SafeAreaView>
     )
 }

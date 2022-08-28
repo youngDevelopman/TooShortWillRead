@@ -21,6 +21,8 @@ import BrowserScreen from './screens/BrowserScreen';
 import { loadArticlesCount } from './redux/actions/loadArticlesCount';
 import MainArticleScreen from './screens/MainArticleScreen';
 import InformationScreen from './screens/InformationScreen';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { PortalProvider } from '@gorhom/portal';
 
 const ArticleStack = createNativeStackNavigator();
 
@@ -105,14 +107,19 @@ const App: () => ReactNode = () => {
     store.dispatch(loadArticlesCount());
   }, []);
   return (
+
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
-          <MainStack.Navigator>
-            <MainStack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
-            <MainStack.Screen name="Browser" component={BrowserScreen} options={{ headerShown: false }} />
-          </MainStack.Navigator>
-        </NavigationContainer>
+        <PortalProvider>
+          <BottomSheetModalProvider>
+            <NavigationContainer>
+              <MainStack.Navigator>
+                <MainStack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
+                <MainStack.Screen name="Browser" component={BrowserScreen} options={{ headerShown: false }} />
+              </MainStack.Navigator>
+            </NavigationContainer>
+          </BottomSheetModalProvider>
+        </PortalProvider>
       </PersistGate>
     </Provider>
   );
