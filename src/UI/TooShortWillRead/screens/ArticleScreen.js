@@ -22,6 +22,8 @@ const ExternalLinkItem = ({ item, onPress }) => {
     )
 }
 
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
+
 const ArticleScreen = ({ article, navigation, scrollRef }) => {
     const pan = useRef(new Animated.ValueXY()).current;
     const links = () => {
@@ -91,7 +93,7 @@ const ArticleScreen = ({ article, navigation, scrollRef }) => {
                     }
                   )}
             >
-                <Animated.Image
+                <AnimatedFastImage
                     resizeMode={FastImage.resizeMode.cover}
                     modalImageResizeMode='center'
                     imageBackgroundColor='black'
