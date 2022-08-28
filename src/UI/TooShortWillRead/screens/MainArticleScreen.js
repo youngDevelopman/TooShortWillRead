@@ -72,7 +72,7 @@ export default function MainArticleScreen({ route, navigation }) {
 
     const swipeableRef = useRef(null);
     const nextArticleIconScale = useRef(new Animated.Value(0)).current;
-    const tt = nextArticleIconScale.interpolate({
+    const nextArticleInconScaleInterpolated = nextArticleIconScale.interpolate({
         inputRange: [0, 135],
         outputRange: [0, 2.5],
         extrapolate: 'clamp'
@@ -198,7 +198,7 @@ export default function MainArticleScreen({ route, navigation }) {
             }}>
                 <AnimatedIcon
                     name={'arrow-forward-circle'} color='dodgerblue' size={60} ref={iconRef}
-                    style={{ alignSelf: 'flex-end', paddingRight: 20, transform: [{ scale: tt }] }} />
+                    style={{ alignSelf: 'flex-end', paddingRight: 20, transform: [{ scale: nextArticleInconScaleInterpolated }] }} />
             </View>
         );
     };
