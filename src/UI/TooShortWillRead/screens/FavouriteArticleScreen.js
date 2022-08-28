@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, Animated, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Animated, ActivityIndicator, SafeAreaView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { loadFavouriteArticle } from "../redux/actions/loadFavouriteArticle";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -132,13 +132,15 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     }
 
     return (
-        <ArticleScreen
-            article={article}
-            loadingComponent={<LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />}
-            navigation={navigation}
-            header={<Header
-                onFavouritePress={toggleFavouriteButton}
-                onClosePress={closeArticleScreen}
-                favouriteButtonIcon={favouriteButtonIcon} />} />
+        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}} edges={['right', 'left', 'top']}>
+            <ArticleScreen
+                article={article}               
+                navigation={navigation}
+                header={<Header
+                    onFavouritePress={toggleFavouriteButton}
+                    onClosePress={closeArticleScreen}
+                    favouriteButtonIcon={favouriteButtonIcon} />} />
+            <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
+        </SafeAreaView>
     )
 }

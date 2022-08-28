@@ -4,13 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
 import ArticleScreen from "./ArticleScreen";
-import AppButton from "../components/AppButton";
 import { loadArticle } from "../redux/actions/loadArticle";
 import { incrementArticlesShownBeforeAdCount } from "../redux/actions/readArticlesActions";
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Dimensions } from "react-native";
+
+
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
@@ -190,16 +189,6 @@ export default function MainArticleScreen({ route, navigation }) {
 
     const iconRef = useRef();
     renderRightActions = (progress, dragX) => {
-        console.log('swipable state', swipeableRef.state)
-        //console.log('progress', progress)
-        //console.log('dragX', dragX);
-        const dragXAbs = Animated.multiply(dragX, -1);
-        const scale = dragXAbs.interpolate({
-            inputRange: [0, 135],
-            outputRange: [0, 2.5],
-            extrapolate: 'clamp'
-        });
-        //console.log('scale', scale)
         return (
             <View style={{
                 justifyContent: 'center',
@@ -215,8 +204,9 @@ export default function MainArticleScreen({ route, navigation }) {
     };
 
     return (
-        <View>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}} edges={['right', 'left', 'top']}>
             <ArticleSwipable
+                style={{backgroundColor: 'red'}}
                 ref={swipeableRef}
                 renderRightActions={this.renderRightActions}
                 onSwipeableClose={() => console.log('close')}
@@ -228,10 +218,10 @@ export default function MainArticleScreen({ route, navigation }) {
                     scrollRef={scrollRef}
                     header={<Header
                         onFavouritePress={toggleFavouriteButton}
-                        favouriteButtonIcon={favouriteButtonIcon} />} />
-
+                        favouriteButtonIcon={favouriteButtonIcon} />} 
+                    isLoading={isLoading}/>
             </ArticleSwipable>
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
-        </View>
+        </SafeAreaView>
     )
 }

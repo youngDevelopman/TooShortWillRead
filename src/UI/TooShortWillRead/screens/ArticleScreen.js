@@ -2,16 +2,17 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
 import CategoryList from "../components/CategoryList";
 import ImageModal from "react-native-image-modal";
-import BottomSheet, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import AppButton from "../components/AppButton";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Portal, PortalHost } from '@gorhom/portal';
 
 const ExternalLinkItem = ({ item, onPress }) => {
     return (
         <TouchableOpacity style={styles.externalLinkItem} activeOpacity={0.7} onPress={() => onPress(item.link)}>
             <View style={styles.externalLinkItemContainer}>
                 <View style={{ flex: 1 }}>
-                    <Icon name={item.icon} size={24} color="white"/>
+                    <Icon name={item.icon} size={24} color="white" />
                 </View>
                 <View style={{ flex: 10 }}>
                     <Text style={styles.linkTitle}>{item.title}</Text>
@@ -21,7 +22,7 @@ const ExternalLinkItem = ({ item, onPress }) => {
     )
 }
 
-const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRef }) => {
+const ArticleScreen = ({ article, header, navigation, scrollRef }) => {
     const links = () => {
         const linksToDisplay = [];
 
@@ -36,6 +37,7 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
     };
 
     const openLink = (uri) => {
+        bottomSheetRef.current.close();
         navigation.navigate('Browser', {
             uri: uri
         });
@@ -43,7 +45,7 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
 
     const renderItem = useCallback(
         ({ item }) => (
-            <ExternalLinkItem item={item} onPress={openLink}/>
+            <ExternalLinkItem item={item} onPress={openLink} />
         ),
         []
     );
@@ -75,8 +77,6 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
     }
 
     return (
-        <View style={styles.container}>
-            <SafeAreaView style={styles.container}>
                 <View style={{ paddingLeft: 10, paddingRight: 10 }}>
                     <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
                     <ScrollView
@@ -111,35 +111,35 @@ const ArticleScreen = ({ article, loadingComponent, header, navigation, scrollRe
                                 {article.text}
                             </Text>
                         </View>
-                        <AppButton onPress={openExternalLinksModal} title='More' style={{margin: 12}}/>
+                        <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
+                        <Portal>
+                        <BottomSheetModal
+                            index={-1}
+                            ref={bottomSheetRef}
+                            snapPoints={snapPoints}
+                            enablePanDownToClose={true}
+                            backdropComponent={renderBackdrop}
+                            backgroundStyle={styles.externalLinksContainer}
+                        >
+                            <BottomSheetFlatList
+                                data={links()}
+                                keyExtractor={(i) => i.title}
+                                renderItem={renderItem}
+                                scrollEnabled={false}
+                                ItemSeparatorComponent={renderSeparator}
+                                ListFooterComponent={renderSeparator}
+                            />
+                        </BottomSheetModal>
+                    </Portal>
+                    <PortalHost name="custom_host" />
                     </ScrollView>
                 </View>
-                {loadingComponent}
-                <BottomSheet
-                    index={-1}
-                    ref={bottomSheetRef}
-                    snapPoints={snapPoints}
-                    enablePanDownToClose={true}
-                    backdropComponent={renderBackdrop}
-                    backgroundStyle={styles.externalLinksContainer}
-                >
-                    <BottomSheetFlatList
-                        data={links()}
-                        keyExtractor={(i) => i.title}
-                        renderItem={renderItem}
-                        scrollEnabled={false}
-                        ItemSeparatorComponent={renderSeparator}
-                        ListFooterComponent={renderSeparator}
-                    />
-                </BottomSheet>
-            </SafeAreaView>
-        </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#000000',
+        backgroundColor: '#000000'
     },
     headerImageStyle: {
         height: '100%',
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
         lineHeight: 25
     },
     externalLinksContainer: {
-        backgroundColor: 'dimgray'
+        backgroundColor: 'dimgray',
     },
     itemContainer: {
         padding: 6,
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
     },
     externalLinkItemContainer: {
         flexDirection: 'row',
-        flex: 1,
         alignItems: 'center'
     },
     linkTitle: {
