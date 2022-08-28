@@ -204,7 +204,7 @@ export default function MainArticleScreen({ route, navigation }) {
     };
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}} edges={['right', 'left', 'top']}>
+        <View style={{flex: 1, backgroundColor: 'black'}}>
             <ArticleSwipable
                 style={{backgroundColor: 'red'}}
                 ref={swipeableRef}
@@ -222,6 +222,6 @@ export default function MainArticleScreen({ route, navigation }) {
                     isLoading={isLoading}/>
             </ArticleSwipable>
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
-        </SafeAreaView>
+        </View>
     )
 }

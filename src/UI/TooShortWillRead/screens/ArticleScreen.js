@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
 import CategoryList from "../components/CategoryList";
-import ImageModal from "react-native-image-modal";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import AppButton from "../components/AppButton";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Portal, PortalHost } from '@gorhom/portal';
+import FastImage from "react-native-fast-image";
 
 const ExternalLinkItem = ({ item, onPress }) => {
     return (
@@ -22,7 +22,7 @@ const ExternalLinkItem = ({ item, onPress }) => {
     )
 }
 
-const ArticleScreen = ({ article, header, navigation, scrollRef }) => {
+const ArticleScreen = ({ article, navigation, scrollRef }) => {
     const links = () => {
         const linksToDisplay = [];
 
@@ -77,63 +77,64 @@ const ArticleScreen = ({ article, header, navigation, scrollRef }) => {
     }
 
     return (
+        <View>
+            <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
+            <ScrollView
+                ref={scrollRef}
+                showsVerticalScrollIndicator={false}
+                scrollEventThrottle={16}
+            >
+                <FastImage
+                    resizeMode={FastImage.resizeMode.cover}
+                    modalImageResizeMode='center'
+                    imageBackgroundColor='black'
+                    style={{
+                        width: '100%',
+                        height: undefined,
+                        aspectRatio: 1,
+                        zIndex: -500
+                    }}
+                    source={{
+                        uri: article.imageUrl,
+                    }}
+                />
                 <View style={{ paddingLeft: 10, paddingRight: 10 }}>
-                    <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
-                    <ScrollView
-                        ref={scrollRef}
-                        showsVerticalScrollIndicator={false}
-                        scrollEventThrottle={16}
-                        stickyHeaderIndices={[0]}
-                    >
-                        {header}
-                        <ImageModal
-                            resizeMode="center"
-                            modalImageResizeMode='center'
-                            imageBackgroundColor='black'
-                            style={{
-                                width: '100%',
-                                height: undefined,
-                                aspectRatio: 1,
-                            }}
-                            source={{
-                                uri: article.imageUrl,
-                            }}
-                        />
-                        <View style={styles.header}>
-                            <Text style={styles.headerText}
-                            >
-                                {article.header}
-                            </Text>
-                        </View>
-                        <CategoryList data={article.categories} />
-                        <View>
-                            <Text style={styles.text}>
-                                {article.text}
-                            </Text>
-                        </View>
-                        <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
-                        <Portal>
-                        <BottomSheetModal
-                            index={-1}
-                            ref={bottomSheetRef}
-                            snapPoints={snapPoints}
-                            enablePanDownToClose={true}
-                            backdropComponent={renderBackdrop}
-                            backgroundStyle={styles.externalLinksContainer}
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}
                         >
-                            <BottomSheetFlatList
-                                data={links()}
-                                keyExtractor={(i) => i.title}
-                                renderItem={renderItem}
-                                scrollEnabled={false}
-                                ItemSeparatorComponent={renderSeparator}
-                                ListFooterComponent={renderSeparator}
-                            />
-                        </BottomSheetModal>
-                    </Portal>
-                    <PortalHost name="custom_host" />
-                    </ScrollView>
+                            {article.header}
+                        </Text>
+                    </View>
+                    <CategoryList data={article.categories} />
+                    <View>
+                        <Text style={styles.text}>
+                            {article.text}
+                        </Text>
+                    </View>
+                    <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
                 </View>
+                <Portal>
+                    <BottomSheetModal
+                        index={-1}
+                        ref={bottomSheetRef}
+                        snapPoints={snapPoints}
+                        enablePanDownToClose={true}
+                        backdropComponent={renderBackdrop}
+                        backgroundStyle={styles.externalLinksContainer}
+                    >
+                        <BottomSheetFlatList
+                            data={links()}
+                            keyExtractor={(i) => i.title}
+                            renderItem={renderItem}
+                            scrollEnabled={false}
+                            ItemSeparatorComponent={renderSeparator}
+                            ListFooterComponent={renderSeparator}
+                        />
+                    </BottomSheetModal>
+                </Portal>
+                <PortalHost name="custom_host" />
+            </ScrollView>
+        </View>
     )
 }
 
