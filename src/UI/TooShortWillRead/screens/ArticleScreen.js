@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity, Animated, Image } from "react-native";
 import CategoryList from "../components/CategoryList";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import AppButton from "../components/AppButton";
@@ -23,6 +23,7 @@ const ExternalLinkItem = ({ item, onPress }) => {
 }
 
 const ArticleScreen = ({ article, navigation, scrollRef }) => {
+    const pan = useRef(new Animated.ValueXY()).current;
     const links = () => {
         const linksToDisplay = [];
 
@@ -82,23 +83,58 @@ const ArticleScreen = ({ article, navigation, scrollRef }) => {
             <ScrollView
                 ref={scrollRef}
                 showsVerticalScrollIndicator={false}
-                scrollEventThrottle={16}
+                scrollEventThrottle={1}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: pan.y } } }],
+                    {
+                      useNativeDriver: false,
+                    }
+                  )}
             >
-                <FastImage
+                <Animated.Image
                     resizeMode={FastImage.resizeMode.cover}
                     modalImageResizeMode='center'
                     imageBackgroundColor='black'
+                    scrollEventThrottle={1}
+                    alwaysBounceVertical={false}
                     style={{
                         width: '100%',
-                        height: undefined,
-                        aspectRatio: 1,
-                        zIndex: -500
+                        height: 400,
+                        transform: [
+                            {
+                              translateY: pan.y.interpolate({
+                                inputRange: [-1000, 0],
+                                outputRange: [-100, 0],
+                                extrapolate: 'clamp',
+                              }),
+                            },
+                            {
+                              scale: pan.y.interpolate({
+                                inputRange: [-3000, 0],
+                                outputRange: [5, 1],
+                                extrapolate: 'clamp',
+                              }),
+                            },
+                          ]
                     }}
                     source={{
                         uri: article.imageUrl,
                     }}
                 />
-                <View style={{ paddingLeft: 10, paddingRight: 10 }}>
+                <Animated.View style={
+                    { 
+                        paddingLeft: 10, 
+                        paddingRight: 10,
+                        transform: [
+                            {
+                              translateY: pan.y.interpolate({
+                                inputRange: [-1000, 0],
+                                outputRange: [250, 0],
+                                extrapolate: 'clamp',
+                              }),
+                            },
+                          ],
+                    }}>
                     <View style={styles.header}>
                         <Text style={styles.headerText}
                         >
@@ -112,7 +148,7 @@ const ArticleScreen = ({ article, navigation, scrollRef }) => {
                         </Text>
                     </View>
                     <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
-                </View>
+                </Animated.View>
                 <Portal>
                     <BottomSheetModal
                         index={-1}
