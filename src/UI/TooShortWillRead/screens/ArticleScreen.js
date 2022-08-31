@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity, Animated, Image } from "react-native";
 import CategoryList from "../components/CategoryList";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
@@ -26,6 +26,9 @@ const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 const ArticleScreen = ({ article, navigation, scrollRef }) => {
     const pan = useRef(new Animated.ValueXY()).current;
+    useEffect(() => {
+        //pan.addListener(ev => console.log(ev))
+    }, [pan])
     const links = () => {
         const linksToDisplay = [];
 
@@ -80,7 +83,7 @@ const ArticleScreen = ({ article, navigation, scrollRef }) => {
     }
 
     return (
-        <View>
+        <View style={{height: '100%'}}>
             <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
             <ScrollView
                 ref={scrollRef}
