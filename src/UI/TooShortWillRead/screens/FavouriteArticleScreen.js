@@ -132,7 +132,7 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     }
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}} edges={['right', 'left', 'top']}>
+        <View style={{flex: 1, backgroundColor: 'black'}}>
             <ArticleScreen
                 article={article}               
                 navigation={navigation}
@@ -141,6 +141,6 @@ export default function FavouriteArticleScreen({ route, navigation }) {
                     onClosePress={closeArticleScreen}
                     favouriteButtonIcon={favouriteButtonIcon} />} />
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
-        </SafeAreaView>
+        </View>
     )
 }

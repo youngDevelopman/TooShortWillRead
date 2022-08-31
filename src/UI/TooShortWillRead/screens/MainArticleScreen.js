@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, ActivityIndicator, Text, TouchableOpacity } from "react-native";
+import { View, Animated, ActivityIndicator, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { removeFavouriteArticle, addFavouriteArticle } from "../redux/actions/favouritesArticlesActions";
@@ -204,9 +204,8 @@ export default function MainArticleScreen({ route, navigation }) {
     };
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'black'}} edges={['right', 'left', 'top']}>
-            <ArticleSwipable
-                style={{backgroundColor: 'red'}}
+        <View style={{ backgroundColor: 'black', flex: 1}}>
+             <ArticleSwipable
                 ref={swipeableRef}
                 renderRightActions={this.renderRightActions}
                 onSwipeableClose={() => console.log('close')}
@@ -222,6 +221,7 @@ export default function MainArticleScreen({ route, navigation }) {
                     isLoading={isLoading}/>
             </ArticleSwipable>
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
-        </SafeAreaView>
+            
+        </View>
     )
 }

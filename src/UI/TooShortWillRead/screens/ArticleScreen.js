@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity, Animated, Image } from "react-native";
 import CategoryList from "../components/CategoryList";
-import ImageModal from "react-native-image-modal";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import AppButton from "../components/AppButton";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Portal, PortalHost } from '@gorhom/portal';
+import FastImage from "react-native-fast-image";
 
 const ExternalLinkItem = ({ item, onPress }) => {
     return (
@@ -22,7 +22,13 @@ const ExternalLinkItem = ({ item, onPress }) => {
     )
 }
 
-const ArticleScreen = ({ article, header, navigation, scrollRef }) => {
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
+
+const ArticleScreen = ({ article, navigation, scrollRef }) => {
+    const pan = useRef(new Animated.ValueXY()).current;
+    useEffect(() => {
+        //pan.addListener(ev => console.log(ev))
+    }, [pan])
     const links = () => {
         const linksToDisplay = [];
 
@@ -77,63 +83,99 @@ const ArticleScreen = ({ article, header, navigation, scrollRef }) => {
     }
 
     return (
-                <View style={{ paddingLeft: 10, paddingRight: 10 }}>
-                    <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
-                    <ScrollView
-                        ref={scrollRef}
-                        showsVerticalScrollIndicator={false}
-                        scrollEventThrottle={16}
-                        stickyHeaderIndices={[0]}
-                    >
-                        {header}
-                        <ImageModal
-                            resizeMode="center"
-                            modalImageResizeMode='center'
-                            imageBackgroundColor='black'
-                            style={{
-                                width: '100%',
-                                height: undefined,
-                                aspectRatio: 1,
-                            }}
-                            source={{
-                                uri: article.imageUrl,
-                            }}
-                        />
-                        <View style={styles.header}>
-                            <Text style={styles.headerText}
-                            >
-                                {article.header}
-                            </Text>
-                        </View>
-                        <CategoryList data={article.categories} />
-                        <View>
-                            <Text style={styles.text}>
-                                {article.text}
-                            </Text>
-                        </View>
-                        <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
-                        <Portal>
-                        <BottomSheetModal
-                            index={-1}
-                            ref={bottomSheetRef}
-                            snapPoints={snapPoints}
-                            enablePanDownToClose={true}
-                            backdropComponent={renderBackdrop}
-                            backgroundStyle={styles.externalLinksContainer}
+        <View style={{height: '100%'}}>
+            <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
+            <ScrollView
+                ref={scrollRef}
+                showsVerticalScrollIndicator={false}
+                scrollEventThrottle={1}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: pan.y } } }],
+                    {
+                      useNativeDriver: false,
+                    }
+                  )}
+            >
+                <AnimatedFastImage
+                    resizeMode={FastImage.resizeMode.cover}
+                    modalImageResizeMode='center'
+                    imageBackgroundColor='black'
+                    scrollEventThrottle={1}
+                    alwaysBounceVertical={false}
+                    style={{
+                        width: '100%',
+                        height: 400,
+                        transform: [
+                            {
+                              translateY: pan.y.interpolate({
+                                inputRange: [-1000, 0],
+                                outputRange: [-100, 0],
+                                extrapolate: 'clamp',
+                              }),
+                            },
+                            {
+                              scale: pan.y.interpolate({
+                                inputRange: [-3000, 0],
+                                outputRange: [5, 1],
+                                extrapolate: 'clamp',
+                              }),
+                            },
+                          ]
+                    }}
+                    source={{
+                        uri: article.imageUrl,
+                    }}
+                />
+                <Animated.View style={
+                    { 
+                        paddingLeft: 10, 
+                        paddingRight: 10,
+                        transform: [
+                            {
+                              translateY: pan.y.interpolate({
+                                inputRange: [-1000, 0],
+                                outputRange: [250, 0],
+                                extrapolate: 'clamp',
+                              }),
+                            },
+                          ],
+                    }}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}
                         >
-                            <BottomSheetFlatList
-                                data={links()}
-                                keyExtractor={(i) => i.title}
-                                renderItem={renderItem}
-                                scrollEnabled={false}
-                                ItemSeparatorComponent={renderSeparator}
-                                ListFooterComponent={renderSeparator}
-                            />
-                        </BottomSheetModal>
-                    </Portal>
-                    <PortalHost name="custom_host" />
-                    </ScrollView>
-                </View>
+                            {article.header}
+                        </Text>
+                    </View>
+                    <CategoryList data={article.categories} />
+                    <View>
+                        <Text style={styles.text}>
+                            {article.text}
+                        </Text>
+                    </View>
+                    <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
+                </Animated.View>
+                <Portal>
+                    <BottomSheetModal
+                        index={-1}
+                        ref={bottomSheetRef}
+                        snapPoints={snapPoints}
+                        enablePanDownToClose={true}
+                        backdropComponent={renderBackdrop}
+                        backgroundStyle={styles.externalLinksContainer}
+                    >
+                        <BottomSheetFlatList
+                            data={links()}
+                            keyExtractor={(i) => i.title}
+                            renderItem={renderItem}
+                            scrollEnabled={false}
+                            ItemSeparatorComponent={renderSeparator}
+                            ListFooterComponent={renderSeparator}
+                        />
+                    </BottomSheetModal>
+                </Portal>
+                <PortalHost name="custom_host" />
+            </ScrollView>
+        </View>
     )
 }
 
