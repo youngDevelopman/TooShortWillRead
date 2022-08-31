@@ -4,8 +4,54 @@ import CategoryList from "../components/CategoryList";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import AppButton from "../components/AppButton";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Portal, PortalHost } from '@gorhom/portal';
 import FastImage from "react-native-fast-image";
+
+const ExtraSection = ({style, onExternalLinksOpen, onFavouriteButtonToggle, isFavourite}) => {
+    return (
+        <View style={
+            [style, { 
+                flexDirection: 'row', 
+                backgroundColor: "#383837",
+                justifyContent: 'center', 
+                alignItems: 'center',
+                marginHorizontal: 110,
+                elevation: 8,
+                borderRadius: 20,
+                shadowOffset: {
+                    width: 0,
+                    height: 0
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 13,
+                shadowColor: 'white'
+      
+            }]}>
+            <View style={{
+
+            }}>
+                <TouchableOpacity onPress={onExternalLinksOpen} activeOpacity={0.7}>
+                    <Text style={{
+                        fontSize: 18,
+                        color: "#fff",
+                        fontWeight: "bold",
+                        alignSelf: "center",
+                        textTransform: "uppercase"
+                    }}>More</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{marginHorizontal: 5, marginVertical: 5}}>
+                <Ionicons name="remove-outline" size={30} style={{transform: [{ rotate: '90deg' }]}}/>
+            </View>
+            <View>
+                <TouchableOpacity onPress={onFavouriteButtonToggle} activeOpacity={0.7}>
+                    <Ionicons name={isFavourite ? 'star' : 'star-outline'} size={25} color="white" />
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+}
 
 const ExternalLinkItem = ({ item, onPress }) => {
     return (
@@ -24,7 +70,7 @@ const ExternalLinkItem = ({ item, onPress }) => {
 
 const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
-const ArticleScreen = ({ article, navigation, scrollRef }) => {
+const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigation, scrollRef}) => {
     const pan = useRef(new Animated.ValueXY()).current;
     useEffect(() => {
         //pan.addListener(ev => console.log(ev))
@@ -152,7 +198,12 @@ const ArticleScreen = ({ article, navigation, scrollRef }) => {
                             {article.text}
                         </Text>
                     </View>
-                    <AppButton onPress={openExternalLinksModal} title='More' style={{ margin: 12 }} />
+                    <ExtraSection 
+                        style={{marginBottom: 20, marginTop: 10}} 
+                        onExternalLinksOpen={openExternalLinksModal} 
+                        onFavouriteButtonToggle={onFavouriteButtonToggle}
+                        isFavourite={isFavourite}
+                    />
                 </Animated.View>
                 <Portal>
                     <BottomSheetModal

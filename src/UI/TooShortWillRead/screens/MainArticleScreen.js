@@ -7,7 +7,6 @@ import ArticleScreen from "./ArticleScreen";
 import { loadArticle } from "../redux/actions/loadArticle";
 import { incrementArticlesShownBeforeAdCount } from "../redux/actions/readArticlesActions";
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -141,17 +140,8 @@ export default function MainArticleScreen({ route, navigation }) {
     }, [isLoading]);
 
     // Favourite article config
-    const getFavouriteIcon = () => {
-        return isFavourite ? 'star' : 'star-outline';
-    }
     const isFavourite = useSelector(state =>
         state.favouriteArticlesReducer.favouriteArticles.find(a => a.id === article.id) !== undefined);
-    const [favouriteButtonIcon, setFavouriteButtonIcon] = useState(getFavouriteIcon());
-    useEffect(() => {
-        const favIcon = getFavouriteIcon();
-        setFavouriteButtonIcon(favIcon);
-    }, [isFavourite]);
-
 
     const toggleFavouriteButton = () => {
         if (isFavourite) {
@@ -215,13 +205,11 @@ export default function MainArticleScreen({ route, navigation }) {
                     article={article}
                     navigation={navigation}
                     scrollRef={scrollRef}
-                    header={<Header
-                        onFavouritePress={toggleFavouriteButton}
-                        favouriteButtonIcon={favouriteButtonIcon} />} 
+                    onFavouriteButtonToggle={toggleFavouriteButton}
+                    isFavourite={isFavourite}
                     isLoading={isLoading}/>
             </ArticleSwipable>
-            <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
-            
+            <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />      
         </View>
     )
 }
