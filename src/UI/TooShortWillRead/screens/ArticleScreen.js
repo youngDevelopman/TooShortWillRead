@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, SafeAreaView, View, StatusBar, ScrollView, TouchableOpacity, Animated, Image } from "react-native";
+import { StyleSheet, Text, Dimensions, View, StatusBar, ScrollView, TouchableOpacity, Animated, Image } from "react-native";
 import CategoryList from "../components/CategoryList";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import AppButton from "../components/AppButton";
@@ -149,8 +149,9 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
                     scrollEventThrottle={1}
                     alwaysBounceVertical={false}
                     style={{
-                        width: '100%',
-                        height: 400,
+                        width: Dimensions.get('window').width,
+                        height: undefined,
+                        aspectRatio: 1,
                         transform: [
                             {
                               translateY: pan.y.interpolate({

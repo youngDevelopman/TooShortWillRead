@@ -99,18 +99,8 @@ export default function FavouriteArticleScreen({ route, navigation }) {
         }
     }, [isLoading]);
 
-    // Favourite article config
-    const getFavouriteIcon = () => {
-        return isFavourite ? 'star' : 'star-outline';
-    }
     const isFavourite = useSelector(state =>
         state.favouriteArticlesReducer.favouriteArticles.find(a => a.id === article.id) !== undefined);
-    const [favouriteButtonIcon, setFavouriteButtonIcon] = useState(getFavouriteIcon());
-    useEffect(() => {
-        const favIcon = getFavouriteIcon();
-        setFavouriteButtonIcon(favIcon);
-    }, [isFavourite]);
-
 
     const toggleFavouriteButton = () => {
         if (isFavourite) {
@@ -136,10 +126,9 @@ export default function FavouriteArticleScreen({ route, navigation }) {
             <ArticleScreen
                 article={article}               
                 navigation={navigation}
-                header={<Header
-                    onFavouritePress={toggleFavouriteButton}
-                    onClosePress={closeArticleScreen}
-                    favouriteButtonIcon={favouriteButtonIcon} />} />
+                onFavouriteButtonToggle={toggleFavouriteButton}
+                isFavourite={isFavourite}
+            />
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
         </View>
     )

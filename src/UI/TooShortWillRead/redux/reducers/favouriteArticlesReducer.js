@@ -23,10 +23,9 @@ function favouriteArticlesReducer(state = initialState, action) {
         case REMOVE_FAVOURITE_ARTICLE:
             return { ...state, favouriteArticles: state.favouriteArticles.filter(a => a.id !== action.payload) };
         case LOAD_FAVOURITE_ARTICLE_START:
-            console.log('LOAD_FAVOURITE_ARTICLE_START')
             return { ...state, currentFavouriteArticle: { ...state.currentFavouriteArticle, isLoading: true, error: '' } };
         case LOAD_FAVOURITE_ARTICLE_SUCCESS:
-            return { ...state, currentFavouriteArticle: { article: action.payload, isLoading: false } };
+            return { ...state, currentFavouriteArticle: { article: { ...action.payload, categories: action.payload.categories.sort((a, b) => a.length > b.length)}, isLoading: false } };
         case LOAD_FAVOURITE_ARTICLE_FAILURE:
             return { ...state, currentFavouriteArticle: { article: action.payload, isLoading: false, error: action.payload } };
         default:

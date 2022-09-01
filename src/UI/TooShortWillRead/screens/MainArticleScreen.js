@@ -207,7 +207,8 @@ export default function MainArticleScreen({ route, navigation }) {
                     scrollRef={scrollRef}
                     onFavouriteButtonToggle={toggleFavouriteButton}
                     isFavourite={isFavourite}
-                    isLoading={isLoading}/>
+                    isLoading={isLoading} 
+                />
             </ArticleSwipable>
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />      
         </View>
