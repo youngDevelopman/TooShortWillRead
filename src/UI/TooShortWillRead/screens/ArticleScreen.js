@@ -18,7 +18,7 @@ const ExtraSection = ({ style, onExternalLinksOpen, onFavouriteButtonToggle, isF
                 alignItems: 'center',
                 elevation: 8,
                 borderRadius: 20,
-                marginHorizontal: 110,
+                marginHorizontal: 120,
                 marginVertical: 10,
                 shadowOffset: {
                     width: 0,
