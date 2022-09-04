@@ -146,18 +146,6 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
             <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
             <View 
             onLayout={ev => {
-                console.log('----LAYOUT CHANGE-----')
-                ev.target.measure(
-                    (x, y, width, height, pageX, pageY) => {
-                        console.log('x', x);
-                        console.log('pageX', pageX);
-                        console.log('y', y);
-                        console.log('pageY', pageY);
-                        console.log('height', height);
-                        //setBottomActions({ x: pageX, y: pageY, height });
-                    },
-                );
-                console.log('scroll on layout', ev.nativeEvent)
                 setScrollViewHeight(ev.nativeEvent.layout.height);
             }}>
                 <Animated.ScrollView
