@@ -143,12 +143,12 @@ export default function FavouriteArticleScreen({ route, navigation }) {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                height: 80,
+                height: 90,
                 zIndex: 100,
                 justifyContent: 'flex-end'
             }}>
                 <View style={{
-                    paddingLeft: 10,
+                    paddingLeft: 15,
                     flexDirection: 'row'
                 }}>
                     <TouchableOpacity onPress={closeArticleScreen} activeOpacity={0.7}>
