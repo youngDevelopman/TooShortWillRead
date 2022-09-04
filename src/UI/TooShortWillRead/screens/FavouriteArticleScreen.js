@@ -130,35 +130,40 @@ export default function FavouriteArticleScreen({ route, navigation }) {
     }
 
     useEffect(() => {
-        if(isLoading){
+        if (isLoading) {
             scrollToTheTop();
         }
     }, [isLoading]);
 
     return (
         <View style={{ flex: 1, backgroundColor: 'black' }}>
-{/*             <View style={{
+            <View style={{
                 position: 'absolute',
                 top: 0,
                 bottom: 0,
                 left: 0,
                 right: 0,
-                backgroundColor: 'red',
                 height: 80,
-                zIndex: 100
+                zIndex: 100,
+                justifyContent: 'flex-end'
             }}>
-                <TouchableOpacity onPress={closeArticleScreen} activeOpacity={0.7} style={{}}>
-                    <View style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: 40,
-                        height: 40,
-                    }}>
-                        <IconFA name='circle' size={40} color="#383837" />
-                        <Ionicons name='close' size={30} color='white' style={{ position: 'absolute' }} />
-                    </View>
-                </TouchableOpacity>
-            </View> */}
+                <View style={{
+                    paddingLeft: 10,
+                    flexDirection: 'row'
+                }}>
+                    <TouchableOpacity onPress={closeArticleScreen} activeOpacity={0.7}>
+                        <View style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: 40,
+                            height: 40,
+                        }}>
+                            <IconFA name='circle' size={40} color="#383837" />
+                            <Ionicons name='close' size={30} color='white' style={{ position: 'absolute' }} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
             <ArticleScreen
                 article={article}
                 navigation={navigation}
