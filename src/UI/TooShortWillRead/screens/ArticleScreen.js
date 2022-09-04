@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     extraSection: {
-        height: 80,
+        height: 60,
     }
 });
 
