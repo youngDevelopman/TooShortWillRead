@@ -58,6 +58,7 @@ const LoadingComponent = ({ opacity, zIndex, isLoading }) => {
 
 export default function FavouriteArticleScreen({ route, navigation }) {
     const dispatch = useDispatch();
+    const scrollRef = useRef();
     const { articleId } = route.params;
 
     useEffect(() => { dispatch(loadFavouriteArticle(articleId)) }, []);
@@ -121,13 +122,49 @@ export default function FavouriteArticleScreen({ route, navigation }) {
         navigation.goBack();
     }
 
+    const scrollToTheTop = () => {
+        scrollRef.current?.scrollTo({
+            y: 0,
+            animated: false,
+        });
+    }
+
+    useEffect(() => {
+        if(isLoading){
+            scrollToTheTop();
+        }
+    }, [isLoading]);
+
     return (
-        <View style={{flex: 1, backgroundColor: 'black'}}>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
+{/*             <View style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: 'red',
+                height: 80,
+                zIndex: 100
+            }}>
+                <TouchableOpacity onPress={closeArticleScreen} activeOpacity={0.7} style={{}}>
+                    <View style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 40,
+                        height: 40,
+                    }}>
+                        <IconFA name='circle' size={40} color="#383837" />
+                        <Ionicons name='close' size={30} color='white' style={{ position: 'absolute' }} />
+                    </View>
+                </TouchableOpacity>
+            </View> */}
             <ArticleScreen
-                article={article}               
+                article={article}
                 navigation={navigation}
                 onFavouriteButtonToggle={toggleFavouriteButton}
                 isFavourite={isFavourite}
+                scrollRef={scrollRef}
             />
             <LoadingComponent opacity={loadingFadeAnim} zIndex={zIndex} isLoading={isLoading} />
         </View>
