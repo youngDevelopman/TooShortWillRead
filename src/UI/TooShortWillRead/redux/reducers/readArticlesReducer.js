@@ -23,7 +23,7 @@ function readArticlesReducer(state = initialState, action) {
         case LOAD_ARTICLE_START:
             return { ...state, currentArticle: { ...state.currentArticle, isLoading: true, error: '' } };
         case LOAD_ARTICLE_SUCCESS:
-            return { ...state, currentArticle: { article: action.payload, isLoading: false } };
+            return { ...state, currentArticle: { article: { ...action.payload, categories: action.payload.categories.sort((a, b) => a.length > b.length)}, isLoading: false } };
         case LOAD_ARTICLE_FAILURE:
             return { ...state, currentArticle: { article: action.payload, isLoading: false, error: action.payload } };
         case SAVE_ARTICLE_AS_READ:
