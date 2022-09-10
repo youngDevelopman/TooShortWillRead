@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Portal, PortalHost } from '@gorhom/portal';
 import FastImage from "react-native-fast-image";
+import { TapGestureHandler } from "react-native-gesture-handler";
 const { width, height } = Dimensions.get('screen');
 
 const ExtraSection = ({ style, onExternalLinksOpen, onFavouriteButtonToggle, isFavourite }) => {
@@ -80,7 +81,7 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
         if (bottomActions !== null && scrollViewHeight !== null) {
             const bottomTabDiff = height - scrollViewHeight;
             const val = Math.abs(bottomActions.y - height + bottomActions.height + bottomTabDiff);
-            if(val > 0) {
+            if (val > 0) {
                 setTopEdge(val);
             }
         }
@@ -144,117 +145,124 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
     return (
         <View style={{}}>
             <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
-            <View 
-            onLayout={ev => {
-                setScrollViewHeight(ev.nativeEvent.layout.height);
-            }}>
-                <Animated.ScrollView
-                    ref={scrollRef}
-                    showsVerticalScrollIndicator={false}
-                    contentOffset={{ x: 0, y: height }}
-                    scrollEventThrottle={1}
-                    onScroll={Animated.event(
-                        [{
-                            nativeEvent:
-                            {
-                                contentOffset: { y: pan.y },
-                            }
-                        }],
-                        {
-                            useNativeDriver: false,
-                        }
-                    )}
-                >
-                    <AnimatedFastImage
-                        resizeMode={FastImage.resizeMode.cover}
-                        modalImageResizeMode='center'
-                        imageBackgroundColor='black'
+            <TapGestureHandler
+                numberOfTaps={2}
+                onActivated={() => {
+                    onFavouriteButtonToggle();
+                }}
+            >
+                <View
+                    onLayout={ev => {
+                        setScrollViewHeight(ev.nativeEvent.layout.height);
+                    }}>
+                    <Animated.ScrollView
+                        ref={scrollRef}
+                        showsVerticalScrollIndicator={false}
+                        contentOffset={{ x: 0, y: height }}
                         scrollEventThrottle={1}
-                        alwaysBounceVertical={false}
-                        style={{
-                            width: Dimensions.get('window').width,
-                            height: undefined,
-                            aspectRatio: 1,
-                            transform: [
+                        onScroll={Animated.event(
+                            [{
+                                nativeEvent:
                                 {
-                                    translateY: pan.y.interpolate({
-                                        inputRange: [-1000, 0],
-                                        outputRange: [-100, 0],
-                                        extrapolate: 'clamp',
-                                    }),
-                                },
-                                {
-                                    scale: pan.y.interpolate({
-                                        inputRange: [-3000, 0],
-                                        outputRange: [5, 1],
-                                        extrapolate: 'clamp',
-                                    }),
-                                },
-                            ]
-                        }}
-                        source={{
-                            uri: article.imageUrl,
-                        }}
-                    />
-                    <Animated.View style={
-                        {
-                            paddingLeft: 10,
-                            paddingRight: 10,
-                            transform: [
-                                {
-                                    translateY: pan.y.interpolate({
-                                        inputRange: [-1000, 0],
-                                        outputRange: [250, 0],
-                                        extrapolate: 'clamp',
-                                    }),
-                                },
-                            ],
-                        }}>
-                        <View style={styles.header}>
-                            <Text style={styles.headerText}
-                            >
-                                {article.header}
-                            </Text>
-                        </View>
-                        <CategoryList data={article.categories} />
-                        <View>
-                            <Text style={styles.text}>
-                                {article.text}
-                            </Text>
-                        </View>
-                        <View
-                            style={styles.extraSection}
-                            onLayout={ev => {
-                                ev.target.measure(
-                                    (x, y, width, height, pageX, pageY) => {
-                                        setBottomActions({ x: pageX, y: pageY, height });
+                                    contentOffset: { y: pan.y },
+                                }
+                            }],
+                            {
+                                useNativeDriver: false,
+                            }
+                        )}
+                    >
+                        <AnimatedFastImage
+                            resizeMode={FastImage.resizeMode.cover}
+                            modalImageResizeMode='center'
+                            imageBackgroundColor='black'
+                            scrollEventThrottle={1}
+                            alwaysBounceVertical={false}
+                            style={{
+                                width: Dimensions.get('window').width,
+                                height: undefined,
+                                aspectRatio: 1,
+                                transform: [
+                                    {
+                                        translateY: pan.y.interpolate({
+                                            inputRange: [-1000, 0],
+                                            outputRange: [-100, 0],
+                                            extrapolate: 'clamp',
+                                        }),
                                     },
-                                );
+                                    {
+                                        scale: pan.y.interpolate({
+                                            inputRange: [-3000, 0],
+                                            outputRange: [5, 1],
+                                            extrapolate: 'clamp',
+                                        }),
+                                    },
+                                ]
+                            }}
+                            source={{
+                                uri: article.imageUrl,
+                            }}
+                        />
+                        <Animated.View style={
+                            {
+                                paddingLeft: 10,
+                                paddingRight: 10,
+                                transform: [
+                                    {
+                                        translateY: pan.y.interpolate({
+                                            inputRange: [-1000, 0],
+                                            outputRange: [250, 0],
+                                            extrapolate: 'clamp',
+                                        }),
+                                    },
+                                ],
                             }}>
-                        </View>
-                    </Animated.View>
-                    <Portal>
-                        <BottomSheetModal
-                            index={-1}
-                            ref={bottomSheetRef}
-                            snapPoints={snapPoints}
-                            enablePanDownToClose={true}
-                            backdropComponent={renderBackdrop}
-                            backgroundStyle={styles.externalLinksContainer}
-                        >
-                            <BottomSheetFlatList
-                                data={links()}
-                                keyExtractor={(i) => i.title}
-                                renderItem={renderItem}
-                                scrollEnabled={false}
-                                ItemSeparatorComponent={renderSeparator}
-                                ListFooterComponent={renderSeparator}
-                            />
-                        </BottomSheetModal>
-                    </Portal>
-                    <PortalHost name="custom_host" />
-                </Animated.ScrollView>
-            </View>
+                            <View style={styles.header}>
+                                <Text style={styles.headerText}
+                                >
+                                    {article.header}
+                                </Text>
+                            </View>
+                            <CategoryList data={article.categories} />
+                            <View>
+                                <Text style={styles.text}>
+                                    {article.text}
+                                </Text>
+                            </View>
+                            <View
+                                style={styles.extraSection}
+                                onLayout={ev => {
+                                    ev.target.measure(
+                                        (x, y, width, height, pageX, pageY) => {
+                                            setBottomActions({ x: pageX, y: pageY, height });
+                                        },
+                                    );
+                                }}>
+                            </View>
+                        </Animated.View>
+                        <Portal>
+                            <BottomSheetModal
+                                index={-1}
+                                ref={bottomSheetRef}
+                                snapPoints={snapPoints}
+                                enablePanDownToClose={true}
+                                backdropComponent={renderBackdrop}
+                                backgroundStyle={styles.externalLinksContainer}
+                            >
+                                <BottomSheetFlatList
+                                    data={links()}
+                                    keyExtractor={(i) => i.title}
+                                    renderItem={renderItem}
+                                    scrollEnabled={false}
+                                    ItemSeparatorComponent={renderSeparator}
+                                    ListFooterComponent={renderSeparator}
+                                />
+                            </BottomSheetModal>
+                        </Portal>
+                        <PortalHost name="custom_host" />
+                    </Animated.ScrollView>
+                </View>
+            </TapGestureHandler>
             {topEdge && <Animated.View style={
                 [styles.extraSection, {
                     position: 'absolute',
