@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useRef} from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 
 const CategoryListScrollable = (props) => {
+    const ref = useRef();
     const renderItem = ({ item }) => (
         <View style={styles.category}>
             <Text style={styles.text}>
@@ -18,6 +19,10 @@ const CategoryListScrollable = (props) => {
                 keyExtractor={item => item.id}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
+                ref={ref}
+                onContentSizeChange={() => {
+                    ref.current.scrollToIndex({ index: 0, animated: false })
+                }}
             />
         </View>
     )
