@@ -7,9 +7,25 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Portal, PortalHost } from '@gorhom/portal';
 import FastImage from "react-native-fast-image";
 import { TapGestureHandler } from "react-native-gesture-handler";
+import { interpolate } from "react-native-reanimated";
 const { width, height } = Dimensions.get('screen');
 
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
+const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
+
 const ExtraSection = ({ style, onExternalLinksOpen, onFavouriteButtonToggle, isFavourite }) => {
+    const liked = useRef(new Animated.Value(0)).current;
+    const animateLikeAction = () => {
+        Animated.spring(liked, {
+            toValue: isFavourite ? 1.2 : 0,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    useEffect(() => {
+        animateLikeAction();
+    }, [isFavourite]);
+
     return (
         <View style={
             [style, {
@@ -47,8 +63,22 @@ const ExtraSection = ({ style, onExternalLinksOpen, onFavouriteButtonToggle, isF
                 <Ionicons name="remove-outline" size={25} style={{ transform: [{ rotate: '90deg' }] }} />
             </View>
             <View>
-                <TouchableOpacity onPress={onFavouriteButtonToggle} activeOpacity={0.7}>
-                    <Ionicons name={isFavourite ? 'star' : 'star-outline'} size={22} color="white" />
+                <TouchableOpacity onPress={() => { onFavouriteButtonToggle() }} activeOpacity={0.7}>
+                    <Animated.View style={[StyleSheet.absoluteFillObject,
+                    {
+                    }]}>
+                        <AnimatedIcon name={'star-outline'} size={22} color="white" />
+                    </Animated.View>
+
+                    <Animated.View style={{
+                        transform: [
+                            {
+                                scale: liked,
+                            },
+                        ]
+                    }}>
+                        <AnimatedIcon name={'star'} size={22} color="white" />
+                    </Animated.View>
                 </TouchableOpacity>
             </View>
         </View>
@@ -69,8 +99,6 @@ const ExternalLinkItem = ({ item, onPress }) => {
         </TouchableOpacity>
     )
 }
-
-const AnimatedFastImage = Animated.createAnimatedComponent(FastImage);
 
 const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigation, scrollRef }) => {
     const [bottomActions, setBottomActions] = useState(null);
