@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, Dimensions, View, StatusBar, ScrollView, TouchableOpacity, Animated, Image, Button } from "react-native";
 import CategoryList from "../components/CategoryList";
+import CategoryListScrollable from "../components/CatergoryListScrollable";
 import BottomSheetModal, { BottomSheetBackdrop, BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -251,7 +252,7 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
                                     {article.header}
                                 </Text>
                             </View>
-                            <CategoryList data={article.categories} />
+                            <CategoryListScrollable data={article.categories} />
                             <View>
                                 <Text style={styles.text}>
                                     {article.text}
