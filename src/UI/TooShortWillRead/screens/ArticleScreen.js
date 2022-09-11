@@ -172,7 +172,7 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
     }
 
     return (
-        <View style={{}}>
+        <View style={{height: '100%'}}>
             <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
             <TapGestureHandler
                 numberOfTaps={2}
