@@ -194,7 +194,7 @@ export default function MainArticleScreen({ route, navigation }) {
     };
 
     return (
-        <View style={{ backgroundColor: 'black', flex: 1}}>
+        <View style={{ backgroundColor: 'black'}}>
              <ArticleSwipable
                 ref={swipeableRef}
                 renderRightActions={this.renderRightActions}
