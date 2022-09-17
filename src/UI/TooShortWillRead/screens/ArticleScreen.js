@@ -105,19 +105,18 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
     const [bottomActions, setBottomActions] = useState(null);
     const [scrollViewHeight, setScrollViewHeight] = useState(null);
     const [topEdge, setTopEdge] = useState(null);
-
     useEffect(() => {
         if (bottomActions !== null && scrollViewHeight !== null) {
             const bottomTabDiff = height - scrollViewHeight;
             const val = Math.abs(bottomActions.y - height + bottomActions.height + bottomTabDiff);
             if (val > 0) {
                 setTopEdge(val);
+                console.log('topEdge', val);
             }
         }
     }, [bottomActions, scrollViewHeight, topEdge])
 
     const pan = useRef(new Animated.ValueXY()).current;
-
     const links = () => {
         const linksToDisplay = [];
 
@@ -172,7 +171,7 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
     }
 
     return (
-        <View style={{height: '100%'}}>
+        <View>
             <StatusBar backgroundColor="#FFFFFF" barStyle='light-content' />
             <TapGestureHandler
                 numberOfTaps={2}
@@ -182,12 +181,13 @@ const ArticleScreen = ({ article, onFavouriteButtonToggle, isFavourite, navigati
             >
                 <View
                     onLayout={ev => {
+                        console.log(ev.nativeEvent.layout)
                         setScrollViewHeight(ev.nativeEvent.layout.height);
                     }}>
                     <Animated.ScrollView
+                        style={{ height: '100%' }}
                         ref={scrollRef}
                         showsVerticalScrollIndicator={false}
-                        contentOffset={{ x: 0, y: height }}
                         scrollEventThrottle={1}
                         onScroll={Animated.event(
                             [{

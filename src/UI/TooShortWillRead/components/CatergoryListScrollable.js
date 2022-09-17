@@ -21,7 +21,7 @@ const CategoryListScrollable = (props) => {
                 showsHorizontalScrollIndicator={false}
                 ref={ref}
                 onContentSizeChange={() => {
-                    ref.current.scrollToIndex({ index: 0, animated: false })
+                    ref.current.scrollToOffset({ animated: false, offset: 0 })
                 }}
             />
         </View>
