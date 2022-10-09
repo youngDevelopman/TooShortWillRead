@@ -24,6 +24,10 @@ namespace TooShortWillRead.BL.Extensions.DependencyInjection
             {
                 config.BaseAddress = new Uri("https://en.wikipedia.org");
             });
+            services.AddHttpClient<HistoryComDataSource>(config =>
+            {
+                config.BaseAddress = new Uri("https://www.history.com/");
+            });
 
             services.AddTransient<IDataSourceFactory, DataSourceFactory>();
 
