@@ -24,6 +24,8 @@ namespace TooShortWillRead.BL.Services.DataSources
                     return _serviceProvider.GetService<WikipediaDataSource>();
                 case "www.britannica.com":
                     return _serviceProvider.GetService<BritannicaDataSource>();
+                case "www.history.com":
+                    return _serviceProvider.GetService<HistoryComDataSource>();
                 default:
                     throw new Exception($"Unable to resolve data source for the {uri} uri");
             }

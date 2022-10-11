@@ -11,5 +11,6 @@ namespace TooShortWillRead.BL.Enums
         ManuallyCreated = 1,
         Wikipedia = 2,
         Britannica = 3,
+        HistoryCom = 4,
     }
 }
