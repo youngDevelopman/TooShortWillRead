@@ -38,6 +38,9 @@ namespace TooShortWillRead.Crawler
                     case "Britannica":
                         RegisterBritaniccaServices(services, configuration);
                         break;
+                    case "HistoryCom":
+                        RegisterHistoryComServices(services, configuration);
+                        break;
                 }
             }
 
@@ -97,6 +100,35 @@ namespace TooShortWillRead.Crawler
 
                 var options = serviceProvider.GetRequiredService<IOptions<BritannicaGeneretorConfig>>();
                 var generator = new BritannicaArticlesGenerator(browsingContext, dataSource, httpClient, options);
+
+                return generator;
+            });
+        }
+
+        private static void RegisterHistoryComServices(
+            IServiceCollection services,
+            Microsoft.Extensions.Configuration.IConfiguration configuration)
+        {
+            services.Configure<HistoryComGeneratorConfig>(configuration.GetSection($"Crawler:HistoryCom"));
+            var baseUrl = configuration.GetSection("Crawler:HistoryCom:BaseUrl").Get<string>();
+
+            services.AddHttpClient("HistoryCom", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(baseUrl);
+            });
+
+            services.AddTransient<IArticlesGenerator>(serviceProvider =>
+            {
+                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient("HistoryCom");
+
+                var browsingContext = serviceProvider.GetRequiredService<IBrowsingContext>();
+                var logger = serviceProvider.GetRequiredService<ILogger<HistoryComDataSource>>();
+                var dataSource = new HistoryComDataSource(httpClient, browsingContext, logger);
+
+                var generatorLogger = serviceProvider.GetRequiredService<ILogger<HistoryComArticlesGenerator>>();
+                var options = serviceProvider.GetRequiredService<IOptions<HistoryComGeneratorConfig>>();
+                var generator = new HistoryComArticlesGenerator(browsingContext, dataSource, httpClient, options, generatorLogger);
 
                 return generator;
             });

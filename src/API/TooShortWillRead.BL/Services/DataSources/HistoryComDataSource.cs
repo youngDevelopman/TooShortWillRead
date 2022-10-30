@@ -44,9 +44,13 @@ namespace TooShortWillRead.BL.Services.DataSources
                 .Where(m => m.LocalName == "meta")
                 .Cast<IHtmlMetaElement>();
 
-            if (!IsArticleType(metaElements))
+            if (!IsTopicsSection(metaElements))
             {
-                throw new Exception("HistoryCom: Not an article type");
+                throw new Exception("HistoryCom: Not a topic section");
+            }
+            else if (!IsArticlePagetype(metaElements))
+            {
+                throw new Exception("HistoryCom: Not an article pagetype");
             }
             else if (IsTimeLine(document))
             {
@@ -87,7 +91,7 @@ namespace TooShortWillRead.BL.Services.DataSources
             return titleStr.Contains("Timeline", StringComparison.OrdinalIgnoreCase);
         }
 
-        private bool IsArticleType(IEnumerable<IHtmlMetaElement> elements)
+        private bool IsTopicsSection(IEnumerable<IHtmlMetaElement> elements)
         {
             var section = elements
                 .Where(m => m.Name == "section")
@@ -95,6 +99,16 @@ namespace TooShortWillRead.BL.Services.DataSources
                 .Content;
 
             return section == "Topics" ? true : false;
+        }
+
+        private bool IsArticlePagetype(IEnumerable<IHtmlMetaElement> elements)
+        {
+            var section = elements
+                .Where(m => m.Name == "pagetype")
+                .First()
+                .Content;
+
+            return section == "article" ? true : false;
         }
 
         private string GetArticleId(IEnumerable<IHtmlMetaElement> elements)
@@ -140,11 +154,15 @@ namespace TooShortWillRead.BL.Services.DataSources
 
         private string GetSummary(IDocument document)
         {
-            var summaryElement = document.All
-              .Where(m => m.LocalName == "p")
-              .First() as IHtmlParagraphElement;
+            var divElement = document.All
+                .Where(x => x.LocalName == "div" && x.ClassList.Contains("m-detail--body"))
+                .First() as IHtmlDivElement;
 
-            return summaryElement.TextContent;
+            var firstParagraphElement = divElement.Children
+                .Where(x => x.LocalName == "p")
+                .First() as IHtmlParagraphElement;
+
+            return firstParagraphElement.TextContent;
         }
 
         private Uri GetOriginalUrl(IDocument document)
